@@ -1,8 +1,9 @@
-import React from 'react';
-import { hot } from "react-hot-loader";
-import { BrowserRouter,  Switch, Route } from 'react-router-dom';
-import {routerUser} from "./router/routerUser";
-import UserTemplate from "./component/template/userTemplate";
+import React  from 'react';
+import './App.css';
+import { BrowserRouter,  Switch } from 'react-router-dom';
+import {userRouter} from "./router/user/userRouter";
+import UserTemplate from './component/template/user/userTemplate';
+
 
 function App() {
   //User
@@ -17,12 +18,11 @@ function App() {
     <BrowserRouter>
       <div>
         <Switch>
-          {ShowMenuHome(routerUser)}
+          {ShowMenuHome(userRouter)}
         </Switch>
-        
       </div>
     </BrowserRouter>
-    
-  )
+  );
 }
-export default hot(module)(App);
+
+export default App;

@@ -1,13 +1,14 @@
-import React, { Component } from 'react'
-import { Fragment } from 'react';
-import Header from "./header/header";
+import React, { Fragment }  from 'react';
+import Header from './header/header';
 import Footer from './footer/footer';
+import Navbar from './navbar/navbar';
 
-export default class Index extends Component {
-    render() {
-        return (
-            <Fragment>
-            </Fragment>
-        )
-    }
+export default function Index() {
+    return (
+        <Fragment>
+            <Header/>
+            <Navbar/>
+            <Footer/>
+        </Fragment>
+    )
 }
