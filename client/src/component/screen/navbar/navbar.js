@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -15,6 +16,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import PhoneIcon from '@material-ui/icons/Phone';
+
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -111,69 +113,73 @@ export default function Navbar() {
         setAnchorEl(null);
     };
     return (
-        <div className={classes.root}>
-            <AppBar position="static">
-                <Toolbar>
-                    <IconButton
-                        edge="start"
-                        className={classes.menuButton}
-                        color="inherit"
-                        aria-label="open drawer"
-                    >
-                         <MenuIcon 
-                            aria-controls="customized-menu"
-                            aria-haspopup="true"
-                            variant="contained"
-                            // color="primary"
-                            onClick={handleClick}
-                        />
-                        <div>
-                            <StyledMenu
-                                id="customized-menu"
-                                anchorEl={anchorEl}
-                                keepMounted
-                                open={Boolean(anchorEl)}
-                                onClose={handleClose}
-                            >
-                                <StyledMenuItem>
-                                    <ListItemIcon>
-                                        <AccountCircleIcon fontSize="small" />
-                                    </ListItemIcon>
-                                    <ListItemText primary="Sign In" />
-                                </StyledMenuItem>
-                                <StyledMenuItem>
-                                    <ListItemIcon>
-                                        <PhoneIcon fontSize="small" />
-                                    </ListItemIcon>
-                                    <ListItemText primary="Call +020220202" />
-                                </StyledMenuItem>
-                                <StyledMenuItem>
-                                    <ListItemIcon>
-                                        <ShoppingCartIcon fontSize="small" />
-                                    </ListItemIcon>
-                                    <ListItemText primary="Cart" />
-                                </StyledMenuItem>
-                            </StyledMenu>
+        <div id='Navbar'>
+            <div className={classes.root}>
+                <AppBar position="static">
+                    <Toolbar>
+                        <IconButton
+                            edge="start"
+                            className={classes.menuButton}
+                            color="inherit"
+                            aria-label="open drawer"
+                        >
+                            <MenuIcon
+                                aria-controls="customized-menu"
+                                aria-haspopup="true"
+                                variant="contained"
+                                // color="primary"
+                                onClick={handleClick}
+                            />
+                            <div>
+                                <StyledMenu
+                                    id="customized-menu"
+                                    anchorEl={anchorEl}
+                                    keepMounted
+                                    open={Boolean(anchorEl)}
+                                    onClose={handleClose}
+                                >
+                                    <Link to="/sign-in">
+                                        <StyledMenuItem>
+                                            <ListItemIcon>
+                                                <AccountCircleIcon fontSize="small"  />
+                                            </ListItemIcon>
+                                            <ListItemText primary="Sign In" />
+                                        </StyledMenuItem>
+                                    </Link>
+                                    <StyledMenuItem>
+                                        <ListItemIcon>
+                                            <PhoneIcon fontSize="small" />
+                                        </ListItemIcon>
+                                        <ListItemText primary="Call +020220202" />
+                                    </StyledMenuItem>
+                                    <StyledMenuItem>
+                                        <ListItemIcon>
+                                            <ShoppingCartIcon fontSize="small" />
+                                        </ListItemIcon>
+                                        <ListItemText primary="Cart" />
+                                    </StyledMenuItem>
+                                </StyledMenu>
+                            </div>
+                        </IconButton>
+                        <Typography className={classes.title} variant="h6" noWrap >
+                            <Link to='/'> Group 1</Link>
+                        </Typography>
+                        <div className={classes.search}>
+                            <div className={classes.searchIcon}>
+                                <SearchIcon />
+                            </div>
+                            <InputBase
+                                placeholder="Search…"
+                                classes={{
+                                    root: classes.inputRoot,
+                                    input: classes.inputInput,
+                                }}
+                                inputProps={{ 'aria-label': 'search' }}
+                            />
                         </div>
-                    </IconButton>
-                    <Typography className={classes.title} variant="h6" noWrap>
-                        Group 1
-                    </Typography>
-                    <div className={classes.search}>
-                        <div className={classes.searchIcon}>
-                            <SearchIcon />
-                        </div>
-                        <InputBase
-                            placeholder="Search…"
-                            classes={{
-                                root: classes.inputRoot,
-                                input: classes.inputInput,
-                            }}
-                            inputProps={{ 'aria-label': 'search' }}
-                        />
-                    </div>
-                </Toolbar>
-            </AppBar>
+                    </Toolbar>
+                </AppBar>
+            </div>
         </div>
     )
 }
