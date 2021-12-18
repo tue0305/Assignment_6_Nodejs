@@ -112,6 +112,7 @@ export default function Navbar() {
     const handleClose = () => {
         setAnchorEl(null);
     };
+    
     return (
         <div id='Navbar'>
             <div className={classes.root}>
@@ -143,7 +144,7 @@ export default function Navbar() {
                                             <ListItemIcon>
                                                 <AccountCircleIcon fontSize="small"  />
                                             </ListItemIcon>
-                                            <ListItemText primary="Sign In" />
+                                            <ListItemText primary="Sign In" className='Navbar-icon-title'/>
                                         </StyledMenuItem>
                                     </Link>
                                     <StyledMenuItem>
@@ -162,7 +163,7 @@ export default function Navbar() {
                             </div>
                         </IconButton>
                         <Typography className={classes.title} variant="h6" noWrap >
-                            <Link to='/'> Group 1</Link>
+                            <Link to='/' className='navbar-title'>NẤU ĂN NÈ</Link>
                         </Typography>
                         <div className={classes.search}>
                             <div className={classes.searchIcon}>
