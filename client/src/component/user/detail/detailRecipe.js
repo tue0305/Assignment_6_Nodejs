@@ -18,6 +18,7 @@ import step2 from '../../../images/how-to-make/step2.jpeg';
 import step21 from '../../../images/how-to-make/step2.1.jpeg';
 import step22 from '../../../images/how-to-make/step2.3.jpeg';
 import step23 from '../../../images/how-to-make/step2.4.jpeg';
+import logo from '../../../images/logo/cooking.png'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -77,7 +78,7 @@ export default function DetailRecipe() {
                             </Grid>
                             <div className='recipe-owner'>
                                 <span className='recipe-owner-icons'>
-                                    Group One
+                                    <img src={logo} alt='logo'/>
                                 </span>
                                 <span className='recipe-owner-title'>
                                     1k công thứ, 15k người theo dõi

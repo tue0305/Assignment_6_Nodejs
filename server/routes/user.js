@@ -33,10 +33,10 @@ router.get(`/`, verifyToken, async (req, res) => {
 // @desc Register user
 // @access Public
 router.post('/register', async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, confirmPassword } = req.body;
 
   // simple validation
-  if (!email || !password) {
+  if (!email || !password || !confirmPassword) {
     return res.status(400).json({
       success: false,
       message: `Missing email or password!`,
@@ -54,6 +54,14 @@ router.post('/register', async (req, res) => {
         message: `Email already taken!`,
       });
 
+    // check confirmPassword
+      if(confirmPassword !== password){
+        return res.status(400).json({
+          success: false,
+          message: `Your password or confirm password not match!`
+        })
+      };
+
     // ***** New user *****
 
     // Using argon2 to hash password
@@ -63,8 +71,10 @@ router.post('/register', async (req, res) => {
     const newUser = new User({
       email: email,
       password: hashedPassword,
+      confirmPassword: hashedPassword,
     });
 
+    
     await newUser.save();
 
     // Return access token using json web token
@@ -190,9 +200,7 @@ router.post('/forgot-password', async (req, res) => {
 // @des Reset password with userId and forgot password's token generate in user's email
 // @access Public
 router.post('/reset-password/:userId/:token', async (req, res) => {
-  const { newPassword} = req.body;
-
-  
+  const { password, confirmPassword} = req.body;
 
   try {
     // ### Find user by id in params

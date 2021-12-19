@@ -1,11 +1,8 @@
 import React, { Fragment } from 'react'
-import { Route } from 'react-router-dom';
-import Admin from '../../admin/index';
-
+import { Route, Redirect } from 'react-router-dom';
 const AdminLayOut = (props) => {
 	return (
 		<Fragment>
-			<Admin />
 			{props.children}
 		</Fragment>
 	);
@@ -19,6 +16,20 @@ export default function AdminTemplate({Component, ...props }) {
 					<Component {...propsComponent} />
 				</AdminLayOut>
 			)}
+			
+
+			// {...props}
+			// render={(propsComponent) => {
+			// 	if (localStorage.getItem("userAdmin")) {
+			// 		return (
+			// 			<AdminLayOut>
+			// 				<Component {...propsComponent} />
+			// 			</AdminLayOut>
+			// 		);
+			// 	} else {
+			// 		return <Redirect to="/sign-in-admin" />;
+			// 	}
+			// }}
 		/>
     )
 }

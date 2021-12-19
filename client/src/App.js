@@ -1,7 +1,7 @@
 import React  from 'react';
 import { BrowserRouter,  Switch } from 'react-router-dom';
 import {userRouter} from "./router/user/userRouter";
-import AdminRouter from './router/admin/adminRouter';
+import {adminRouter} from './router/admin/adminRouter';
 import UserTemplate from './component/template/user/userTemplate';
 import AdminTemplate from './component/template/admin/adminTemplate';
 
@@ -28,7 +28,7 @@ function App() {
       <div>
         <Switch>
           {ShowMenuHome(userRouter)}
-          {ShowMenuAdmin(AdminRouter())}
+          {ShowMenuAdmin(adminRouter)}
         </Switch>
       </div>
     </BrowserRouter>

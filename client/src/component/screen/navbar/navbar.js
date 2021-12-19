@@ -16,7 +16,8 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import PhoneIcon from '@material-ui/icons/Phone';
-
+//IMAGES
+import logo from '../../../images/logo/cooking.png';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -112,7 +113,7 @@ export default function Navbar() {
     const handleClose = () => {
         setAnchorEl(null);
     };
-    
+
     return (
         <div id='Navbar'>
             <div className={classes.root}>
@@ -142,9 +143,9 @@ export default function Navbar() {
                                     <Link to="/sign-in">
                                         <StyledMenuItem>
                                             <ListItemIcon>
-                                                <AccountCircleIcon fontSize="small"  />
+                                                <AccountCircleIcon fontSize="small" />
                                             </ListItemIcon>
-                                            <ListItemText primary="Sign In" className='Navbar-icon-title'/>
+                                            <ListItemText primary="Sign In" className='Navbar-icon-title' />
                                         </StyledMenuItem>
                                     </Link>
                                     <StyledMenuItem>
@@ -163,7 +164,14 @@ export default function Navbar() {
                             </div>
                         </IconButton>
                         <Typography className={classes.title} variant="h6" noWrap >
-                            <Link to='/' className='navbar-title'>NẤU ĂN NÈ</Link>
+                            <Link to='/' className='navbar-title'>
+                                <span>
+                                    <img src={logo} alt='logo' />
+                                    <span className='navbar-title-name'>
+                                        NẤU ĂN NÈ
+                                    </span>
+                                </span>
+                            </Link>
                         </Typography>
                         <div className={classes.search}>
                             <div className={classes.searchIcon}>

@@ -8,14 +8,14 @@ const UserSchema = new Schema({
         unique: true,
         match: /.+\@.+\..+/,
     },
-
     password: {
         type: "string",
         required: true,
-
-       
     },
-
+    confirmPassword: {
+        type: "string",
+        required: true,
+    },
     createdAt: {
         type: Date,
         default: Date.now,
