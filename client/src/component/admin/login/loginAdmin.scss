@@ -1,0 +1,58 @@
+.login-admin-backround{
+    .login-admin{
+        margin-top: 100px;
+        .login-admin-left{
+            h2{
+                text-align: center;
+            }
+            .login-admin-form{
+                form {
+                    box-shadow: 30px 27px 12px rgb(0 0 0 / 18%);
+                    margin-left: 165px;
+                    height: 270px;
+                    width: 437px;
+                    .form-input{
+                        margin: 20px 0px;
+                        input{
+                            width: 340px;
+                        }
+                    }
+                    .form-button{
+                        button {
+                            margin-left: 121px;
+                            margin-top: 15px;
+                        }
+                    }
+                }
+            }
+            .login-admin-landing{
+                text-align: center;
+                .landing{
+                    margin: 0px 15px;
+                    a{
+                        text-decoration: none;
+                        color: black;
+                        &:hover{
+                            color: #3f51b5;
+                        }
+                    }
+                }
+            }
+            .login-admin-social{
+                margin-left: 3px;
+                margin-top: 45px;
+                .social-button{
+                    text-align: center;
+                    margin: 15px 0px;
+                    button{
+                        width: 380px;
+                    }
+                    .MuiSvgIcon-root{
+                        margin: 0px 10px;
+                        font-size: 40px;
+                    }
+                }
+            }
+        }
+    }
+}

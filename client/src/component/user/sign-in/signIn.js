@@ -73,7 +73,7 @@ function SignIn(props) {
                                 <div className='sign-in-form'>
                                     <form
                                         onSubmit={formik.handleSubmit}
-                                        onSubmit={handleOnSubmit}
+                                        method='POST'
                                     >
                                         <div className='form-input' className={styleButton.root}>
                                             <TextField
@@ -108,7 +108,7 @@ function SignIn(props) {
                                                     ? <div className='error_msg'>{formik.errors.password}</div> : null
                                             }
                                         </div>
-                                        <div className='form-button'>
+                                        <div className='form-button' onClick={handleOnSubmit}>
                                             <Button variant="contained" color="secondary" type='submit'>
                                                 SIGN IN NOW
                                             </Button>
@@ -168,7 +168,3 @@ const mapDispatchToProps = dispatch => {
     };
 };
 export default connect(null, mapDispatchToProps)(SignIn)
-// const Schema = yup.object.shape({
-//     email: yup.string.email('Invalid email address').required('Email is required'),
-//     password: yup.string.required('Password is required')
-// })

@@ -168,7 +168,7 @@ export default function Navbar() {
                                 <span>
                                     <img src={logo} alt='logo' />
                                     <span className='navbar-title-name'>
-                                        NẤU ĂN NÈ
+                                        Food Boys
                                     </span>
                                 </span>
                             </Link>

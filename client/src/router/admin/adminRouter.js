@@ -1,4 +1,4 @@
-import Login from '../../component/admin/login';
+import Login from '../../component/admin/login/login';
 import DashboardAdmin from '../../component/admin/dasboard';
 const adminRouter = [
     {
