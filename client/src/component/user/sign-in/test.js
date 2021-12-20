@@ -163,7 +163,7 @@ function SignIn(props) {
 const mapDispatchToProps = dispatch => {
     return {
         signIn: data => {
-            dispatch(userSignIn.actSignIn(data));
+            dispatch(userSignIn.signIn(data));
         }
     };
 };

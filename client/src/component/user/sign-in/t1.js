@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { Component } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import { makeStyles } from '@material-ui/core/styles';
@@ -9,9 +9,6 @@ import GTranslateIcon from '@material-ui/icons/GTranslate';
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import { Link } from 'react-router-dom';
 import * as userSignIn from '../../../redux/actions/user/signIn-signUp/userSignIn';
-import { useFormik } from "formik";
-import Index from '../../screen/index';
-import * as Yup from 'yup';
 import { connect } from "react-redux";
 // IMAGES 
 import signIn from '../../../images/Sign-in-up/signIn.jpg';
@@ -35,36 +32,28 @@ const divStyle = makeStyles((theme) => ({
         },
     },
 }));
-// const Schema = yup.object.shape({
-//     email: yup.string.email('Invalid email address').required('Email is required'),
-//     password: yup.string.required('Password is required')
-// })
-function SignIn(props) {
-    const classes = useStyles();
-    const styleButton = divStyle();
-
-    const formik = useFormik({
-        initialValues: {
-            email: '',
-            password: ''
-        },
-        validationSchema: Yup.object({
-            email: Yup.string().email('invalid'),
-            password: Yup.string()
-        }),
-        onSubmit: (values,e) => {
-            console.log(values);
-            e.preventDefault();
+class SignIn extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            email: "",
+            password: ""
         }
-    });
-    const handleOnSubmit = (user, e) => {
-        props.signIn({
-            user
+    };
+    handleOnChange = (event) => {
+        let { name, value } = event.target;
+        this.setState({
+          [name]: value,
         });
     };
-    return (
-        <div className='Sign-In'>
-            <div className={classes.root}>
+    handleLogin = (event) => {
+        event.preventDefault();
+        this.props.signIn(this.state, this.props.history);
+    };
+    render() {
+        return (
+            <div className='Sign-In'>
+                {/* <div className={classes.root}> */}
                 <Grid container>
                     <Grid item xs={6}>
                         <Container>
@@ -72,41 +61,29 @@ function SignIn(props) {
                                 <h2>SIGN IN</h2>
                                 <div className='sign-in-form'>
                                     <form
-                                        onSubmit={formik.handleSubmit}
-                                        onSubmit={handleOnSubmit}
+                                       onSubmit={this.handleLogin}
                                     >
-                                        <div className='form-input' className={styleButton.root}>
+                                        <div className='form-input' >
                                             <TextField
                                                 id="outlined-basic"
                                                 label="Email"
                                                 variant="outlined"
                                                 type="email"
-                                                onChange={formik.handleChange}
-                                                onBlur={formik.handleBlur}
-                                                value={formik.values.email}
                                                 name='email'
-                                                type='email'
+                                                onChange={this.handleOnChange}
+                                                value={this.state.email}
                                             />
-                                            {
-                                                formik.touched.email && formik.errors.email
-                                                    ? <div className='error_msg'>{formik.errors.email}</div> : null
-                                            }
                                         </div>
-                                        <div className='form-input' className={styleButton.root}>
+                                        <div className='form-input' >
                                             <TextField
                                                 id="outlined-basic"
                                                 label="Password"
                                                 variant="outlined"
-                                                onChange={formik.handleChange}
-                                                onBlur={formik.handleBlur}
-                                                value={formik.values.password}
                                                 name='password'
                                                 type='password'
+                                                onChange={this.handleOnChange}
+                                                value={this.state.password}
                                             />
-                                            {
-                                                formik.touched.password && formik.errors.password
-                                                    ? <div className='error_msg'>{formik.errors.password}</div> : null
-                                            }
                                         </div>
                                         <div className='form-button'>
                                             <Button variant="contained" color="secondary" type='submit'>
@@ -157,9 +134,11 @@ function SignIn(props) {
                     </Grid>
                 </Grid>
             </div>
-        </div>
-    )
+            // </div>
+        )
+    }
 }
+
 const mapDispatchToProps = dispatch => {
     return {
         signIn: data => {
@@ -168,7 +147,3 @@ const mapDispatchToProps = dispatch => {
     };
 };
 export default connect(null, mapDispatchToProps)(SignIn)
-// const Schema = yup.object.shape({
-//     email: yup.string.email('Invalid email address').required('Email is required'),
-//     password: yup.string.required('Password is required')
-// })
