@@ -20,7 +20,7 @@ import PeopleAltIcon from '@material-ui/icons/PeopleAlt';
 import Home from "./pages/Home";
 import Tables from "./pages/Tables";
 import Billing from "./pages/Billing";
-import Rtl from "./pages/Rtl";
+import Post from "./pages/Post/post";
 import Profile from "./pages/Profile";
 //STYLE COMPONENT 
 import "antd/dist/antd.css";
@@ -147,36 +147,25 @@ import logo from '../../images/logo/cooking.png';
  						{/* Sidebar  */}
  						<Divider />
  						<List>
- 							<Link to="/admin/manage-user">
+ 							<Link to="/admin/manage-comment">
  								<ListItem>
  									<PeopleAltIcon />
- 									<ListItemText primary="Quản lí người dùng" />
+ 									<ListItemText primary="Manage Comment" />
  								</ListItem>
  							</Link>
-							 <Link to="/admin/Home">
+							 <Link to="/admin/manage-user">
  								<ListItem>
  									<PeopleAltIcon />
- 									<ListItemText primary="Quản lí người dùng" />
+ 									<ListItemText primary="Manage User" />
  								</ListItem>
  							</Link>
-							 <Link to="/admin/tables">
+							 <Link to="/admin/manage-post">
  								<ListItem>
  									<PeopleAltIcon />
- 									<ListItemText primary="Quản lí người dùng" />
+ 									<ListItemText primary="Manage Post" />
  								</ListItem>
  							</Link>
-							 <Link to="/admin/rtl">
- 								<ListItem>
- 									<PeopleAltIcon />
- 									<ListItemText primary="Quản lí người dùng" />
- 								</ListItem>
- 							</Link>
-							 <Link to="/admin/profile">
- 								<ListItem>
- 									<PeopleAltIcon />
- 									<ListItemText primary="Quản lí người dùng" />
- 								</ListItem>
- 							</Link>
+							 
  						</List>
  					</Drawer>
  					{/* end sidebar  */}
@@ -189,22 +178,22 @@ import logo from '../../images/logo/cooking.png';
  						<div className={classes.drawerHeader} />
 						 
  						<Switch>
- 							<Route exact path="/admin/manage-user">
+ 							<Route exact path="/admin/manage-comment">
  								<Billing/>
  							</Route>
 							 <Route exact path="/admin/Home">
  								<Home/>
  							</Route>
-							 <Route exact path="/admin/tables">
+							<Route exact path="/admin/manage-user">
  								<Tables/>
  							</Route>
-							 <Route exact path="/admin/rtl">
- 								<Rtl/>
- 							</Route>
-							 <Route exact path="/admin/profile">
+							{/* <Route exact path="/admin/manage-post">
  								<Profile/>
+ 							</Route> */}
+							<Route exact path="/admin/manage-post">
+ 								<Post/>
  							</Route>
-							 <Redirect from="*" to="/admin" />
+							 <Redirect from="*" to="/manage-comment" />
  						</Switch>
  					</main>
  					{/* end màn hình */}

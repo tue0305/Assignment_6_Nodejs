@@ -3,9 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@emotion/react": "^11.7.1",
-    "@emotion/styled": "^11.6.0",
     "@material-ui/core": "^4.12.3",
+    "@material-ui/data-grid": "^4.0.0-alpha.37",
     "@material-ui/icons": "^4.11.2",
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
@@ -16,6 +15,7 @@
     "apexcharts": "^3.32.0",
     "axios": "^0.24.0",
     "change-case": "^4.1.2",
+    "circular-json": "^0.5.9",
     "date-fns": "^2.27.0",
     "faker": "^5.5.3",
     "formik": "^2.2.9",

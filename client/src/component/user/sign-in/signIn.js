@@ -14,7 +14,7 @@ import Index from '../../screen/index';
 import * as Yup from 'yup';
 import { connect } from "react-redux";
 // IMAGES 
-import signIn from '../../../images/Sign-in-up/signIn.jpg';
+import salad from '../../../images/Sign-in-up/salad.jpg';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -57,13 +57,14 @@ function SignIn(props) {
             e.preventDefault();
         }
     });
-    const handleOnSubmit = (user, e) => {
+    const handleOnSubmit = (user) => {
         props.signIn({
             user
         });
     };
     return (
-        <div className='Sign-In'>
+       <div className='bg-signIn'>
+            <div className='Sign-In'>
             <div className={classes.root}>
                 <Grid container>
                     <Grid item xs={6}>
@@ -151,13 +152,14 @@ function SignIn(props) {
                     <Grid item xs={6}>
                         <div className='sign-in-right'>
                             <div className='sign-in-background'>
-                                <img src={signIn} alt='signIn' />
+                                <img src={salad} alt='salad' />
                             </div>
                         </div>
                     </Grid>
                 </Grid>
             </div>
         </div>
+       </div>
     )
 }
 const mapDispatchToProps = dispatch => {

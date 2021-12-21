@@ -1,8 +1,14 @@
 .dash-board{
+    .MuiAppBar-colorPrimary{
+        background-color: #F22726;
+    }
     .dash-board-logo{
         img {
             margin-bottom: -11px;
             margin-right: 10px;
+        }
+        .navbar-title-name{
+            color: white;
         }
     }
 }

@@ -6,7 +6,7 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { Link } from 'react-router-dom';
 // IMAGES 
-import signIn from '../../../images/Sign-in-up/signIn.jpg';
+import salad from '../../../images/Sign-in-up/salad.jpg';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -71,7 +71,7 @@ export default function SignUp() {
                     <Grid item xs={6}>
                         <div className='sign-up-right'>
                             <div className='sign-in-background'>
-                                <img src={signIn} alt='signIn' />
+                                <img src={salad} alt='salad' />
                             </div>
                         </div>
                     </Grid>
