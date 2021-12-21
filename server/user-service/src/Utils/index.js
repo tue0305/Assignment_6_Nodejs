@@ -1,87 +1,61 @@
-const bcrypt = require('bcryptjs');
-const jwt  = require('jsonwebtoken');
-const axios = require('axios');
+const argon2 = require("argon2");
+const jwt = require("jsonwebtoken");
 
-const { APP_SECRET } = require('../config');
-
-const jwt = require('jsonwebtoken')
+const { ACCESS_SECRET_TOKEN } = require("../config/config");
 
 // ================================== UTILITY FUNCTIONS =================================
 
-const verifyToken = (req, res, next) => {
-    const authHeader = req.header(`Authorization`)
-    const token = authHeader && authHeader.split(` `)[1]
+// ***** Password utilities *****
+const sendEmail = require("./sendEmail");
 
-    if (!token) {
-        return res.status(401).json({ success: false, message: `Token not found!` })
-        
-    }
-    try {
-        const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
-        
-        req.userId = decoded.userId
-        next()
-    } catch (error) {
-        console.log(error.message)
-        return res.status(403).json({ success: false, message: `Invalid Token!` })
-        
-    }
+const generatePassword = async (enteredPassword) => {
+  return await argon2.hash(enteredPassword);
+};
+
+const validatePassword = async (savedPassword, enteredPassword ) => {
+  return await argon2.verify(savedPassword, enteredPassword);
+};
+
+// ***** Access token utilities  *****
+const verifySignature = async (req) => {
+  const authHeader = req.header('Authorization')
+  const token = authHeader && authHeader.split(' ')[1]
+  
+
+  if (token) {
+    const decoded = jwt.verify(token,process.env.ACCESS_SECRET_TOKEN)
     
+    req.userId = decoded._id
+    return true;
+  }
 
-}
+  return false;
+};
 
-module.exports = { verifyToken, }
-
-//Utility functions
-module.exports.GenerateSalt = async() => {
-        return await bcrypt.genSalt()    
-},
-
-module.exports.GeneratePassword = async (password, salt) => {
-        return await bcrypt.hash(password, salt);
+const generateSignature = async (userId) => {
+  return await jwt.sign(userId, ACCESS_SECRET_TOKEN, { expiresIn: "1d" });
 };
 
 
-module.exports.ValidatePassword = async (enteredPassword, savedPassword, salt) => {
-        return await this.GeneratePassword(enteredPassword, salt) === savedPassword;
+
+// module.exports.PublishCustomerEvent = async (payload) => {
+//   axios.post("http://localhost:8000/customer/app-events", {
+//     payload,
+//   });
+// };
+
+// module.exports.PublishShoppingEvent = async (payload) => {
+//   axios.post("http://localhost:8000/shopping/app-events", {
+//     payload,
+//   });
+// };
+
+// **************************************
+module.exports = {
+  generatePassword,
+  validatePassword,
+
+  generateSignature,
+  verifySignature,
+  sendEmail
 };
-
-module.exports.GenerateSignature = async (payload) => {
-        return await jwt.sign(payload, APP_SECRET, { expiresIn: '1d'} )
-}, 
-
-module.exports.ValidateSignature  = async(req) => {
-
-        const signature = req.get('Authorization');
-
-        console.log(signature);
-        
-        if(signature){
-            const payload = await jwt.verify(signature.split(' ')[1], APP_SECRET);
-            req.user = payload;
-            return true;
-        }
-
-        return false
-};
-
-module.exports.FormateData = (data) => {
-        if(data){
-            return { data }
-        }else{
-            throw new Error('Data Not found!')
-        }
-    }
-
-module.exports.PublishCustomerEvent = async(payload) => {
-        
-        axios.post('http://localhost:8000/customer/app-events', {
-                payload
-        })
-}
-
-module.exports.PublishShoppingEvent = async(payload) => {
-        axios.post('http://localhost:8000/shopping/app-events', {
-                payload
-        })
-}

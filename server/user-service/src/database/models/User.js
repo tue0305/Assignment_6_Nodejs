@@ -9,7 +9,13 @@ const UserSchema = new Schema({
   email: {
     type: String,
     required: true,
+    unique: true,
   },
+  password: {
+    type: String,
+    required: true,
+  },
+
 
   avatar: {
     type: String,
@@ -18,19 +24,25 @@ const UserSchema = new Schema({
 
   role: {
     type: String,
-    required: true,
+    enum: ROLE,
     default: ROLE.NORMAL,
   },
 
-  password: {
-    type: "string",
-    required: true,
-  },
 
   createdAt: {
     type: Date,
     default: Date.now,
   },
+  // post_list_create: [
+  //   {
+  //     post: {
+  //       _id: { type: String, require: true },
+  //       content: { type: String, require: tru~e },
+  //       image: { type: String },
+  //       category: { type: String },
+  //     },
+  //   },
+  // ],
 });
 
 module.exports = mongoose.model("users", UserSchema);

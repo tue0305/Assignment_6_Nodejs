@@ -7,6 +7,8 @@ const STATUS_CODES = {
   INTERNAL_ERROR: 500,
 };
 
+
+
 class AppError extends Error {
   constructor(
     name,
@@ -22,6 +24,7 @@ class AppError extends Error {
 
     this.name = name;
     this.statusCode = statusCode;
+    this.description = description;
     this.isOperational = isOperational;
     this.errorStack = errorStack;
     this.logError = loggingErrorResponse;
@@ -70,9 +73,10 @@ class ValidationError extends AppError {
 }
 
 module.exports = {
+  STATUS_CODES,
   AppError,
   APIError,
   BadRequestError,
-  ValidationError,
-  STATUS_CODES,
+  ValidationError
+ 
 };
