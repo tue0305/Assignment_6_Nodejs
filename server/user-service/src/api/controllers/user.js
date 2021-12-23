@@ -37,6 +37,39 @@ module.exports.getUserInfo = async (req, res, next) => {
   }
 };
 
+module.exports.deleteUser = async (req, res, next) =>{
+  try{
+    const { userId } = req.params;
+    const deleteUser = await service.deleteUser(userId);
+    return res.json({success: true, deleteUser});
+  }
+  catch(err){
+    next(err);
+  }
+};
+
+module.exports.updateUser = async (req, res, next) =>{
+  try{
+    const {userId} = req.params;
+    const {password, email} = req.body;
+    const updaUser = await service.updateUser(password, email, userId);
+    return res.json(updaUser);
+  }
+  catch(err){
+    next(error);
+  }
+};
+
+module.exports.getUser = async (req, res, next) =>{
+  try{
+    const getAll = await service.getAllUser();
+    res.json(getAll);
+  }
+  catch(err){
+    next(err)
+  }
+};
+
 module.exports.forgotPasswordRequest = async (req, res, next) => {
   
   try {

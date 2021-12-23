@@ -114,6 +114,56 @@ export default function Navbar() {
         setAnchorEl(null);
     };
 
+    // const isLogin = () => {
+	// 	if (localStorage.getItem("user")) {
+	// 		let user = JSON.parse(localStorage.getItem("user"));
+	// 		//Logged
+	// 		return (
+	// 			<>
+	// 				<div>
+	// 					<Button aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
+	// 						<Avatar>
+	// 							<img src={user.avatar} className="Navbar-Img"/>
+	// 						</Avatar> 
+	// 						<span className="Navbar-span">{user.name}</span>
+	// 					</Button>
+	// 					<div className="Navbar-Menu">
+	// 						<Menu
+	// 							id="simple-menu"
+	// 							anchorEl={anchorEl}
+	// 							keepMounted
+	// 							open={Boolean(anchorEl)}
+	// 							onClose={handleClose}
+	// 						>
+    //                             <>
+    //                             <NavLink exact to={{pathname:'/information-user'}}  style={divLine}>
+    //                                     <MenuItem onClick={handleClose}>Thông tin cá nhân</MenuItem>
+    //                                 </NavLink>
+    //                             </>
+	// 							<Link to="/login" onClick={handleClose}><AccountCircleIcon className="Navbar-Icon"/></Link>  
+	// 							<MenuItem onClick={handleClose} onClick={logout} href="# ">Đăng xuất</MenuItem>
+	// 						</Menu>
+	// 					</div>
+	// 				</div>
+	// 			</>
+	// 		);
+	// 	}
+		//check Not logged in
+	// 	return (
+	// 		<NavLink
+	// 			className="user d-flex align-items-center"
+	// 			activeClassName="active"
+	// 			exact
+	// 			to={{
+	// 				pathname: `/login`,
+	// 			}}
+	// 		>
+	// 			{/* <AccountCircleIcon />s */}
+	// 			<Link to="/login" onClick={handleClose}><AccountCircleIcon className="Navbar-Icon"/></Link>  
+	// 		</NavLink>
+	// 	);
+	// };
+
     return (
         <div id='Navbar'>
             <div className={classes.root}>

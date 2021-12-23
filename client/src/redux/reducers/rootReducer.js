@@ -1,5 +1,5 @@
 import { combineReducers } from "redux";
-import SignUser from './signIn-Up-user/signIn';
+import SignUser from './user/signIn-Up-user/signIn';
 
 const rootReducers = combineReducers({
     SignUser

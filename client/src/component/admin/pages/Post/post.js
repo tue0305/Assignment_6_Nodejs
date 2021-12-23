@@ -38,7 +38,6 @@ const rows = [
 
 
 function Post() {
-  const onChange = (e) => console.log(`radio checked:${e.target.value}`);
   const classes = useStyles();
   return (
     <>

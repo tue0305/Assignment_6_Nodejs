@@ -1,7 +1,5 @@
 const { verifySignature } = require('../../utils');
 
-
-
 const verifyToken = async (req, res, next) => {
     const isAuthorized = await verifySignature(req);
 
@@ -12,4 +10,5 @@ const verifyToken = async (req, res, next) => {
 
 }
 
-module.exports = verifyToken
+
+module.exports =  verifyToken

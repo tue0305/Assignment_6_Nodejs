@@ -1,4 +1,4 @@
-import * as ActionType from '../../constants/constans';
+import * as ActionType from '../../../constants/constans';
 
 let initialState = {};
 

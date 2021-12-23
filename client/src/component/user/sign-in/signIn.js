@@ -10,7 +10,6 @@ import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import { Link } from 'react-router-dom';
 import * as userSignIn from '../../../redux/actions/user/signIn-signUp/userSignIn';
 import { useFormik } from "formik";
-import Index from '../../screen/index';
 import * as Yup from 'yup';
 import { connect } from "react-redux";
 // IMAGES 
@@ -86,7 +85,6 @@ function SignIn(props) {
                                                 onBlur={formik.handleBlur}
                                                 value={formik.values.email}
                                                 name='email'
-                                                type='email'
                                             />
                                             {
                                                 formik.touched.email && formik.errors.email
@@ -109,8 +107,8 @@ function SignIn(props) {
                                                     ? <div className='error_msg'>{formik.errors.password}</div> : null
                                             }
                                         </div>
-                                        <div className='form-button' onClick={handleOnSubmit}>
-                                            <Button variant="contained" color="secondary" type='submit'>
+                                        <div className='form-button' >
+                                            <Button variant="contained" color="secondary" type='submit' onClick={handleOnSubmit}>
                                                 SIGN IN NOW
                                             </Button>
                                         </div>

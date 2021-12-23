@@ -14,11 +14,9 @@ import {
   Col,
   Card,
   Radio,
-  Table,
   Upload,
   message,
   Progress,
-  Button,
   Avatar,
   Typography,
 } from "antd";
@@ -26,6 +24,18 @@ import {
 import { ToTopOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 
+import { makeStyles } from '@material-ui/core/styles';
+
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+import Button from '@material-ui/core/Button';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 // Images
 import ava1 from "../assets/images/logo-shopify.svg";
 import ava2 from "../assets/images/logo-atlassian.svg";
@@ -342,6 +352,23 @@ const data = [
     ),
   },
 ];
+const useStyles = makeStyles({
+  table: {
+    minWidth: 650,
+  },
+});
+
+function createData(name, calories, fat, carbs, protein) {
+  return { name, calories, fat, carbs, protein };
+}
+
+const rows = [
+  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
+  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
+  createData('Eclair', 262, 16.0, 24, 6.0),
+  createData('Cupcake', 305, 3.7, 67, 4.3),
+  createData('Gingerbread', 356, 16.0, 49, 3.9),
+];
 // project table start
 const project = [
   {
@@ -588,7 +615,7 @@ const dataproject = [
 
 function Tables() {
   const onChange = (e) => console.log(`radio checked:${e.target.value}`);
-
+  const classes = useStyles();
   return (
     <>
       <div className="tabled">
@@ -598,22 +625,19 @@ function Tables() {
               bordered={false}
               className="criclebox tablespace mb-24"
               title="Authors Table"
-              extra={
-                <>
-                  <Radio.Group onChange={onChange} defaultValue="a">
-                    <Radio.Button value="a">All</Radio.Button>
-                    <Radio.Button value="b">ONLINE</Radio.Button>
-                  </Radio.Group>
-                </>
-              }
             >
               <div className="table-responsive">
-                <Table
-                  columns={columns}
-                  dataSource={data}
-                  pagination={false}
-                  className="ant-border-space"
-                />
+              <TableContainer component={Paper}>
+                  <Table className={classes.table} aria-label="simple table">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Images</TableCell>
+                        <TableCell align="right">Title</TableCell>
+                      </TableRow>
+                    </TableHead>
+                   {/* ----- */}
+                  </Table>
+                </TableContainer>
               </div>
             </Card>
 

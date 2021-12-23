@@ -4,6 +4,8 @@ const {
   generatePassword,
   generateSignature,
   sendEmail,
+  checkEmail,
+  checkPassword
 } = require("../utils");
 const {
   STATUS_CODES,
@@ -12,6 +14,7 @@ const {
 } = require("../utils/app-errors");
 
 class UserService {
+
   async checkSignIn(userInputs) {
     const { email, password } = userInputs;
 
@@ -44,6 +47,7 @@ class UserService {
         status: 200,
         success: true,
         message: `Login successfully!`,
+        role: user.role,
         userId: user._id,
         accessToken,
       };
@@ -65,6 +69,18 @@ class UserService {
         "Missing email or password!",
         STATUS_CODES.BAD_REQUEST
       );
+    }
+
+    // check email
+    const emailValid = await checkEmail(email);
+    if (!emailValid) {
+      return new APIError("The email must email address!", STATUS_CODES.BAD_REQUEST);
+    };
+
+    //check password
+    const passwordValid = await checkPassword(password);
+    if(!passwordValid){
+      return new APIError("The password must contain at least 8  characters including at least 1 uppercase, 1 lowercase, one digit.", STATUS_CODES.BAD_REQUEST);
     }
 
     try {
@@ -118,6 +134,43 @@ class UserService {
     }
   }
 
+  async deleteUser(userId){
+    try{
+      const deleteUser = await UserModel.findOneAndDelete({userId});
+      if(deleteUser)
+      return{
+        status: 200,
+        success: true,
+        message: `Delete account ${userId} success!`,
+        userId: userId
+      }
+      return deleteUser
+    }
+    catch(err){
+      return new APIError(
+        "Data Not Found!",
+        STATUS_CODES.BAD_REQUEST,
+        err.message
+      )
+    }
+  }
+
+  async updateUser(password, email, userId){
+    try{
+      const updaUser = await UserModel.findByIdAndUpdate({password, email, userId})
+      if(updaUser){
+        return user;
+      }
+    }
+    catch(err){
+      return new APIError(
+        "Data Not found!",
+        STATUS_CODES.UN_AUTHORIZED,
+        err.message
+      );
+    }
+  }
+
   async forgotPasswordRequest(email) {
     // **** Simple validation ****
     if (!email) {
@@ -158,6 +211,7 @@ class UserService {
       );
     }
   }
+
   async resetPassword(password, confirmPassword, userId, resetPasswordToken) {
     // Simple validation
     if (password !== confirmPassword) {
@@ -198,6 +252,22 @@ class UserService {
         STATUS_CODES.UN_AUTHORIZED,
         error.message
       );
+    }
+  }
+
+  async getAllUser(){
+    try{
+      const getAll = await UserModel.find({});
+      if(getAll){
+        return getAll;
+      }  
+    }
+    catch(err){
+      return new APIError(
+        "Data Not Found!",
+        STATUS_CODES.BAD_REQUEST,
+        err.message
+      )
     }
   }
 }
