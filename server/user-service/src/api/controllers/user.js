@@ -28,10 +28,11 @@ module.exports.signIn = async (req, res, next) => {
 
 module.exports.getUserInfo = async (req, res, next) => {
   try {
-    const { userId } = req.userId;
+    const userId =req.userId
+    
     const user = await service.getProfile(userId);
-
-    return res.json({ success: true, user });
+    
+    return res.json(user);
   } catch (error) {
     next(error);
   }

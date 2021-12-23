@@ -17,16 +17,16 @@ const validatePassword = async (savedPassword, enteredPassword ) => {
 };
 
 // ***** Access token utilities  *****
-const verifySignature = async (req) => {
+const verifySignature = async (req, next) => {
   const authHeader = req.header('Authorization')
   const token = authHeader && authHeader.split(' ')[1]
   
 
   if (token) {
-    const decoded = jwt.verify(token,process.env.ACCESS_SECRET_TOKEN)
+    const decoded = await jwt.verify(token, ACCESS_SECRET_TOKEN)
     
     req.userId = decoded._id
-    return true;
+    return true
   }
 
   return false;

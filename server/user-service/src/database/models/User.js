@@ -25,7 +25,8 @@ const UserSchema = new Schema({
   role: {
     type: String,
     enum: ROLE,
-    default: ROLE.NORMAL,
+    require: true,
+    default: ROLE[1],
   },
 
 
@@ -33,16 +34,13 @@ const UserSchema = new Schema({
     type: Date,
     default: Date.now,
   },
-  // post_list_create: [
-  //   {
-  //     post: {
-  //       _id: { type: String, require: true },
-  //       content: { type: String, require: tru~e },
-  //       image: { type: String },
-  //       category: { type: String },
-  //     },
-  //   },
-  // ],
+  created_posts: [
+    {
+      post: {
+        _id: { type: String, require: true }
+      }
+    },
+  ],
 });
 
 module.exports = mongoose.model("users", UserSchema);
