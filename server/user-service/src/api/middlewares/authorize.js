@@ -1,11 +1,19 @@
+const { UserModel } = require("../../database/models");
 
-const authorize = (arrType) => (req, res, next) => {
-    const { user } = req;
-    if (arrType.findIndex((element) => element === user.role.ROLE) > -1) {
-      next();
-    } else {
-      res.status(403).send("You not allow!");
-    }
+const findUser =  async (userId) =>{
+  return await UserModel.findById(userId)
+}
+
+const authorize =  (permission) => {
+     return async (req, res, next) =>{
+      const userId = req.userId;
+      const user = await findUser(userId);
+      const {role} = user
+      if(!permission.includes(role)){
+        return res.status(401).json({success: false, message: 'You dont have permission'})
+      }
+       next();
+     }
 };
 
 module.exports = {authorize}

@@ -25,10 +25,10 @@ const verifySignature = async (req) => {
   
 
   if (token) {
-    const decoded = jwt.verify(token,process.env.ACCESS_SECRET_TOKEN)
+    const decoded = await jwt.verify(token, ACCESS_SECRET_TOKEN)
     
     req.userId = decoded._id
-    return true;
+    return true
   }
 
   return false;

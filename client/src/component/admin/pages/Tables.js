@@ -1,621 +1,191 @@
-/*!
-=========================================================
-* Muse Ant Design Dashboard - v1.0.0
-=========================================================
-* Product Page: https://www.creative-tim.com/product/muse-ant-design-dashboard
-* Copyright 2021 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/muse-ant-design-dashboard/blob/main/LICENSE.md)
-* Coded by Creative Tim
-=========================================================
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
+
 import {
   Row,
   Col,
   Card,
   Radio,
-  Upload,
-  message,
-  Progress,
-  Avatar,
-  Typography,
 } from "antd";
 
-import { ToTopOutlined } from "@ant-design/icons";
-import { Link } from "react-router-dom";
-
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from 'react-redux';
+import TextField from "@material-ui/core/TextField";
 import { makeStyles } from '@material-ui/core/styles';
-
 import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
+import TableBody from '@material-ui/core/TableBody';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+import { useHistory, useParams } from 'react-router-dom';
 // Images
-import ava1 from "../assets/images/logo-shopify.svg";
-import ava2 from "../assets/images/logo-atlassian.svg";
-import ava3 from "../assets/images/logo-slack.svg";
-import ava5 from "../assets/images/logo-jira.svg";
-import ava6 from "../assets/images/logo-invision.svg";
-import face from "../assets/images/face-1.jpg";
-import face2 from "../assets/images/face-2.jpg";
-import face3 from "../assets/images/face-3.jpg";
-import face4 from "../assets/images/face-4.jpg";
-import face5 from "../assets/images/face-5.jpeg";
-import face6 from "../assets/images/face-6.jpeg";
-import pencil from "../assets/images/pencil.svg";
+import PropTypes from 'prop-types';
+import Modal from '@material-ui/core/Modal';
+import Backdrop from '@material-ui/core/Backdrop';
+import { useSpring, animated } from '@react-spring/web';
+import { addUsers, deleteUsers, getDetailUsers , loadUsers, updateUsers } from "../../../redux/actions/admin/handleUser";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import ContactsIcon from '@material-ui/icons/Contacts';
+import * as action from '../../../redux/actions/admin/handleUser';
 
-const { Title } = Typography;
-
-const formProps = {
-  name: "file",
-  action: "https://www.mocky.io/v2/5cc8019d300000980a055e76",
-  headers: {
-    authorization: "authorization-text",
-  },
-  onChange(info) {
-    if (info.file.status !== "uploading") {
-      console.log(info.file, info.fileList);
-    }
-    if (info.file.status === "done") {
-      message.success(`${info.file.name} file uploaded successfully`);
-    } else if (info.file.status === "error") {
-      message.error(`${info.file.name} file upload failed.`);
-    }
-  },
-};
-// table code start
-const columns = [
-  {
-    title: "AUTHOR",
-    dataIndex: "name",
-    key: "name",
-    width: "32%",
-  },
-  {
-    title: "FUNCTION",
-    dataIndex: "function",
-    key: "function",
-  },
-
-  {
-    title: "STATUS",
-    key: "status",
-    dataIndex: "status",
-  },
-  {
-    title: "EMPLOYED",
-    key: "employed",
-    dataIndex: "employed",
-  },
-];
-
-const data = [
-  {
-    key: "1",
-    name: (
-      <>
-        <Avatar.Group>
-          <Avatar
-            className="shape-avatar"
-            shape="square"
-            size={40}
-            src={face2}
-          ></Avatar>
-          <div className="avatar-info">
-            <Title level={5}>Michael John</Title>
-            <p>michael@mail.com</p>
-          </div>
-        </Avatar.Group>{" "}
-      </>
-    ),
-    function: (
-      <>
-        <div className="author-info">
-          <Title level={5}>Manager</Title>
-          <p>Organization</p>
-        </div>
-      </>
-    ),
-
-    status: (
-      <>
-        <Button type="primary" className="tag-primary">
-          ONLINE
-        </Button>
-      </>
-    ),
-    employed: (
-      <>
-        <div className="ant-employed">
-          <span>23/04/18</span>
-          <a href="#pablo">Edit</a>
-        </div>
-      </>
-    ),
-  },
-
-  {
-    key: "2",
-    name: (
-      <>
-        <Avatar.Group>
-          <Avatar
-            className="shape-avatar"
-            shape="square"
-            size={40}
-            src={face3}
-          ></Avatar>
-          <div className="avatar-info">
-            <Title level={5}>Alexa Liras</Title>
-            <p>alexa@mail.com</p>
-          </div>
-        </Avatar.Group>{" "}
-      </>
-    ),
-    function: (
-      <>
-        <div className="author-info">
-          <Title level={5}>Programator</Title>
-          <p>Developer</p>
-        </div>
-      </>
-    ),
-
-    status: (
-      <>
-        <Button className="tag-badge">ONLINE</Button>
-      </>
-    ),
-    employed: (
-      <>
-        <div className="ant-employed">
-          <span>23/12/20</span>
-          <a href="#pablo">Edit</a>
-        </div>
-      </>
-    ),
-  },
-
-  {
-    key: "3",
-    name: (
-      <>
-        <Avatar.Group>
-          <Avatar
-            className="shape-avatar"
-            shape="square"
-            size={40}
-            src={face}
-          ></Avatar>
-          <div className="avatar-info">
-            <Title level={5}>Laure Perrier</Title>
-            <p>laure@mail.com</p>
-          </div>
-        </Avatar.Group>{" "}
-      </>
-    ),
-    function: (
-      <>
-        <div className="author-info">
-          <Title level={5}>Executive</Title>
-          <p>Projects</p>
-        </div>
-      </>
-    ),
-
-    status: (
-      <>
-        <Button type="primary" className="tag-primary">
-          ONLINE
-        </Button>
-      </>
-    ),
-    employed: (
-      <>
-        <div className="ant-employed">
-          <span>03/04/21</span>
-          <a href="#pablo">Edit</a>
-        </div>
-      </>
-    ),
-  },
-  {
-    key: "4",
-    name: (
-      <>
-        <Avatar.Group>
-          <Avatar
-            className="shape-avatar"
-            shape="square"
-            size={40}
-            src={face4}
-          ></Avatar>
-          <div className="avatar-info">
-            <Title level={5}>Miriam Eric</Title>
-            <p>miriam@mail.com</p>
-          </div>
-        </Avatar.Group>{" "}
-      </>
-    ),
-    function: (
-      <>
-        <div className="author-info">
-          <Title level={5}>Marketing</Title>
-          <p>Organization</p>
-        </div>
-      </>
-    ),
-
-    status: (
-      <>
-        <Button type="primary" className="tag-primary">
-          ONLINE
-        </Button>
-      </>
-    ),
-    employed: (
-      <>
-        <div className="ant-employed">
-          <span>03/04/21</span>
-          <a href="#pablo">Edit</a>
-        </div>
-      </>
-    ),
-  },
-  {
-    key: "5",
-    name: (
-      <>
-        <Avatar.Group>
-          <Avatar
-            className="shape-avatar"
-            shape="square"
-            size={40}
-            src={face5}
-          ></Avatar>
-          <div className="avatar-info">
-            <Title level={5}>Richard Gran</Title>
-            <p>richard@mail.com</p>
-          </div>
-        </Avatar.Group>{" "}
-      </>
-    ),
-    function: (
-      <>
-        <div className="author-info">
-          <Title level={5}>Manager</Title>
-          <p>Organization</p>
-        </div>
-      </>
-    ),
-
-    status: (
-      <>
-        <Button className="tag-badge">ONLINE</Button>
-      </>
-    ),
-    employed: (
-      <>
-        <div className="ant-employed">
-          <span>23/03/20</span>
-          <a href="#pablo">Edit</a>
-        </div>
-      </>
-    ),
-  },
-
-  {
-    key: "6",
-    name: (
-      <>
-        <Avatar.Group>
-          <Avatar
-            className="shape-avatar"
-            shape="square"
-            size={40}
-            src={face6}
-          ></Avatar>
-          <div className="avatar-info">
-            <Title level={5}>John Levi</Title>
-            <p>john@mail.com</p>
-          </div>
-        </Avatar.Group>{" "}
-      </>
-    ),
-    function: (
-      <>
-        <div className="author-info">
-          <Title level={5}>Tester</Title>
-          <p>Developer</p>
-        </div>
-      </>
-    ),
-
-    status: (
-      <>
-        <Button className="tag-badge">ONLINE</Button>
-      </>
-    ),
-    employed: (
-      <>
-        <div className="ant-employed">
-          <span>14/04/17</span>
-          <a href="#pablo">Edit</a>
-        </div>
-      </>
-    ),
-  },
-];
 const useStyles = makeStyles({
   table: {
     minWidth: 650,
   },
 });
 
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
+const modelSample = makeStyles((theme) => ({
+  modal: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  paper: {
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+  },
+}));
+
+const Fade = React.forwardRef(function Fade(props, ref) {
+  const { in: open, children, onEnter, onExited, ...other } = props;
+  const style = useSpring({
+    from: { opacity: 0 },
+    to: { opacity: open ? 1 : 0 },
+    onStart: () => {
+      if (open && onEnter) {
+        onEnter();
+      }
+    },
+    onRest: () => {
+      if (!open && onExited) {
+        onExited();
+      }
+    },
+  });
+
+  return (
+    <animated.div ref={ref} style={style} {...other}>
+      {children}
+    </animated.div>
+  );
+});
+
+Fade.propTypes = {
+  children: PropTypes.element,
+  in: PropTypes.bool.isRequired,
+  onEnter: PropTypes.func,
+  onExited: PropTypes.func,
+};
+
+const divInput = {
+  margin: '30px 0px'
 }
 
-const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-];
-// project table start
-const project = [
-  {
-    title: "COMPANIES",
-    dataIndex: "name",
-    width: "32%",
-  },
-  {
-    title: "BUDGET",
-    dataIndex: "age",
-  },
-  {
-    title: "STATUS",
-    dataIndex: "address",
-  },
-  {
-    title: "COMPLETION",
-    dataIndex: "completion",
-  },
-];
-const dataproject = [
-  {
-    key: "1",
+function Tables(props) {
 
-    name: (
-      <>
-        <Avatar.Group>
-          <Avatar className="shape-avatar" src={ava1} size={25} alt="" />
-          <div className="avatar-info">
-            <Title level={5}>Spotify Version</Title>
-          </div>
-        </Avatar.Group>
-      </>
-    ),
-    age: (
-      <>
-        <div className="semibold">$14,000</div>
-      </>
-    ),
-    address: (
-      <>
-        <div className="text-sm">working</div>
-      </>
-    ),
-    completion: (
-      <>
-        <div className="ant-progress-project">
-          <Progress percent={30} size="small" />
-          <span>
-            <Link to="/">
-              <img src={pencil} alt="" />
-            </Link>
-          </span>
-        </div>
-      </>
-    ),
-  },
-
-  {
-    key: "2",
-    name: (
-      <>
-        <Avatar.Group>
-          <Avatar className="shape-avatar" src={ava2} size={25} alt="" />
-          <div className="avatar-info">
-            <Title level={5}>Progress Track</Title>
-          </div>
-        </Avatar.Group>
-      </>
-    ),
-    age: (
-      <>
-        <div className="semibold">$3,000</div>
-      </>
-    ),
-    address: (
-      <>
-        <div className="text-sm">working</div>
-      </>
-    ),
-    completion: (
-      <>
-        <div className="ant-progress-project">
-          <Progress percent={10} size="small" />
-          <span>
-            <Link to="/">
-              <img src={pencil} alt="" />
-            </Link>
-          </span>
-        </div>
-      </>
-    ),
-  },
-
-  {
-    key: "3",
-    name: (
-      <>
-        <Avatar.Group>
-          <Avatar className="shape-avatar" src={ava3} size={25} alt="" />
-          <div className="avatar-info">
-            <Title level={5}> Jira Platform Errors</Title>
-          </div>
-        </Avatar.Group>
-      </>
-    ),
-    age: (
-      <>
-        <div className="semibold">Not Set</div>
-      </>
-    ),
-    address: (
-      <>
-        <div className="text-sm">done</div>
-      </>
-    ),
-    completion: (
-      <>
-        <div className="ant-progress-project">
-          <Progress percent={100} size="small" format={() => "done"} />
-          <span>
-            <Link to="/">
-              <img src={pencil} alt="" />
-            </Link>
-          </span>
-        </div>
-      </>
-    ),
-  },
-
-  {
-    key: "4",
-    name: (
-      <>
-        <Avatar.Group>
-          <Avatar className="shape-avatar" src={ava5} size={25} alt="" />
-          <div className="avatar-info">
-            <Title level={5}> Launch new Mobile App</Title>
-          </div>
-        </Avatar.Group>
-      </>
-    ),
-    age: (
-      <>
-        <div className="semibold">$20,600</div>
-      </>
-    ),
-    address: (
-      <>
-        <div className="text-sm">canceled</div>
-      </>
-    ),
-    completion: (
-      <>
-        <div className="ant-progress-project">
-          <Progress
-            percent={50}
-            size="small"
-            status="exception"
-            format={() => "50%"}
-          />
-          <span>
-            <Link to="/">
-              <img src={pencil} alt="" />
-            </Link>
-          </span>
-        </div>
-      </>
-    ),
-  },
-
-  {
-    key: "5",
-    name: (
-      <>
-        <Avatar.Group>
-          <Avatar className="shape-avatar" src={ava5} size={25} alt="" />
-          <div className="avatar-info">
-            <Title level={5}>Web Dev</Title>
-          </div>
-        </Avatar.Group>
-      </>
-    ),
-    age: (
-      <>
-        <div className="semibold">$4,000</div>
-      </>
-    ),
-    address: (
-      <>
-        <div className="text-sm">working</div>
-      </>
-    ),
-    completion: (
-      <>
-        <div className="ant-progress-project">
-          <Progress percent={80} size="small" />
-          <span>
-            <Link to="/">
-              <img src={pencil} alt="" />
-            </Link>
-          </span>
-        </div>
-      </>
-    ),
-  },
-
-  {
-    key: "6",
-    name: (
-      <>
-        <Avatar.Group>
-          <Avatar className="shape-avatar" src={ava6} size={25} alt="" />
-          <div className="avatar-info">
-            <Title level={5}>Redesign Online Store</Title>
-          </div>
-        </Avatar.Group>
-      </>
-    ),
-    age: (
-      <>
-        <div className="semibold">$2,000</div>
-      </>
-    ),
-    address: (
-      <>
-        <div className="text-sm">canceled</div>
-      </>
-    ),
-    completion: (
-      <>
-        <div className="ant-progress-project">
-          <Progress percent={0} size="small" />
-          <span>
-            <Link to="/">
-              <img src={pencil} alt="" />
-            </Link>
-          </span>
-        </div>
-      </>
-    ),
-  },
-];
-
-function Tables() {
-  const onChange = (e) => console.log(`radio checked:${e.target.value}`);
+  const sample = modelSample();
   const classes = useStyles();
+
+  let dispatch = useDispatch();
+  const { userId } = useParams();
+  const { users,user } = useSelector(state => state.data);
+  console.log(user,'detail')
+  /*----- */
+  const [open, setOpen] = React.useState(false);
+  /*----- */
+  const [currUser, setCurrUser] = useState(user);
+  useEffect(()=>{
+    setCurrUser(user);
+  }, [user]);
+  const handleOpen = (userId) => {
+    setOpen(true);
+    // useEffect(() =>{
+      dispatch(getDetailUsers(userId))
+      console.log(userId,'userId');
+    // })
+  };
+
+  const handleOpenHigh =() =>{
+    setOpen(true);
+    dispatch({type:'test'});
+  }
+  const handleClose = () => {
+    setOpen(false);
+  };
+  /*----- */
+  useEffect(() => {
+    dispatch(loadUsers());
+  }, []);
+
+  /*----- */
+
+  /*----- */
+
+  // useEffect(() => {
+  //   if(user){
+  //     setState({...user})
+  //   }
+  // }, [user]);
+  /*----- */
+  const handleDelete = (userId) => {
+    if (window.confirm('d')) {
+      dispatch(deleteUsers(userId))
+    }
+  };
+  /*----- */
+  const handleUpdate = (userId) => {
+      dispatch(getDetailUsers(userId))
+  };
+  /*----- */
+  const [state, setState] = useState({
+    email: '',
+    password: '',
+    role: 'NORMAL'
+  });
+  const { email, password, role } = state;
+  /*----- */
+  const handleInputChange = (e) => {
+    let { name, value } = e.target;
+
+    setState({ ...state, [name]: value })
+  };
+  /*----- */
+  const [error, setError] = useState('');
+  /*----- */
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!email || !password) {
+      setError('Please input field');
+    }
+    else {
+      dispatch(addUsers(state));
+      setError('');
+    }
+  };
+  /*----- */
+  const handleSubmitUpdate = (e) => {
+    e.preventDefault();
+    if (!email || !password) {
+      setError('Please input field');
+    }
+    else {
+      dispatch(updateUsers(state));
+      setError('');
+    }
+  };
+  /*----- */
+  const [value, setValue] = React.useState('NORMAL');
+  const handleChange = (event) => {
+    setValue(event.target.value);
+  };
+  /*----- */
+  // const {handleOpen} = props
   return (
     <>
       <div className="tabled">
@@ -627,52 +197,127 @@ function Tables() {
               title="Authors Table"
             >
               <div className="table-responsive">
-              <TableContainer component={Paper}>
+                <div className="table-add-user">
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={handleOpenHigh}
+                  >
+                    <ContactsIcon />
+                  </Button>
+                  <Modal
+                    aria-labelledby="spring-modal-title"
+                    aria-describedby="spring-modal-description"
+                    className={sample.modal}
+                    open={open}
+                    onClose={handleClose}
+                    closeAfterTransition
+                    BackdropComponent={Backdrop}
+                    BackdropProps={{
+                      timeout: 500,
+                    }}
+                  >
+                    <Fade in={open}>
+                      <form onSubmit={handleSubmit}>
+                        <div className={sample.paper}>
+                          <div className={divInput}>
+                            <TextField
+                              id="outlined-basic"
+                              label="Email"
+                              variant="outlined"
+                              type="email"
+                              name='email'
+                              value={user ? user.email : ''}
+                              onChange={handleInputChange}
+                            />
+                            {error && <h3 style={{ color: 'red' }}>{error}</h3>}
+                          </div>
+                          <div className={divInput}>
+                            <TextField
+                              id="outlined-basic"
+                              label="Password"
+                              variant="outlined"
+                              name='password'
+                              type="password"
+                              value={password}
+                              onChange={handleInputChange}
+                            />
+                          </div>
+                          <div className={divInput}>
+                            <RadioGroup className="Register-form" value={value} onChange={handleChange}>
+                              <FormControlLabel
+                                control={<Radio />}
+                                label="ADMIN"
+                                value="ADMIN"
+                                name="type"
+                              />
+                              <FormControlLabel
+                                control={<Radio />}
+                                label="USER"
+                                value="NORMAL"
+                                name="type"
+                              />
+                            </RadioGroup>
+                          </div>
+                          <div className="form-buttton">
+                            <Button
+                              type="submit"
+                              variant="contained"
+                              color="secondary"
+                            >
+                              Create User
+                            </Button>
+                          </div>
+                        </div>
+                      </form>
+                    </Fade>
+                  </Modal>
+                </div>
+                {/* --- */}
+                <TableContainer component={Paper}>
                   <Table className={classes.table} aria-label="simple table">
                     <TableHead>
                       <TableRow>
-                        <TableCell>Images</TableCell>
-                        <TableCell align="right">Title</TableCell>
+                        <TableCell align="center">Avatar</TableCell>
+                        <TableCell align="center">Email</TableCell>
+                        <TableCell align="center">Password</TableCell>
+                        <TableCell align="center">Role</TableCell>
                       </TableRow>
                     </TableHead>
-                   {/* ----- */}
+                    {/* ----- */}
+                    <TableBody>
+                      {users && users.map((user) => (
+                        <TableRow key={user.userId}>
+                          <TableCell component="th" scope="row" align="center">
+                            {user.email}
+                          </TableCell>
+                          <TableCell align="center"><p>{user.password}</p></TableCell>
+                          <TableCell align="center">{user.role}</TableCell>
+                          <TableCell align="right">
+                            {/* ----- */}
+                            <Button
+                              variant="contained"
+                              color="secondary"
+                              onClick={() => { handleDelete(user.userId) }}
+                            >
+                              <DeleteForeverIcon />
+                            </Button>
+                            {/* ----- */}
+                            {/* ----- */}
+                            <Button
+                              variant="contained"
+                              color="secondary"
+                              onClick={()=>handleOpen(user.userId)}
+                            >
+                              <EditIcon />
+                            </Button>
+                            {/* ----- */}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
                   </Table>
                 </TableContainer>
-              </div>
-            </Card>
-
-            <Card
-              bordered={false}
-              className="criclebox tablespace mb-24"
-              title="Projects Table"
-              extra={
-                <>
-                  <Radio.Group onChange={onChange} defaultValue="all">
-                    <Radio.Button value="all">All</Radio.Button>
-                    <Radio.Button value="online">ONLINE</Radio.Button>
-                    <Radio.Button value="store">STORES</Radio.Button>
-                  </Radio.Group>
-                </>
-              }
-            >
-              <div className="table-responsive">
-                <Table
-                  columns={project}
-                  dataSource={dataproject}
-                  pagination={false}
-                  className="ant-border-space"
-                />
-              </div>
-              <div className="uploadfile pb-15 shadow-none">
-                <Upload {...formProps}>
-                  <Button
-                    type="dashed"
-                    className="ant-full-box"
-                    icon={<ToTopOutlined />}
-                  >
-                    Click to Upload
-                  </Button>
-                </Upload>
               </div>
             </Card>
           </Col>
@@ -682,4 +327,4 @@ function Tables() {
   );
 }
 
-export default Tables;
+export default (Tables);

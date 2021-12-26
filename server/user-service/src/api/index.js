@@ -1,5 +1,5 @@
 module.exports = {
     UserController: require('./controllers/user'),
-    appEvents: require('./app_event'),
+    appEvent: require('./app-event'),
     verifyToken: require('./middlewares/auth')
 }

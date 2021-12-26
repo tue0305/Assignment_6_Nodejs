@@ -35,14 +35,14 @@ class UserService {
       }
 
       // ### Comparing input password and user password.
-      const passwordValid = await validatePassword( user.password, password)
+      const passwordValid = await validatePassword(user.password, password);
       if (!passwordValid) {
         return new APIError("`Incorrect password!", STATUS_CODES.BAD_REQUEST);
       }
 
       // **** True password and return the access token ****
       const accessToken = await generateSignature({ _id: user._id });
-
+      console.log(user);
       return {
         status: 200,
         success: true,
@@ -61,7 +61,7 @@ class UserService {
   }
 
   async createUser(userInputs) {
-    const { email, password } = userInputs;
+    const { email, password, role } = userInputs;
 
     // simple validation
     if (!email || !password) {
@@ -97,6 +97,7 @@ class UserService {
       const newUser = new UserModel({
         email: email,
         password: userPassword,
+        role: role
       });
 
       await newUser.save();
@@ -121,7 +122,7 @@ class UserService {
   async getProfile(id) {
     try {
       const user = await UserModel.findById(id).select(`-password`);
-
+      
       if (!user) return new APIError("Data Not found!", STATUS_CODES.NOT_FOUND);
 
       return user;
@@ -157,10 +158,27 @@ class UserService {
 
   async updateUser(password, email, userId){
     try{
-      const updaUser = await UserModel.findByIdAndUpdate({password, email, userId})
+      const hashPassword = await generatePassword(password);
+      const updaUser = await UserModel.findByIdAndUpdate({password: hashPassword, email, userId})
       if(updaUser){
         return user;
       }
+    }
+    catch(err){
+      return new APIError(
+        "Data Not found!",
+        STATUS_CODES.UN_AUTHORIZED,
+        err.message
+      );
+    }
+  }
+
+  async getDetailUser(userId){
+    try{
+      // const 
+      const getDetail = await UserModel.findById(userId)
+      if(getDetail)
+        return getDetail;
     }
     catch(err){
       return new APIError(
@@ -221,31 +239,36 @@ class UserService {
       // ### Find user by id in params
       const user = await UserModel.findById(userId);
       if (!user)
-        return new APIError("Invalid link or expired token!", STATUS_CODES.BAD_REQUEST);
-    
+        return new APIError(
+          "Invalid link or expired token!",
+          STATUS_CODES.BAD_REQUEST
+        );
+
       const token = await TokenModel.findOne({
         userId: user._id,
-        token: resetPasswordToken
-      })
+        token: resetPasswordToken,
+      });
       if (!token) {
-        return new APIError("Invalid link or expired token!", STATUS_CODES.BAD_REQUEST);
+        return new APIError(
+          "Invalid link or expired token!",
+          STATUS_CODES.BAD_REQUEST
+        );
       }
 
       // ### Update new password
       user.password = await generatePassword(password);
-      await user.save()
+      await user.save();
 
       // ### delete reset password's token
-      await token.delete()
+      await token.delete();
 
       // ***** Reset password succeed *****
       return {
         status: 200,
         success: true,
         message: `Reset password account ${user.email} success!`,
-        userId: user._id
+        userId: user._id,
       };
-
     } catch (error) {
       return new APIError(
         "Data Not found!",
@@ -268,6 +291,154 @@ class UserService {
         STATUS_CODES.BAD_REQUEST,
         err.message
       )
+    }
+  }
+  // ***** SUBSCRIBE EVENTS  *****
+  async addPostToUser(userId, _id) {
+    const post = { _id };
+    try {
+      const user = await UserModel.findById(userId).populate("created_posts");
+      if (!user) {
+        return new APIError("Data Not found!", STATUS_CODES.NOT_FOUND);
+      }
+      user.created_posts.push(post);
+
+      await user.save();
+
+      return {
+        status: 200,
+        success: true,
+        message: `Add post to user success!`,
+        created_posts: user.created_posts,
+      };
+    } catch (error) {
+      return new APIError(
+        "Data Not found!",
+        STATUS_CODES.INTERNAL_ERROR,
+        error.message
+      );
+    }
+  }
+
+  async removePostOfUser(userId, _id) {
+    const post = { _id };
+    try {
+      const user = await UserModel.findById(userId);
+      if (!user) {
+        return new APIError("Data Not found!", STATUS_CODES.NOT_FOUND);
+      }
+
+      if (user.created_posts.length > 0) {
+        user.created_posts.map((post) => {
+          if (post._id.toString() === post._id.toString()) {
+            const index = user.created_posts.indexOf(post);
+            user.created_posts.splice(index, 1);
+          } else {
+            return new APIError("Post doesn't exist!", STATUS_CODES.NOT_FOUND);
+          }
+        });
+        await user.save();
+        return {
+          status: 200,
+          success: true,
+          message: `Remove post ${post} success!`,
+          created_posts: user.created_posts,
+        };
+      } else {
+        return new APIError(
+          "User doesn't have any posts!",
+          STATUS_CODES.NOT_FOUND
+        );
+      }
+    } catch (error) {
+      return new APIError(
+        "Data Not found!",
+        STATUS_CODES.INTERNAL_ERROR,
+        error.message
+      );
+    }
+  }
+
+  async updatePostToUser(userId, _id) {
+    const post = { _id };
+    try {
+      const user = await UserModel.findById(userId).populate("created_posts");
+      if (!user) {
+        return new APIError("Data Not found!", STATUS_CODES.NOT_FOUND);
+      }
+      if (user.created_posts.length > 0) {
+        user.created_posts.map((post) => {
+          if (post._id.toString() === post._id.toString()) {
+            return {
+              status: 200,
+              success: true,
+              message: `update post ${post} success!`,
+              updated_posts: post,
+            };
+          } else {
+            return new APIError("Post doesn't exist!", STATUS_CODES.NOT_FOUND);
+          }
+        });
+      } else {
+        return new APIError(
+          "User doesn't have any posts!",
+          STATUS_CODES.NOT_FOUND
+        );
+      }
+    } catch (error) {
+      return new APIError(
+        "Data Not found!",
+        STATUS_CODES.INTERNAL_ERROR,
+        error.message
+      );
+    }
+  }
+
+  async getUserCreatedPosts(userId) {
+    try {
+      const user = await UserModel.findById(userId).populate("created_posts");
+      if (!user) {
+        return new APIError("Data Not found!", STATUS_CODES.NOT_FOUND);
+      }
+
+      return {
+        status: 200,
+        success: true,
+        message: `Get posts success!`,
+        created_posts: user.created_posts,
+      };
+    } catch (error) {
+      return new APIError(
+        "Data Not found!",
+        STATUS_CODES.INTERNAL_ERROR,
+        error.message
+      );
+    }
+  }
+
+  async SubscribeEvents(payload) {
+    const { event, data } = payload;
+
+    const { userId, postId } = data;
+
+    switch (event) {
+      case "TEST":
+        console.log("Subcribe!", data)
+        break;
+      case "REMOVE_POST":
+        removePostOfUser(userId, postId);
+        break;
+      case "ADD_POST":
+        addPostToUser(userId, postId);
+        break;
+      case "UPDATE_POST":
+        updatePostToUser(userId, postId);
+        break;
+      case "GET_POST":
+        getUserCreatedPosts(userId);
+        break;
+      default:
+        break;
     }
   }
 }

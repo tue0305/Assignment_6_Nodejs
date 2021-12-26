@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "dev": "nodemon server",
-    "start": "node server.js"
+    "start": " nodemon src/server.js",
+    "dev": " nodemon src/server.js"
   },
   "repository": "TueNM3",
   "license": "MIT",
@@ -19,6 +19,7 @@
     "mongoose": "^6.0.14",
     "mongoose-validator": "^2.1.0",
     "nodemailer": "^6.7.2",
-    "nodemon": "^2.0.15"
+    "nodemon": "^2.0.15",
+    "winston": "^3.3.3"
   }
 }

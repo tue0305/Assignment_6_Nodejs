@@ -11,8 +11,6 @@ const publicPathDirectory = path.join(__dirname, "./public");
 app.use("/public", express.static(publicPathDirectory));
 
 const StartServer = async() => {
-
-    const app = express();
     
     await DB_Connection();
     

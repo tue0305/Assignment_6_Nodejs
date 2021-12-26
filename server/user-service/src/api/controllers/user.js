@@ -4,8 +4,8 @@ const service = new UserService();
 
 module.exports.signUp = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
-    const data = await service.createUser({ email, password });
+    const { email, password, role } = req.body;
+    const data = await service.createUser({ email, password, role });
     
     return res.json(data);
   } catch (err) {
@@ -28,10 +28,11 @@ module.exports.signIn = async (req, res, next) => {
 
 module.exports.getUserInfo = async (req, res, next) => {
   try {
-    const { userId } = req.userId;
+    const userId =req.userId
+    
     const user = await service.getProfile(userId);
-
-    return res.json({ success: true, user });
+    
+    return res.json(user);
   } catch (error) {
     next(error);
   }
@@ -69,6 +70,17 @@ module.exports.getUser = async (req, res, next) =>{
     next(err)
   }
 };
+
+module.exports.detailUser = async(req, res, next) =>{
+  try{
+    const { userId } = req.params;
+    const getDetail = await service.getDetailUser(userId);
+    res.json(getDetail);
+  }
+  catch(err){
+    next(err);
+  }
+}
 
 module.exports.forgotPasswordRequest = async (req, res, next) => {
   

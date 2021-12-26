@@ -42,8 +42,12 @@ router.put('/update-user/:userId',  UserController.updateUser);
 
 // @route POST api/user/get-all-users
 // @access Public
-router.get('/get-all-users', verifyToken, authorize(["ADMIN"]),  UserController.getUser);
+// , authorize(['ADMIN']) , verifyToken
+router.get('/get-all-users',  (UserController.getUser) );
 
+// @route GET api/user/detail-user/:userId
+// @access Public
+router.get('/detail-user/:userId',  UserController.detailUser);
 
 
 
