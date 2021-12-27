@@ -1,0 +1,18 @@
+#Header{
+    padding: 30px;
+    .header-category{
+        .category-icon{
+            margin: 0 auto;
+            padding: 0!important;
+            border: none;
+            border-radius: 5px;
+            height: 90px;
+            width: 90px;
+        }
+        .category-title{
+            cursor: pointer;
+            height: 100%;
+            width: 100%;
+        }
+    }
+}

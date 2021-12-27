@@ -6,8 +6,8 @@ const service = new UserService();
 
 module.exports.signUp = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
-    const data = await service.createUser({ email, password });
+    const { email, password, role } = req.body;
+    const data = await service.createUser({ email, password, role });
     
     PublishPostEvent(data, 'AVC')
     PublishCommentEvent(data,'dsad')
@@ -41,6 +41,50 @@ module.exports.getUserInfo = async (req, res, next) => {
     next(error);
   }
 };
+
+module.exports.deleteUser = async (req, res, next) =>{
+  try{
+    const { userId } = req.params;
+    const deleteUser = await service.deleteUser(userId);
+    return res.json({success: true, deleteUser});
+  }
+  catch(err){
+    next(err);
+  }
+};
+
+module.exports.updateUser = async (req, res, next) =>{
+  try{
+    const {userId} = req.params;
+    const {password, email} = req.body;
+    const updaUser = await service.updateUser(password, email, userId);
+    return res.json(updaUser);
+  }
+  catch(err){
+    next(error);
+  }
+};
+
+module.exports.getUser = async (req, res, next) =>{
+  try{
+    const getAll = await service.getAllUser();
+    res.json(getAll);
+  }
+  catch(err){
+    next(err)
+  }
+};
+
+module.exports.detailUser = async(req, res, next) =>{
+  try{
+    const { userId } = req.params;
+    const getDetail = await service.getDetailUser(userId);
+    res.json(getDetail);
+  }
+  catch(err){
+    next(err);
+  }
+}
 
 module.exports.forgotPasswordRequest = async (req, res, next) => {
   

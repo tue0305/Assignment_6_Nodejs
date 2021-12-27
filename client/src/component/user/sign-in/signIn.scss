@@ -1,0 +1,68 @@
+.bg-signIn{
+    background-image: url('../../../images/Sign-in-up/bg1.jpg');
+    .Sign-In{
+        // margin-top: 100px;
+        .sign-in-left{
+            margin-top: 100px;
+            h2{
+                text-align: center;
+            }
+            .sign-in-form{
+                form {
+                    margin-left: 165px;
+                    .form-input{
+                        margin: 20px 0px;
+                        input{
+                            width: 340px;
+                        }
+                    }
+                    .form-button{
+                        button {
+                            margin-left: 121px;
+                            margin-top: 15px;
+                        }
+                    }
+                }
+            }
+            .sign-in-landing{
+                text-align: center;
+                .landing{
+                    margin: 0px 15px;
+                    a{
+                        text-decoration: none;
+                        color: black;
+                        &:hover{
+                            color: #3f51b5;
+                        }
+                    }
+                }
+            }
+            .sign-in-social{
+                margin-left: 3px;
+                margin-top: 45px;
+                .social-button{
+                    text-align: center;
+                    margin: 15px 0px;
+                    button{
+                        width: 380px;
+                    }
+                    .MuiSvgIcon-root{
+                        margin: 0px 10px;
+                        font-size: 40px;
+                    }
+                }
+            }
+        }
+        .sign-in-right{
+            margin-top: 100px;
+            margin-right: 21px;
+            .sign-in-background{
+                img{
+                    height: 100%;
+                    width: 100%;
+                    border-radius: 10px;
+                }
+            }
+        }
+    }    
+}

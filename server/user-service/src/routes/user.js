@@ -1,18 +1,16 @@
 const express = require(`express`);
 const router = express.Router();
-const { verifyToken, UserController} = require('../api')
-
+const { verifyToken, UserController } = require('../api');
+const {authorize} = require('../api/middlewares/authorize');
 // @route GET api/user
 // @des Check if user is logged in
 // @access Public
-router.get('/profile', verifyToken, UserController.getUserInfo );
-
-
+router.get('/profile', verifyToken, UserController.getUserInfo);
 
 // @route POST api/user/signup
 // @desc signup user
 // @access Public
-router.post('/signup', UserController.signUp );
+router.post('/signup', UserController.signUp);
 
 // @route POST api/user/login
 // @desc Login user
@@ -29,10 +27,46 @@ router.post('/forgot-password', UserController.forgotPasswordRequest);
 // @route POST api/user/reset-password
 // @des Reset password with userId and forgot password's token generate in user's email
 // @access Public
-router.post('/reset-password/:userId/:token', UserController.resetPassword); 
+router.post('/reset-password/:userId/:token', UserController.resetPassword);
 //   const { newPassword} = req.body;
 
-  
+// @route POST api/user/delete-user/:userId
+// @access Public
+router.delete('/delete-user/:userId',  UserController.deleteUser);
+
+
+// @route POST api/user/update-user/:userId
+// @access Public
+router.put('/update-user/:userId',  UserController.updateUser);
+
+
+// @route POST api/user/get-all-users
+// @access Public
+// , authorize(['ADMIN']) , verifyToken
+router.get('/get-all-users',  (UserController.getUser) );
+
+// @route GET api/user/detail-user/:userId
+// @access Public
+router.get('/detail-user/:userId',  UserController.detailUser);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //   try {
 //     // ### Find user by id in params
@@ -42,7 +76,7 @@ router.post('/reset-password/:userId/:token', UserController.resetPassword);
 //         success: false,
 //         message: `Invalid link or expired token!`,
 //       }); 
-    
+
 //     const token = await Token.findOne({
 //       userId: user._id,
 //       token: req.params.token
@@ -73,7 +107,7 @@ router.post('/reset-password/:userId/:token', UserController.resetPassword);
 //     console.log(error.message);
 //     res.status(500).json({ success: false, message: `Internal server error` });
 //   }
-  
+
 // })
 
 

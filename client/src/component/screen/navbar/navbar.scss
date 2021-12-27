@@ -1,0 +1,19 @@
+#Navbar{
+    .MuiAppBar-colorPrimary{
+        background-color: #F22726;
+    }
+   .navbar-title{
+        text-decoration: none;
+        color: white;    
+        font-size: 33px;
+        font-weight: 500;
+        font-family: cursive;
+        &:hover{
+            color: yellowgreen;
+        }
+        img{
+            margin-bottom: -11px;
+            margin-right: 10px;
+        }
+   }
+}

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -13,9 +14,10 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import PhoneIcon from '@material-ui/icons/Phone';
+//IMAGES
+import logo from '../../../images/logo/cooking.png';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -111,70 +113,132 @@ export default function Navbar() {
     const handleClose = () => {
         setAnchorEl(null);
     };
+
+    // const isLogin = () => {
+	// 	if (localStorage.getItem("user")) {
+	// 		let user = JSON.parse(localStorage.getItem("user"));
+	// 		//Logged
+	// 		return (
+	// 			<>
+	// 				<div>
+	// 					<Button aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
+	// 						<Avatar>
+	// 							<img src={user.avatar} className="Navbar-Img"/>
+	// 						</Avatar> 
+	// 						<span className="Navbar-span">{user.name}</span>
+	// 					</Button>
+	// 					<div className="Navbar-Menu">
+	// 						<Menu
+	// 							id="simple-menu"
+	// 							anchorEl={anchorEl}
+	// 							keepMounted
+	// 							open={Boolean(anchorEl)}
+	// 							onClose={handleClose}
+	// 						>
+    //                             <>
+    //                             <NavLink exact to={{pathname:'/information-user'}}  style={divLine}>
+    //                                     <MenuItem onClick={handleClose}>Thông tin cá nhân</MenuItem>
+    //                                 </NavLink>
+    //                             </>
+	// 							<Link to="/login" onClick={handleClose}><AccountCircleIcon className="Navbar-Icon"/></Link>  
+	// 							<MenuItem onClick={handleClose} onClick={logout} href="# ">Đăng xuất</MenuItem>
+	// 						</Menu>
+	// 					</div>
+	// 				</div>
+	// 			</>
+	// 		);
+	// 	}
+		//check Not logged in
+	// 	return (
+	// 		<NavLink
+	// 			className="user d-flex align-items-center"
+	// 			activeClassName="active"
+	// 			exact
+	// 			to={{
+	// 				pathname: `/login`,
+	// 			}}
+	// 		>
+	// 			{/* <AccountCircleIcon />s */}
+	// 			<Link to="/login" onClick={handleClose}><AccountCircleIcon className="Navbar-Icon"/></Link>  
+	// 		</NavLink>
+	// 	);
+	// };
+
     return (
-        <div className={classes.root}>
-            <AppBar position="static">
-                <Toolbar>
-                    <IconButton
-                        edge="start"
-                        className={classes.menuButton}
-                        color="inherit"
-                        aria-label="open drawer"
-                    >
-                         <MenuIcon 
-                            aria-controls="customized-menu"
-                            aria-haspopup="true"
-                            variant="contained"
-                            // color="primary"
-                            onClick={handleClick}
-                        />
-                        <div>
-                            <StyledMenu
-                                id="customized-menu"
-                                anchorEl={anchorEl}
-                                keepMounted
-                                open={Boolean(anchorEl)}
-                                onClose={handleClose}
-                            >
-                                <StyledMenuItem>
-                                    <ListItemIcon>
-                                        <AccountCircleIcon fontSize="small" />
-                                    </ListItemIcon>
-                                    <ListItemText primary="Sign In" />
-                                </StyledMenuItem>
-                                <StyledMenuItem>
-                                    <ListItemIcon>
-                                        <PhoneIcon fontSize="small" />
-                                    </ListItemIcon>
-                                    <ListItemText primary="Call +020220202" />
-                                </StyledMenuItem>
-                                <StyledMenuItem>
-                                    <ListItemIcon>
-                                        <ShoppingCartIcon fontSize="small" />
-                                    </ListItemIcon>
-                                    <ListItemText primary="Cart" />
-                                </StyledMenuItem>
-                            </StyledMenu>
+        <div id='Navbar'>
+            <div className={classes.root}>
+                <AppBar position="static">
+                    <Toolbar>
+                        <IconButton
+                            edge="start"
+                            className={classes.menuButton}
+                            color="inherit"
+                            aria-label="open drawer"
+                        >
+                            <MenuIcon
+                                aria-controls="customized-menu"
+                                aria-haspopup="true"
+                                variant="contained"
+                                // color="primary"
+                                onClick={handleClick}
+                            />
+                            <div>
+                                <StyledMenu
+                                    id="customized-menu"
+                                    anchorEl={anchorEl}
+                                    keepMounted
+                                    open={Boolean(anchorEl)}
+                                    onClose={handleClose}
+                                >
+                                    <Link to="/sign-in">
+                                        <StyledMenuItem>
+                                            <ListItemIcon>
+                                                <AccountCircleIcon fontSize="small" />
+                                            </ListItemIcon>
+                                            <ListItemText primary="Sign In" className='Navbar-icon-title' />
+                                        </StyledMenuItem>
+                                    </Link>
+                                    <StyledMenuItem>
+                                        <ListItemIcon>
+                                            <PhoneIcon fontSize="small" />
+                                        </ListItemIcon>
+                                        <ListItemText primary="Call +020220202" />
+                                    </StyledMenuItem>
+                                    <StyledMenuItem>
+                                        <ListItemIcon>
+                                            <ShoppingCartIcon fontSize="small" />
+                                        </ListItemIcon>
+                                        <ListItemText primary="Cart" />
+                                    </StyledMenuItem>
+                                </StyledMenu>
+                            </div>
+                        </IconButton>
+                        <Typography className={classes.title} variant="h6" noWrap >
+                            <Link to='/' className='navbar-title'>
+                                <span>
+                                    <img src={logo} alt='logo' />
+                                    <span className='navbar-title-name'>
+                                        NẤU ĂN NÈ
+                                    </span>
+                                </span>
+                            </Link>
+                        </Typography>
+                        <div className={classes.search}>
+                            <div className={classes.searchIcon}>
+                                <SearchIcon />
+                            </div>
+                            <InputBase
+                                placeholder="Search…"
+                                classes={{
+                                    root: classes.inputRoot,
+                                    input: classes.inputInput,
+                                }}
+                                inputProps={{ 'aria-label': 'search' }}
+                            />
                         </div>
-                    </IconButton>
-                    <Typography className={classes.title} variant="h6" noWrap>
-                        Group 1
-                    </Typography>
-                    <div className={classes.search}>
-                        <div className={classes.searchIcon}>
-                            <SearchIcon />
-                        </div>
-                        <InputBase
-                            placeholder="Search…"
-                            classes={{
-                                root: classes.inputRoot,
-                                input: classes.inputInput,
-                            }}
-                            inputProps={{ 'aria-label': 'search' }}
-                        />
-                    </div>
-                </Toolbar>
-            </AppBar>
+                    </Toolbar>
+                </AppBar>
+            </div>
         </div>
     )
 }

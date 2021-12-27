@@ -2,15 +2,23 @@ const PostService = require("../../services/post_service");
 
 const service = new PostService();
 
+<<<<<<< HEAD
 const { PublishUserEvent, PublishCommentEvent } = require("../../utils");
 
+=======
+>>>>>>> 18caae81e3755bfe1a783bf9a614a48c80e69453
 module.exports.getPosts = async (req, res, next) => {
   try {
     const data = await service.getPosts();
 
     return res.json(data);
+<<<<<<< HEAD
   } catch (error) {
     next(error);
+=======
+  } catch (err) {
+    next(err);
+>>>>>>> 18caae81e3755bfe1a783bf9a614a48c80e69453
   }
 };
 
@@ -21,6 +29,7 @@ module.exports.getPostsByCategory = async (req, res, next) => {
     const data = await service.getPostsByCategory(category);
 
     return res.json(data);
+<<<<<<< HEAD
   } catch (error) {
     next(error);
   }
@@ -55,11 +64,40 @@ module.exports.getUserPosts = async (req, res, next) => {
     return res.json(data);
   } catch (error) {
     next(error);
+=======
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports.getUserPosts = async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+
+    const data = await service.getUserPosts(userId);
+
+    return res.json(data);
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports.getPostsByCategory = async (req, res, next) => {
+  try {
+    const { categoryTitle } = req.params.category;
+
+    const data = await service.getPostsByCategory(categoryTitle);
+
+    return res.json(data);
+  } catch (err) {
+    next(err);
+>>>>>>> 18caae81e3755bfe1a783bf9a614a48c80e69453
   }
 };
 
 module.exports.createPost = async (req, res, next) => {
   try {
+<<<<<<< HEAD
     const userId = req.userId;
     const { title, image, content, gradients, categoryTitle } = req.body;
 
@@ -83,11 +121,22 @@ module.exports.createPost = async (req, res, next) => {
     return res.json(result);
   } catch (error) {
     next(error);
+=======
+    const userId = req.userId
+    const { title, image, content, gradients, category } = req.body;
+
+    const data = await service.createPost(title, image, content, gradients, category, userId );
+
+    return res.json(data);
+  } catch (err) {
+    next(err);
+>>>>>>> 18caae81e3755bfe1a783bf9a614a48c80e69453
   }
 };
 
 module.exports.editPost = async (req, res, next) => {
   try {
+<<<<<<< HEAD
     const { postId } = req.params;
     const userId = req.userId;
     const { title, image, content, gradients, category } = req.body;
@@ -113,11 +162,23 @@ module.exports.editPost = async (req, res, next) => {
     return res.json(result);
   } catch (error) {
     next(error);
+=======
+    const {postId} = req.params
+    const userId = req.userId
+    const { title, image, content, gradients, category } = req.body;
+
+    const data = await service.editPost(postId, title, image, content, gradients, category, userId );
+
+    return res.json(data);
+  } catch (err) {
+    next(err);
+>>>>>>> 18caae81e3755bfe1a783bf9a614a48c80e69453
   }
 };
 
 module.exports.deletePost = async (req, res, next) => {
   try {
+<<<<<<< HEAD
     const { postId } = req.params;
     const userId = req.userId;
 
@@ -136,3 +197,18 @@ module.exports.deletePost = async (req, res, next) => {
     next(error);
   }
 };
+=======
+    const {postId} = req.params
+    const userId = req.userId
+    
+
+    const data = await service.editPost(postId, userId );
+
+    return res.json(data);
+  } catch (err) {
+    next(err);
+  }
+};
+
+
+>>>>>>> 18caae81e3755bfe1a783bf9a614a48c80e69453

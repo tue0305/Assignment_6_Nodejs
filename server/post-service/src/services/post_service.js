@@ -1,6 +1,9 @@
 const { PostModel, CategoryModel } = require("../database/models");
+<<<<<<< HEAD
 const crypto = require("crypto");
 const mongo = require("mongodb")
+=======
+>>>>>>> 18caae81e3755bfe1a783bf9a614a48c80e69453
 const {
   validatePassword,
   generatePassword,
@@ -21,7 +24,11 @@ class PostService {
       const posts = await PostModel.find();
 
       return {
+<<<<<<< HEAD
         status: STATUS_CODES.OK,
+=======
+        status: 200,
+>>>>>>> 18caae81e3755bfe1a783bf9a614a48c80e69453
         success: true,
         message: `Get posts successfully!`,
         posts: posts,
@@ -30,7 +37,11 @@ class PostService {
       return new APIError(
         "Data Not found!",
         STATUS_CODES.INTERNAL_ERROR,
+<<<<<<< HEAD
         error.message
+=======
+        err.message
+>>>>>>> 18caae81e3755bfe1a783bf9a614a48c80e69453
       );
     }
   }
@@ -42,7 +53,11 @@ class PostService {
 
       // ***** GET ALL POSTS BY CATEGORY*****
       const posts = await PostModel.find({ category: category });
+<<<<<<< HEAD
       if (!posts) {
+=======
+      if (!post) {
+>>>>>>> 18caae81e3755bfe1a783bf9a614a48c80e69453
         return {
           status: 400,
           success: false,
@@ -51,7 +66,11 @@ class PostService {
       }
 
       return {
+<<<<<<< HEAD
         status: STATUS_CODES.OK,
+=======
+        status: 200,
+>>>>>>> 18caae81e3755bfe1a783bf9a614a48c80e69453
         success: true,
         message: `Get ${category.title}'s posts successfully!`,
         posts: posts,
@@ -60,7 +79,11 @@ class PostService {
       return new APIError(
         "Data Not found!",
         STATUS_CODES.INTERNAL_ERROR,
+<<<<<<< HEAD
         error.message
+=======
+        err.message
+>>>>>>> 18caae81e3755bfe1a783bf9a614a48c80e69453
       );
     }
   }
@@ -71,6 +94,7 @@ class PostService {
       const posts = await PostModel.find({ userId: userId }).populate(`user`, [
         `email`,
       ]);
+<<<<<<< HEAD
       if (!posts) {
         return {
           status: STATUS_CODES.NOT_FOUND,
@@ -83,23 +107,43 @@ class PostService {
         success: true,
         message: `Get posts successfully!`,
         data: { userId, posts },
+=======
+
+      return {
+        status: 200,
+        success: true,
+        message: `Get user ${userId} posts successfully!`,
+        posts: posts,
+>>>>>>> 18caae81e3755bfe1a783bf9a614a48c80e69453
       };
     } catch (error) {
       return new APIError(
         "Data Not found!",
         STATUS_CODES.INTERNAL_ERROR,
+<<<<<<< HEAD
         error.message
+=======
+        err.message
+>>>>>>> 18caae81e3755bfe1a783bf9a614a48c80e69453
       );
     }
   }
 
+<<<<<<< HEAD
   async createPost(title, image, content, gradients, categoryTitle, userId) {
     const category = await CategoryModel.findOne({ title: categoryTitle });
+=======
+  async createPost(newPostInputs) {
+    const { title, image, content, gradients, categoryTitle, userId } =
+      newPostInputs;
+
+>>>>>>> 18caae81e3755bfe1a783bf9a614a48c80e69453
     // **** Simple validation ****
     if (!title || !content || !gradients || !category || !userId) {
       return new APIError("Missing information!!", STATUS_CODES.BAD_REQUEST);
     }
 
+<<<<<<< HEAD
     
     
     try {
@@ -125,19 +169,48 @@ class PostService {
         success: true,
         message: `Create  posts successfully!`,
         data: { userId, newPost },
+=======
+    const category = await CategoryModel.findOne({ title: categoryTitle });
+
+    try {
+      // ***** CREATE NEW POST *****
+      var newPost = new Post({
+        title,
+        content,
+        gradients: gradients,
+        categoryId: category._id,
+        // image: image,
+        userId: userId,
+      });
+
+      return {
+        status: 200,
+        success: true,
+        message: `Create  posts successfully!`,
+        post: newPost,
+>>>>>>> 18caae81e3755bfe1a783bf9a614a48c80e69453
       };
     } catch (error) {
       return new APIError(
         "Data Not found!",
         STATUS_CODES.INTERNAL_ERROR,
+<<<<<<< HEAD
         error.message
+=======
+        err.message
+>>>>>>> 18caae81e3755bfe1a783bf9a614a48c80e69453
       );
     }
   }
 
   async editPost(updatePost) {
+<<<<<<< HEAD
     const { postId, title, image, content, gradients, categoryTitle, userId } =
       updatePost;
+=======
+    const { postId, title, image, content, gradients, categoryTitle, userId } =  updatePost;
+    
+>>>>>>> 18caae81e3755bfe1a783bf9a614a48c80e69453
 
     // **** Simple validation ****
     if (!postId || !title || !content || !gradients || !category || !userId) {
@@ -147,17 +220,29 @@ class PostService {
     const category = await CategoryModel.findOne({ title: categoryTitle });
 
     try {
+<<<<<<< HEAD
       // ***** UPDATE NEW POST *****
       var updatePost = {
+=======
+      // ***** CREATE NEW POST *****
+      var updatePost = ({
+>>>>>>> 18caae81e3755bfe1a783bf9a614a48c80e69453
         title,
         content,
         gradients: gradients,
         categoryId: category._id,
         // image: image,
+<<<<<<< HEAD
       };
 
       const postUpdateConditions = { _id: postId, userId: userId };
 
+=======
+      });
+
+      const postUpdateConditions = { _id: postId, userId: userId };
+      
+>>>>>>> 18caae81e3755bfe1a783bf9a614a48c80e69453
       updatedPost = await PostModel.findOneAndUpdate(
         postUpdateConditions,
         updatedPost,
@@ -165,6 +250,7 @@ class PostService {
       );
 
       if (!updatedPost) {
+<<<<<<< HEAD
         return new APIError(
           "User not authorized to update or post not found! ",
           STATUS_CODES.NOT_FOUND
@@ -176,16 +262,31 @@ class PostService {
         success: true,
         message: `Update post ${updatedPost} successfully!`,
         data: { userId, updatedPost },
+=======
+        return new APIError("User not authorized to update or post not found! ", STATUS_CODES.NOT_FOUND)
+      }
+
+      return {
+        status: 200,
+        success: true,
+        message: `Post update successfully!`,
+        post: updatedPost,
+>>>>>>> 18caae81e3755bfe1a783bf9a614a48c80e69453
       };
     } catch (error) {
       return new APIError(
         "Data Not found!",
         STATUS_CODES.INTERNAL_ERROR,
+<<<<<<< HEAD
         error.message
+=======
+        err.message
+>>>>>>> 18caae81e3755bfe1a783bf9a614a48c80e69453
       );
     }
   }
 
+<<<<<<< HEAD
   //### NOT DONE
   async deletePost(userId, postId) {
     // **** Simple validation ****
@@ -210,11 +311,43 @@ class PostService {
         success: true,
         message: `Delete post ${postId} successfully!`,
         data: { userId, postId },
+=======
+  async deletePost(deletePost) {
+    const { postId, title, image, content, gradients, categoryTitle, userId } =  newPostInputs;
+    
+
+    // **** Simple validation ****
+    if (!postId || !title || !content || !gradients || !category || !userId) {
+      return new APIError("Missing information!!", STATUS_CODES.BAD_REQUEST);
+    }
+
+    const category = await CategoryModel.findOne({ title: categoryTitle });
+
+    try {
+     
+
+      const postUpdateConditions = { _id: postId, userId: userId };
+      
+      deletedPost = await PostModel.findOneAndDelete(
+        postUpdateConditions,
+      )
+
+      if (!deletedPost) {
+        return new APIError("User not authorized to update or post not found! ", STATUS_CODES.NOT_FOUND)
+      }
+
+      return {
+        status: 200,
+        success: true,
+        message: `Post delete successfully!`,
+        post: deletedPost,
+>>>>>>> 18caae81e3755bfe1a783bf9a614a48c80e69453
       };
     } catch (error) {
       return new APIError(
         "Data Not found!",
         STATUS_CODES.INTERNAL_ERROR,
+<<<<<<< HEAD
         error.message
       );
     }
@@ -258,6 +391,9 @@ class PostService {
       return new APIError(
         "No post available!",
         STATUS_CODES.INTERNAL_ERROR
+=======
+        err.message
+>>>>>>> 18caae81e3755bfe1a783bf9a614a48c80e69453
       );
     }
   }

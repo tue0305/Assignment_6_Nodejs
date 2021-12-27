@@ -2,10 +2,15 @@ const express = require('express');
 const { PORT } = require('./config/config');
 const { DB_Connection } = require('./database/index');
 const expressApp = require('./express_app');
+const cors = require('cors')
+const path = require('path');
+const app = express();
+app.use(cors());
+// SET UP SATIC FILE 
+const publicPathDirectory = path.join(__dirname, "./public");
+app.use("/public", express.static(publicPathDirectory));
 
 const StartServer = async() => {
-
-    const app = express();
     
     await DB_Connection();
     

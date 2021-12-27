@@ -41,7 +41,11 @@ const UserSchema = new Schema({
       }
     },
   ],
+<<<<<<< HEAD
 },
 {timestamp:true});
+=======
+});
+>>>>>>> 18caae81e3755bfe1a783bf9a614a48c80e69453
 
 module.exports = mongoose.model("users", UserSchema);
