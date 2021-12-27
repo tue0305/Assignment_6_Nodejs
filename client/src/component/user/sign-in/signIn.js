@@ -10,7 +10,6 @@ import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import { Link } from 'react-router-dom';
 import {signInAPI} from '../../../redux/actions/user/signIn-signUp/userSignIn'
 import { useDispatch, useSelector } from 'react-redux';
-import { connect } from "react-redux";
 // IMAGES 
 import salad from '../../../images/Sign-in-up/salad.jpg';
 
@@ -36,7 +35,6 @@ const divStyle = makeStyles((theme) => ({
 function SignIn(props) {
     const classes = useStyles();
     const styleButton = divStyle();
-
     let dispatch = useDispatch();
     const [state, setState] = useState({
         email: '',
@@ -52,8 +50,15 @@ function SignIn(props) {
         if (!email || !password) {
             setError('Please input field');
         }
+        if(!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)){
+            setError('Email must be email address ex: @gmail')
+        }
+        if( /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/.test(password)){
+            setError('The password must contain at least 8  characters including at least 1 uppercase, 1 lowercase, one digit.')
+          }
         else {
             dispatch(signInAPI(state));
+            console.log(dispatch(signInAPI(state)),'st');
             setError('');
         }
     };
@@ -81,6 +86,7 @@ function SignIn(props) {
                                                 name='email'
                                                 onChange={handleInputChange}
                                             />
+                                             {error && <h3>{error}</h3>}
                                         </div>
                                         <div className='form-input' className={styleButton.root}>
                                             <TextField
@@ -92,6 +98,7 @@ function SignIn(props) {
                                                 name='password'
                                                 type='password'
                                             />
+                                           
                                         </div>
                                         <div className='form-button' >
                                             <Button variant="contained" color="secondary" type='submit'>

@@ -1,16 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { Link } from 'react-router-dom';
-import * as userSignUp from '../../../redux/actions/user/signIn-signUp/userSignUp';
-import { connect } from "react-redux";
-import { useFormik } from "formik";
-import * as Yup from 'yup';
 // IMAGES 
 import salad from '../../../images/Sign-in-up/salad.jpg';
+import {  signUpAPI } from '../../../redux/actions/user/signIn-signUp/userSignIn';
+import { useDispatch, useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -35,25 +33,27 @@ const divStyle = makeStyles((theme) => ({
 function SignUp(props) {
     const classes = useStyles();
     const styleButton = divStyle();
-    const formik = useFormik({
-        initialValues: {
-            email: '',
-            password: ''
-        },
-        validationSchema: Yup.object({
-            email: Yup.string().email('invalid'),
-            password: Yup.string()
-        }),
-        onSubmit: (values, e) => {
-            console.log(values);
-            e.preventDefault();
-        }
+    let dispatch = useDispatch();
+    const [state, setState] = useState({
+        email: '',
+        password: '',
     });
-    const handleOnSubmit = (user) => {
-        props.signUp({
-            user
-        });
+    const { email, password } = state;
+    const handleInputChange = (e) => {
+        let { name, value } = e.target;
+        setState({ ...state, [name]: value })
     };
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (!email || !password) {
+            setError('Please input field');
+        }
+        else {
+            dispatch(signUpAPI(state));
+            setError('');
+        }
+    };
+    const [error, setError] = useState('');
     return (
         <div className='sign-up'>
             <div className={classes.root}>
@@ -63,44 +63,30 @@ function SignUp(props) {
                             <div className='sign-up-left'>
                                 <h2>SIGN UP</h2>
                                 <div className='sign-up-form'>
-                                    <form onSubmit={formik.handleSubmit}
-                                        method='POST'>
+                                    <form  onSubmit={handleSubmit}>
                                         <div className='form-input' className={styleButton.root}>
                                             <TextField
                                                 id="outlined-basic"
                                                 label="Email"
                                                 variant="outlined"
-                                                onChange={formik.handleChange}
-                                                onBlur={formik.handleBlur}
-                                                value={formik.values.email}
                                                 name='email'
+                                                value={state.email}
+                                                onChange={handleInputChange}
                                             />
-                                            {
-                                                formik.touched.email && formik.errors.email
-                                                    ? <div className='error_msg'>{formik.errors.email}</div> : null
-                                            }
                                         </div>
                                         <div className='form-input' className={styleButton.root}>
                                             <TextField
                                                 id="outlined-basic"
                                                 label="Password"
                                                 variant="outlined"
-                                                onChange={formik.handleChange}
-                                                onBlur={formik.handleBlur}
-                                                value={formik.values.password}
                                                 name='password'
                                                 type='password'
+                                                value={state.password}
+                                                onChange={handleInputChange}
                                             />
-                                            {
-                                                formik.touched.password && formik.errors.password
-                                                    ? <div className='error_msg'>{formik.errors.password}</div> : null
-                                            }
                                         </div>
-                                        {/* <div className='form-input' className={styleButton.root}>
-                                            <TextField id="outlined-basic" label="Confirm Password" variant="outlined" />
-                                        </div> */}
                                         <div className='form-button'>
-                                            <Button variant="contained" color="secondary" onClick={handleOnSubmit}  type='submit'>
+                                            <Button variant="contained" color="secondary" type='submit'>
                                                 SIGN UP NOW
                                             </Button>
                                         </div>
@@ -129,11 +115,5 @@ function SignUp(props) {
         </div>
     )
 }
-const mapDispatchToProps = dispatch => {
-    return {
-        signUp: data => {
-            dispatch(userSignUp.actSignUp(data));
-        }
-    };
-};
-export default connect(null, mapDispatchToProps)(SignUp)
+
+export default (SignUp)

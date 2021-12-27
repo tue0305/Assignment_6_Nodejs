@@ -94,26 +94,25 @@ function Tables(props) {
 
   let dispatch = useDispatch();
   const { userId } = useParams();
-  const { users,user } = useSelector(state => state.data);
-  console.log(user,'detail')
+  const { users } = useSelector(state => state.data);
+  // console.log(user,'detail')
   /*----- */
   const [open, setOpen] = React.useState(false);
   /*----- */
-  const [currUser, setCurrUser] = useState(user);
-  useEffect(()=>{
-    setCurrUser(user);
-  }, [user]);
-  const handleOpen = (userId) => {
+  // const [currUser, setCurrUser] = useState(user);
+  // useEffect(()=>{
+  //   setCurrUser(user);
+  // }, [user]);
+  const handleOpen = () => {
     setOpen(true);
     // useEffect(() =>{
       dispatch(getDetailUsers(userId))
-      console.log(userId,'userId');
+      // console.log(userId,'userId');
     // })
   };
 
   const handleOpenHigh =() =>{
     setOpen(true);
-    dispatch({type:'test'});
   }
   const handleClose = () => {
     setOpen(false);
@@ -139,9 +138,9 @@ function Tables(props) {
     }
   };
   /*----- */
-  const handleUpdate = (userId) => {
-      dispatch(getDetailUsers(userId))
-  };
+  // const handleUpdate = (userId) => {
+  //     dispatch(getDetailUsers(userId))
+  // };
   /*----- */
   const [state, setState] = useState({
     email: '',
@@ -169,23 +168,22 @@ function Tables(props) {
     }
   };
   /*----- */
-  const handleSubmitUpdate = (e) => {
-    e.preventDefault();
-    if (!email || !password) {
-      setError('Please input field');
-    }
-    else {
-      dispatch(updateUsers(state));
-      setError('');
-    }
-  };
+  // const handleSubmitUpdate = (e) => {
+  //   e.preventDefault();
+  //   if (!email || !password) {
+  //     setError('Please input field');
+  //   }
+  //   else {
+  //     dispatch(updateUsers(state));
+  //     setError('');
+  //   }
+  // };
   /*----- */
   const [value, setValue] = React.useState('NORMAL');
   const handleChange = (event) => {
     setValue(event.target.value);
   };
   /*----- */
-  // const {handleOpen} = props
   return (
     <>
       <div className="tabled">
@@ -227,7 +225,7 @@ function Tables(props) {
                               variant="outlined"
                               type="email"
                               name='email'
-                              value={user ? user.email : ''}
+                              value={email}
                               onChange={handleInputChange}
                             />
                             {error && <h3 style={{ color: 'red' }}>{error}</h3>}

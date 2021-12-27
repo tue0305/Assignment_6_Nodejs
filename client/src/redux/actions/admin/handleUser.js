@@ -1,4 +1,4 @@
-import Axios from 'axios';
+
 import * as actType from '../../constants/constans';
 import Swal from 'sweetalert2';
 import axios from 'axios';
