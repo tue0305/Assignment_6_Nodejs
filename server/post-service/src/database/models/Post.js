@@ -1,16 +1,16 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const PostSchema = new Schema(
+const PostSchema = new mongoose.Schema(
   {
-   
     title: {
       type: String,
       required: true,
     },
+
     image: {
       type: String,
-      default: null
+      default: null,
     },
 
     content: {
@@ -20,8 +20,7 @@ const PostSchema = new Schema(
 
     gradients: [
       {
-        name: { type: String }
-    
+        name: { type: String },
       },
     ],
 
@@ -43,11 +42,10 @@ const PostSchema = new Schema(
     topic_comments: [
       {
         _id: { type: String, require: true },
-      }
-    ]
-  }, 
-  {timestamp:true}
-  
+      },
+    ],
+  },
+  { timestamp: true }
 );
 
-module.exports = mongoose.model("posts", PostSchema, "posts");
+module.exports = mongoose.model("posts", PostSchema);

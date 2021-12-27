@@ -1,6 +1,4 @@
 const { PostModel, CategoryModel } = require("../database/models");
-const crypto = require("crypto");
-const mongo = require("mongodb")
 const {
   validatePassword,
   generatePassword,
@@ -82,7 +80,7 @@ class PostService {
         status: STATUS_CODES.OK,
         success: true,
         message: `Get posts successfully!`,
-        data: { userId, posts },
+        data:  posts ,
       };
     } catch (error) {
       return new APIError(
@@ -100,31 +98,25 @@ class PostService {
       return new APIError("Missing information!!", STATUS_CODES.BAD_REQUEST);
     }
 
-    
-    
     try {
       // ***** CREATE NEW POST *****
-      const _id = new mongo.ObjectID()
-      
+
       const newPost = new PostModel({
-        
         title,
         content,
         category,
         gradients,
         image,
-        userId
+        userId,
       });
-          
-     
 
-      await newPost.save()
+      await newPost.save();
 
       return {
         status: STATUS_CODES.OK,
         success: true,
         message: `Create  posts successfully!`,
-        data: { userId, newPost },
+        data: newPost,
       };
     } catch (error) {
       return new APIError(
@@ -135,12 +127,11 @@ class PostService {
     }
   }
 
-  async editPost(updatePost) {
-    const { postId, title, image, content, gradients, categoryTitle, userId } =
-      updatePost;
+  async editPost(postId, title, image, content, gradients, categoryTitle, userId) {
+   
 
     // **** Simple validation ****
-    if (!postId || !title || !content || !gradients || !category || !userId) {
+    if (!postId || !title || !content || !gradients || !categoryTitle || !userId) {
       return new APIError("Missing information!!", STATUS_CODES.BAD_REQUEST);
     }
 
@@ -151,20 +142,20 @@ class PostService {
       var updatePost = {
         title,
         content,
-        gradients: gradients,
-        categoryId: category._id,
-        // image: image,
+        gradients,
+        category,
+        image,
       };
 
       const postUpdateConditions = { _id: postId, userId: userId };
 
-      updatedPost = await PostModel.findOneAndUpdate(
+      updatePost = await PostModel.findOneAndUpdate(
         postUpdateConditions,
-        updatedPost,
+        updatePost,
         { new: true }
       );
 
-      if (!updatedPost) {
+      if (!updatePost) {
         return new APIError(
           "User not authorized to update or post not found! ",
           STATUS_CODES.NOT_FOUND
@@ -174,8 +165,8 @@ class PostService {
       return {
         status: STATUS_CODES.OK,
         success: true,
-        message: `Update post ${updatedPost} successfully!`,
-        data: { userId, updatedPost },
+        message: `Update post ${updatePost._id} successfully!`,
+        data:  updatePost ,
       };
     } catch (error) {
       return new APIError(
@@ -221,43 +212,54 @@ class PostService {
   }
 
   async SubscribeEvents(payload) {
-    const { event, data } = payload;
+    try {
+      const { event, data } = payload;
 
     // const { /*userId*/, postId, commentId } = data;
 
     switch (event) {
       // Subscribe user-service
       case "REMOVE_POST":
-        removePostOfUser(userId, postId);
+        this.removePostOfUser(userId, postId);
         break;
       case "ADD_POST":
-        addPostToUser(userId, postId);
+        this.addPostToUser(userId, postId);
         break;
       case "UPDATE_POST":
-        updatePostToUser(userId, postId);
+        this.updatePostToUser(userId, postId);
         break;
       case "GET_POSTS":
-        getUserCreatedPosts(userId);
+        this.getUserCreatedPosts(userId);
         break;
 
       default:
         break;
     }
+    } catch (error) {
+      return new APIError(
+        "Data Not found!",
+        STATUS_CODES.INTERNAL_ERROR,
+        error.message
+      );
+    }
   }
 
-  async getPostPayload(userId, postId, event) {
-    const post = await PostModel.findById(postId);
-
-    if (post) {
-      const payload = {
-        event: event,
-        data: { userId, post },
-      };
-      return payload;
-    } else {
+  async getPostPayloadUser(userId, post, event) {
+    try {
+      if (post) {
+        const payload = {
+          event: event,
+          data: { userId, post } ,
+        };
+        return payload;
+      } else {
+        return new APIError("No post available!", STATUS_CODES.INTERNAL_ERROR);
+      }
+    } catch (error) {
       return new APIError(
-        "No post available!",
-        STATUS_CODES.INTERNAL_ERROR
+        "Data Not found!",
+        STATUS_CODES.INTERNAL_ERROR,
+        error.message
       );
     }
   }

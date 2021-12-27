@@ -37,13 +37,13 @@ const generateSignature = async (userId) => {
 };
 
 const PublishUserEvent = async (payload) => {
-  await axios.post("http://localhost:8000/api/user/app-events", {
+  await axios.post("http://localhost:8000/user/app-events", {
     payload,
   });
 };
 
 const PublishCommentEvent = async (payload) => {
-  await axios.post("http://localhost:8000/api/comment/app-events", {
+  await axios.post("http://localhost:8000/comment/app-events", {
     payload,
   });
 };

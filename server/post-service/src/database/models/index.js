@@ -1,4 +1,4 @@
 module.exports = {
-    PostModel: require('./Post'),
-    CategoryModel: require('./Category'), 
-}
+  PostModel: require("./Post"),
+  CategoryModel: require("./Category"),
+};

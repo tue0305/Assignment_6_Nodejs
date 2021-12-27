@@ -35,10 +35,8 @@ const UserSchema = new Schema({
     default: Date.now,
   },
   created_posts: [
-    {
-      post: {
+    { 
         _id: { type: String, require: true }
-      }
     },
   ],
 },

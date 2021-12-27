@@ -45,7 +45,7 @@ module.exports.getUserPosts = async (req, res, next) => {
 
     const result = await service.getUserPosts(userId, "GET_POSTS");
     
-    const payload = await service.getPostPayload(
+    const payload = await service.getPostPayloadUser(
       userId,
       result.data,
       "GET_POSTS"
@@ -73,10 +73,10 @@ module.exports.createPost = async (req, res, next) => {
     );
 
 
-    const payload = await service.getPostPayload(
+    const payload = await service.getPostPayloadUser(
       userId,
       result.data,
-      "CREATE_POST"
+      "ADD_POST"
     );
 
     PublishUserEvent(payload);
@@ -90,7 +90,7 @@ module.exports.editPost = async (req, res, next) => {
   try {
     const { postId } = req.params;
     const userId = req.userId;
-    const { title, image, content, gradients, category } = req.body;
+    const { title, image, content, gradients, categoryTitle } = req.body;
 
     const result = await service.editPost(
       postId,
@@ -98,11 +98,11 @@ module.exports.editPost = async (req, res, next) => {
       image,
       content,
       gradients,
-      category,
+      categoryTitle,
       userId
     );
 
-    const payload = await service.getPostPayload(
+    const payload = await service.getPostPayloadUser(
       userId,
       result.data,
       "UPDATE_POST"
@@ -123,7 +123,7 @@ module.exports.deletePost = async (req, res, next) => {
 
     const result = await service.deletePost(postId, userId);
 
-    const payload = await service.getPostPayload(
+    const payload = await service.getPostPayloadUser(
       userId,
       result.data,
       "REMOVE_POST"

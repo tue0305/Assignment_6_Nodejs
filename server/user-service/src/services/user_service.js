@@ -208,16 +208,27 @@ class UserService {
   }
 
   // ***** SUBSCRIBE EVENTS  *****
+
+  
   //=================== POST SERVICE PAYLOAD
+
   async addPostToUser(userId, post) {
     try {
-      const user = await UserModel.findById(userId).populate("created_posts");
+      console.log(userId, post)
+      const postId  = post._id
+      
+      const user = await UserModel.findById(userId).populate('created_posts');
       if (!user) {
         return new APIError("Data Not found!", STATUS_CODES.NOT_FOUND);
       }
-      user.created_posts.push(post._id);
-
+     
+      let createdPosts = user.created_posts    
+      await createdPosts.push(postId)
+      // await user.created_posts.push(post._id);
+      user.created_posts = createdPosts
+     
       await user.save();
+      console.log(user)
 
       return {
         status: STATUS_CODES.OK,
@@ -396,43 +407,6 @@ class UserService {
     }
   }
 
-  async SubscribeEvents(payload) {
-    const { event, data } = payload;
-
-    const { userId, post, comment } = data;
-
-    switch (event) {
-      // Subscribe post-service
-      case "REMOVE_POST":
-        removePostOfUser(userId, post);
-        break;
-      case "ADD_POST":
-        addPostToUser(userId, post);
-        break;
-      case "UPDATE_POST":
-        updatePostToUser(userId, post);
-        break;
-      case "GET_POSTS":
-        getUserCreatedPosts(userId);
-        break;
-
-      // Subscribe comment-service
-      case "REMOVE_COMMENT":
-        getCommentServiceChange(userId, comment, event);
-        break;
-        ``;
-      case "ADD_COMMENT":
-        getCommentServiceChange(userId, comment, event);
-        break;
-      case "UPDATE_COMMENT":
-        getCommentServiceChange(userId, comment, event);
-        break;
-
-      default:
-        break;
-    }
-  }
-
   async getUserPayload(userId, event) {
     const user = await UserModel.findById(userId);
 
@@ -450,6 +424,54 @@ class UserService {
       );
     }
   }
+  
+  async SubscribeEvents(payload) {
+    try {
+      const { event, data } = payload;
+      console.log(data)
+      const comment = "";
+      const {userId, post} = data
+      
+      switch (event) {
+        // Subscribe post-service
+        case "REMOVE_POST":
+          this.removePostOfUser(userId, post);
+          break;
+        case "ADD_POST":
+          this.addPostToUser(userId, post);
+          break;
+        case "UPDATE_POST":
+          this.updatePostToUser(userId, post);
+          break;
+        case "GET_POSTS":
+          this.getUserCreatedPosts(userId);
+          break;
+  
+        // Subscribe comment-service
+        case "REMOVE_COMMENT":
+          this.getCommentServiceChange(userId, comment, event);
+          break;
+          
+        case "ADD_COMMENT":
+          this.getCommentServiceChange(userId, comment, event);
+          break;
+        case "UPDATE_COMMENT":
+          this.getCommentServiceChange(userId, comment, event);
+          break;
+  
+        default:
+          break;
+      }
+    } catch (error) {
+      return new APIError(
+        "Data Not found!",
+        STATUS_CODES.INTERNAL_ERROR,
+        error.message
+      );
+    }
+  }
 }
+
+
 
 module.exports = UserService;
