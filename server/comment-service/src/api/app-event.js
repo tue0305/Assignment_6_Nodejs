@@ -1,8 +1,8 @@
-const UserService = require('../services/user_service');
+const CommentService = require('../services/comment_service');
 
 module.exports = (app) => {
 
-    const service = new UserService();
+    const service = new CommentService();
 
     app.use('/app-events', async (req,res,next) => {
 
@@ -10,7 +10,7 @@ module.exports = (app) => {
 
         service.SubscribeEvents(payload);
 
-        console.log("===============  User Service Received Event ====== ");
+        console.log("===============  Comment Service Received Event ====== ");
         return res.status(200).json(payload);
 
     });

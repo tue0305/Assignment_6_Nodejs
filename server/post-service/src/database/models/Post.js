@@ -3,12 +3,14 @@ const Schema = mongoose.Schema;
 
 const PostSchema = new Schema(
   {
+   
     title: {
       type: String,
       required: true,
     },
     image: {
       type: String,
+      default: null
     },
 
     content: {
@@ -18,8 +20,8 @@ const PostSchema = new Schema(
 
     gradients: [
       {
-        name: { type: String, require: true },
-        quantity: { type: String, require: true },
+        name: { type: String }
+    
       },
     ],
 
@@ -32,30 +34,20 @@ const PostSchema = new Schema(
       type: String,
       require: true,
     },
-    comments: [
+    post_comments: [
       {
         _id: { type: String, require: true },
-        text: { type: String, require: true },
-        createdAt: {
-          type: Date,
-        },
-        parent_Id: { type: String },
       },
     ],
 
-    highlight_comments: [
+    topic_comments: [
       {
         _id: { type: String, require: true },
-        highlight_topic: { type: String, require: true },
-        text: { type: String, require: true },
-        createdAt: {
-          type: Date,
-        },
-        parent_Id: { type: String },
-      },
-    ],
-  },
-  { timestamp: true }
+      }
+    ]
+  }, 
+  {timestamp:true}
+  
 );
 
-module.exports = mongoose.model("posts", PostSchema);
+module.exports = mongoose.model("posts", PostSchema, "posts");

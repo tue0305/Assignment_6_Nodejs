@@ -1,5 +1,6 @@
 const argon2 = require("argon2");
 const jwt = require("jsonwebtoken");
+const axios = require("axios");
 
 const { ACCESS_SECRET_TOKEN } = require("../config/config");
 
@@ -38,17 +39,21 @@ const generateSignature = async (userId) => {
 
 
 
-// module.exports.PublishCustomerEvent = async (payload) => {
-//   axios.post("http://localhost:8000/customer/app-events", {
-//     payload,
-//   });
-// };
+const PublishCommentEvent = async (payload) => {
+  await axios.post("http://localhost:8000/comment/app-events", {
+    payload,
+  });
+};
 
-// module.exports.PublishShoppingEvent = async (payload) => {
-//   axios.post("http://localhost:8000/shopping/app-events", {
-//     payload,
-//   });
-// };
+const PublishPostEvent = async (payload) => {
+  try {
+    await axios.post("http://localhost:8000/post/app-events", {
+    payload,
+  });
+  } catch (error) {
+    console.log(error.message)
+  }
+};
 
 // **************************************
 module.exports = {
@@ -57,5 +62,8 @@ module.exports = {
 
   generateSignature,
   verifySignature,
-  sendEmail
+  sendEmail,
+
+  PublishCommentEvent,
+  PublishPostEvent
 };

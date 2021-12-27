@@ -1,4 +1,6 @@
 const UserService = require("../../services/user_service");
+const { PublishCommentEvent, PublishPostEvent } = require("../../utils");
+
 
 const service = new UserService();
 
@@ -7,6 +9,8 @@ module.exports.signUp = async (req, res, next) => {
     const { email, password } = req.body;
     const data = await service.createUser({ email, password });
     
+    PublishPostEvent(data, 'AVC')
+    PublishCommentEvent(data,'dsad')
     return res.json(data);
   } catch (err) {
     next(err);

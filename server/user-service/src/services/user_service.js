@@ -5,6 +5,7 @@ const {
   generateSignature,
   sendEmail,
 } = require("../utils");
+
 const {
   STATUS_CODES,
   APIError,
@@ -41,7 +42,7 @@ class UserService {
       const accessToken = await generateSignature({ _id: user._id });
 
       return {
-        status: 200,
+        status: STATUS_CODES.OK,
         success: true,
         message: `Login successfully!`,
         userId: user._id,
@@ -81,7 +82,6 @@ class UserService {
       const newUser = new UserModel({
         email: email,
         password: userPassword,
-       
       });
 
       await newUser.save();
@@ -106,7 +106,7 @@ class UserService {
   async getProfile(id) {
     try {
       const user = await UserModel.findById(id).select(`-password`);
-      
+
       if (!user) return new APIError("Data Not found!", STATUS_CODES.NOT_FOUND);
 
       return user;
@@ -145,7 +145,7 @@ class UserService {
 
       // **** Send forgot password request  succeed ****
       return {
-        status: 200,
+        status: STATUS_CODES.OK,
         success: true,
         message: `Reset password link sent to your email ${user.email} account. Please check to reset password!`,
         userId: user._id,
@@ -193,7 +193,7 @@ class UserService {
 
       // ***** Reset password succeed *****
       return {
-        status: 200,
+        status: STATUS_CODES.OK,
         success: true,
         message: `Reset password account ${user.email} success!`,
         userId: user._id,
@@ -208,21 +208,23 @@ class UserService {
   }
 
   // ***** SUBSCRIBE EVENTS  *****
-  async addPostToUser(userId, _id) {
-    const post = { _id };
+  //=================== POST SERVICE PAYLOAD
+  async addPostToUser(userId, post) {
     try {
       const user = await UserModel.findById(userId).populate("created_posts");
       if (!user) {
         return new APIError("Data Not found!", STATUS_CODES.NOT_FOUND);
       }
-      user.created_posts.push(post);
+      user.created_posts.push(post._id);
 
       await user.save();
 
       return {
-        status: 200,
+        status: STATUS_CODES.OK,
         success: true,
         message: `Add post to user success!`,
+        user: user,
+
         created_posts: user.created_posts,
       };
     } catch (error) {
@@ -234,8 +236,7 @@ class UserService {
     }
   }
 
-  async removePostOfUser(userId, _id) {
-    const post = { _id };
+  async removePostOfUser(userId, post) {
     try {
       const user = await UserModel.findById(userId);
       if (!user) {
@@ -243,9 +244,9 @@ class UserService {
       }
 
       if (user.created_posts.length > 0) {
-        user.created_posts.map((post) => {
-          if (post._id.toString() === post._id.toString()) {
-            const index = user.created_posts.indexOf(post);
+        user.created_posts.map((item) => {
+          if (item._id.toString() === post._id.toString()) {
+            const index = user.created_posts.indexOf(item);
             user.created_posts.splice(index, 1);
           } else {
             return new APIError("Post doesn't exist!", STATUS_CODES.NOT_FOUND);
@@ -253,9 +254,11 @@ class UserService {
         });
         await user.save();
         return {
-          status: 200,
+          status: STATUS_CODES.OK,
           success: true,
           message: `Remove post ${post} success!`,
+          user: user,
+
           created_posts: user.created_posts,
         };
       } else {
@@ -273,20 +276,21 @@ class UserService {
     }
   }
 
-  async updatePostToUser(userId, _id) {
-    const post = { _id };
+  async updatePostToUser(userId, post) {
     try {
       const user = await UserModel.findById(userId).populate("created_posts");
       if (!user) {
         return new APIError("Data Not found!", STATUS_CODES.NOT_FOUND);
       }
       if (user.created_posts.length > 0) {
-        user.created_posts.map((post) => {
-          if (post._id.toString() === post._id.toString()) {
+        user.created_posts.map((item) => {
+          if (item._id.toString() === post._id.toString()) {
             return {
-              status: 200,
+              status: STATUS_CODES.OK,
               success: true,
               message: `update post ${post} success!`,
+              user: user,
+
               updated_posts: post,
             };
           } else {
@@ -307,6 +311,7 @@ class UserService {
       );
     }
   }
+
   async getUserCreatedPosts(userId) {
     try {
       const user = await UserModel.findById(userId).populate("created_posts");
@@ -315,11 +320,73 @@ class UserService {
       }
 
       return {
-        status: 200,
+        status: STATUS_CODES.OK,
         success: true,
         message: `Get posts success!`,
+        user: user,
         created_posts: user.created_posts,
       };
+    } catch (error) {
+      return new APIError(
+        "Data Not found!",
+        STATUS_CODES.INTERNAL_ERROR,
+        error.message
+      );
+    }
+  }
+
+  //=================== COMMENT SERVICE PAYLOAD
+  async getCommentServiceChange(userId, comment, event) {
+    try {
+      if (userId != comment.userId) {
+        return new APIError(
+          "Subscribe comment service fail!",
+          STATUS_CODES.NOT_FOUND
+        );
+      }
+      const user = await UserModel.findById(userId).populate("created_posts");
+      if (!user) {
+        return new APIError("Data Not found!", STATUS_CODES.NOT_FOUND);
+      }
+
+      if (user.created_posts.length > 0) {
+        user.created_posts.map((post) => {
+          if (post._id.toString() === comment.postId.toString()) {
+            switch (event) {
+              // Subscribe comment-service
+              case "REMOVE_COMMENT":
+                return {
+                  status: STATUS_CODES.OK,
+                  success: true,
+                  message: `${event}: ${comment._id} by  user: ${user.email} success!`,
+                  comment: comment,
+                };
+
+              case "ADD_COMMENT":
+                return {
+                  status: STATUS_CODES.OK,
+                  success: true,
+                  message: `${event}: ${comment._id} by  user: ${user.email} success!`,
+                  comment: comment,
+                };
+
+              case "UPDATE_COMMENT":
+                return {
+                  status: STATUS_CODES.OK,
+                  success: true,
+                  message: `${event}: ${comment._id} by  user: ${user.email} success!`,
+                  comment: comment,
+                };
+              default:
+                break;
+            }
+          } else {
+            return new APIError("Post doesn't exist!", STATUS_CODES.NOT_FOUND);
+          }
+        });
+      } else {
+        return new APIError("No Post available!!", STATUS_CODES.NOT_FOUND);
+      }
     } catch (error) {
       return new APIError(
         "Data Not found!",
@@ -332,26 +399,55 @@ class UserService {
   async SubscribeEvents(payload) {
     const { event, data } = payload;
 
-    const { userId, postId } = data;
+    const { userId, post, comment } = data;
 
     switch (event) {
-      case "TEST":
-        console.log("Subcribe!", data)
-        break;
+      // Subscribe post-service
       case "REMOVE_POST":
-        removePostOfUser(userId, postId);
+        removePostOfUser(userId, post);
         break;
       case "ADD_POST":
-        addPostToUser(userId, postId);
+        addPostToUser(userId, post);
         break;
       case "UPDATE_POST":
-        updatePostToUser(userId, postId);
+        updatePostToUser(userId, post);
         break;
-      case "GET_POST":
+      case "GET_POSTS":
         getUserCreatedPosts(userId);
         break;
+
+      // Subscribe comment-service
+      case "REMOVE_COMMENT":
+        getCommentServiceChange(userId, comment, event);
+        break;
+        ``;
+      case "ADD_COMMENT":
+        getCommentServiceChange(userId, comment, event);
+        break;
+      case "UPDATE_COMMENT":
+        getCommentServiceChange(userId, comment, event);
+        break;
+
       default:
         break;
+    }
+  }
+
+  async getUserPayload(userId, event) {
+    const user = await UserModel.findById(userId);
+
+    if (user) {
+      const payload = {
+        event: event,
+        data: { user },
+      };
+      return payload;
+    } else {
+      return new APIError(
+        "No post available!",
+        STATUS_CODES.INTERNAL_ERROR,
+        err.message
+      );
     }
   }
 }
