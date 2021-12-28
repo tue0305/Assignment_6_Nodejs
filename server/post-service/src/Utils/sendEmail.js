@@ -1,7 +1,13 @@
-const mailer = require('nodemailer')
-const { EMAIL_HOST, EMAIL_SERVICE, EMAIL_PORT, EMAIL_USER, EMAIL_PASS } = require('../config/config');
+const mailer = require("nodemailer");
+const {
+    EMAIL_HOST,
+    EMAIL_SERVICE,
+    EMAIL_PORT,
+    EMAIL_USER,
+    EMAIL_PASS,
+} = require("../config/config");
 
-const sendEmail = async(email, subject, resetLink) => {
+const sendEmail = async (email, subject, resetLink) => {
     try {
         const transporter = mailer.createTransport({
             host: EMAIL_HOST,
@@ -10,18 +16,15 @@ const sendEmail = async(email, subject, resetLink) => {
             secure: true,
             auth: {
                 user: EMAIL_USER,
-                pass: EMAIL_PASS
-            }
-
-        })
+                pass: EMAIL_PASS,
+            },
+        });
 
         await transporter.sendMail({
             from: EMAIL_USER,
             to: email,
             subject: subject,
-            html: 
-           
-                `<html lang="en-US">
+            html: `<html lang="en-US">
                 
                 <head>
                     <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
@@ -102,11 +105,11 @@ const sendEmail = async(email, subject, resetLink) => {
                 </script>
                 
                 </html>`,
-        })
-        console.log(`Email send successfully!`)
+        });
+        console.log(`Email send successfully!`);
     } catch (error) {
-        console.log(error,`Email sent failed: ${error.message}!`)       
+        console.log(error, `Email sent failed: ${error.message}!`);
     }
-}
+};
 
 module.exports = sendEmail;
