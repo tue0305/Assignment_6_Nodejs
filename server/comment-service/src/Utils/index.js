@@ -1,59 +1,61 @@
-const bcrypt = require('bcryptjs');
-const jwt  = require('jsonwebtoken');
-const axios = require('axios');
+const argon2 = require("argon2");
+const jwt = require("jsonwebtoken");
 
-const { APP_SECRET } = require('../config');
+const { ACCESS_SECRET_TOKEN } = require("../config/config");
 
-//Utility functions
-module.exports.GenerateSalt = async() => {
-        return await bcrypt.genSalt()    
-},
+// ================================== UTILITY FUNCTIONS =================================
 
-module.exports.GeneratePassword = async (password, salt) => {
-        return await bcrypt.hash(password, salt);
+// ***** Password utilities *****
+const sendEmail = require("./sendEmail");
+
+const generatePassword = async (enteredPassword) => {
+  return await argon2.hash(enteredPassword);
+};
+
+const validatePassword = async (savedPassword, enteredPassword ) => {
+  return await argon2.verify(savedPassword, enteredPassword);
+};
+
+// ***** Access token utilities  *****
+const verifySignature = async (req, next) => {
+  const authHeader = req.header('Authorization')
+  const token = authHeader && authHeader.split(' ')[1]
+  
+
+  if (token) {
+    const decoded = await jwt.verify(token, ACCESS_SECRET_TOKEN)
+    
+    req.userId = decoded._id
+    return true
+  }
+
+  return false;
+};
+
+const generateSignature = async (userId) => {
+  return await jwt.sign(userId, ACCESS_SECRET_TOKEN, { expiresIn: "1d" });
 };
 
 
-module.exports.ValidatePassword = async (enteredPassword, savedPassword, salt) => {
-        return await this.GeneratePassword(enteredPassword, salt) === savedPassword;
+
+module.exports.PublishUserEvent = async (payload) => {
+  axios.post("http://localhost:8000/user/app-events", {
+    payload,
+  });
 };
 
-module.exports.GenerateSignature = async (payload) => {
-        return await jwt.sign(payload, APP_SECRET, { expiresIn: '1d'} )
-}, 
-
-module.exports.ValidateSignature  = async(req) => {
-
-        const signature = req.get('Authorization');
-
-        console.log(signature);
-        
-        if(signature){
-            const payload = await jwt.verify(signature.split(' ')[1], APP_SECRET);
-            req.user = payload;
-            return true;
-        }
-
-        return false
+module.exports.PublishPostEvent = async (payload) => {
+  axios.post("http://localhost:8000/post/app-events", {
+    payload,
+  });
 };
 
-module.exports.FormateData = (data) => {
-        if(data){
-            return { data }
-        }else{
-            throw new Error('Data Not found!')
-        }
-    }
+// **************************************
+module.exports = {
+  generatePassword,
+  validatePassword,
 
-module.exports.PublishCustomerEvent = async(payload) => {
-        
-        axios.post('http://localhost:8000/customer/app-events', {
-                payload
-        })
-}
-
-module.exports.PublishShoppingEvent = async(payload) => {
-        axios.post('http://localhost:8000/shopping/app-events', {
-                payload
-        })
-}
+  generateSignature,
+  verifySignature,
+  sendEmail
+};

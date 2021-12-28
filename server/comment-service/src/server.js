@@ -1,25 +1,23 @@
-require("dotenv").config();
-const connectDB = require("./db")
-const express = require("express");
+const express = require('express');
+const { PORT } = require('./config/config');
+const { DB_Connection } = require('./database/index');
+const expressApp = require('./express_app');
 
-const cors = require("cors");
+const StartServer = async() => {
 
-// ### ROUTES
-const userRouter = require(`./routes/user`);
+    const app = express();
+    
+    await DB_Connection();
+    
+    await expressApp(app);
 
+    app.listen(PORT, () => {
+        console.log(`listening to port ${PORT}`);
+    })
+    .on('error', (err) => {
+        console.log(err);
+        process.exit();
+    })
+}
 
-
-// ***** CONNECT DATABASE *****
-connectDB();
-
-const app = express();
-app.use(express.urlencoded({extended: true}));
-app.use(express.json())
-app.use(cors()) // To parse the incoming requests with JSON payloads
-
-// ### Using routes
-app.use(`/api/user`, userRouter);
-
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Sever started on port ${PORT}`));
+StartServer();

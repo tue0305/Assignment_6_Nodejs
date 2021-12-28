@@ -19,7 +19,7 @@ class PostService {
       const posts = await PostModel.find();
 
       return {
-        status: 200,
+        status: STATUS_CODES.OK,
         success: true,
         message: `Get posts successfully!`,
         posts: posts,
@@ -28,7 +28,7 @@ class PostService {
       return new APIError(
         "Data Not found!",
         STATUS_CODES.INTERNAL_ERROR,
-        err.message
+        error.message
       );
     }
   }
@@ -40,7 +40,7 @@ class PostService {
 
       // ***** GET ALL POSTS BY CATEGORY*****
       const posts = await PostModel.find({ category: category });
-      if (!post) {
+      if (!posts) {
         return {
           status: 400,
           success: false,
@@ -49,7 +49,7 @@ class PostService {
       }
 
       return {
-        status: 200,
+        status: STATUS_CODES.OK,
         success: true,
         message: `Get ${category.title}'s posts successfully!`,
         posts: posts,
@@ -58,7 +58,7 @@ class PostService {
       return new APIError(
         "Data Not found!",
         STATUS_CODES.INTERNAL_ERROR,
-        err.message
+        error.message
       );
     }
   }
@@ -69,142 +69,197 @@ class PostService {
       const posts = await PostModel.find({ userId: userId }).populate(`user`, [
         `email`,
       ]);
-
+      if (!posts) {
+        return {
+          status: STATUS_CODES.NOT_FOUND,
+          success: false,
+          message: `No post available!`,
+        };
+      }
       return {
-        status: 200,
+        status: STATUS_CODES.OK,
         success: true,
-        message: `Get user ${userId} posts successfully!`,
-        posts: posts,
+        message: `Get posts successfully!`,
+        data:  posts ,
       };
     } catch (error) {
       return new APIError(
         "Data Not found!",
         STATUS_CODES.INTERNAL_ERROR,
-        err.message
+        error.message
       );
     }
   }
 
-  async createPost(newPostInputs) {
-    const { title, image, content, gradients, categoryTitle, userId } =
-      newPostInputs;
-
+  async createPost(title, image, content, gradients, categoryTitle, userId) {
+    const category = await CategoryModel.findOne({ title: categoryTitle });
     // **** Simple validation ****
     if (!title || !content || !gradients || !category || !userId) {
       return new APIError("Missing information!!", STATUS_CODES.BAD_REQUEST);
     }
 
-    const category = await CategoryModel.findOne({ title: categoryTitle });
-
     try {
       // ***** CREATE NEW POST *****
-      var newPost = new Post({
+
+      const newPost = new PostModel({
         title,
         content,
-        gradients: gradients,
-        categoryId: category._id,
-        // image: image,
-        userId: userId,
+        category,
+        gradients,
+        image,
+        userId,
       });
 
+      await newPost.save();
+
       return {
-        status: 200,
+        status: STATUS_CODES.OK,
         success: true,
         message: `Create  posts successfully!`,
-        post: newPost,
+        data: newPost,
       };
     } catch (error) {
       return new APIError(
         "Data Not found!",
         STATUS_CODES.INTERNAL_ERROR,
-        err.message
+        error.message
       );
     }
   }
 
-  async editPost(updatePost) {
-    const { postId, title, image, content, gradients, categoryTitle, userId } =  updatePost;
-    
+  async editPost(postId, title, image, content, gradients, categoryTitle, userId) {
+   
 
     // **** Simple validation ****
-    if (!postId || !title || !content || !gradients || !category || !userId) {
+    if (!postId || !title || !content || !gradients || !categoryTitle || !userId) {
       return new APIError("Missing information!!", STATUS_CODES.BAD_REQUEST);
     }
 
     const category = await CategoryModel.findOne({ title: categoryTitle });
 
     try {
-      // ***** CREATE NEW POST *****
-      var updatePost = ({
+      // ***** UPDATE NEW POST *****
+      var updatePost = {
         title,
         content,
-        gradients: gradients,
-        categoryId: category._id,
-        // image: image,
-      });
+        gradients,
+        category,
+        image,
+      };
 
       const postUpdateConditions = { _id: postId, userId: userId };
-      
-      updatedPost = await PostModel.findOneAndUpdate(
+
+      updatePost = await PostModel.findOneAndUpdate(
         postUpdateConditions,
-        updatedPost,
+        updatePost,
         { new: true }
       );
 
-      if (!updatedPost) {
-        return new APIError("User not authorized to update or post not found! ", STATUS_CODES.NOT_FOUND)
+      if (!updatePost) {
+        return new APIError(
+          "User not authorized to update or post not found! ",
+          STATUS_CODES.NOT_FOUND
+        );
       }
 
       return {
-        status: 200,
+        status: STATUS_CODES.OK,
         success: true,
-        message: `Post update successfully!`,
-        post: updatedPost,
+        message: `Update post ${updatePost._id} successfully!`,
+        data:  updatePost ,
       };
     } catch (error) {
       return new APIError(
         "Data Not found!",
         STATUS_CODES.INTERNAL_ERROR,
-        err.message
+        error.message
       );
     }
   }
 
-  async deletePost(deletePost) {
-    const { postId, title, image, content, gradients, categoryTitle, userId } =  newPostInputs;
-    
-
+  //### NOT DONE
+  async deletePost(userId, postId) {
     // **** Simple validation ****
-    if (!postId || !title || !content || !gradients || !category || !userId) {
+    if (!postId || !userId) {
       return new APIError("Missing information!!", STATUS_CODES.BAD_REQUEST);
     }
 
-    const category = await CategoryModel.findOne({ title: categoryTitle });
-
     try {
-     
+      const postDeleteConditions = { _id: postId, userId: userId };
 
-      const postUpdateConditions = { _id: postId, userId: userId };
-      
-      deletedPost = await PostModel.findOneAndDelete(
-        postUpdateConditions,
-      )
+      deletedPost = await PostModel.findOneAndDelete(postDeleteConditions);
 
       if (!deletedPost) {
-        return new APIError("User not authorized to update or post not found! ", STATUS_CODES.NOT_FOUND)
+        return new APIError(
+          "User not authorized to update or post not found! ",
+          STATUS_CODES.NOT_FOUND
+        );
       }
 
       return {
-        status: 200,
+        status: STATUS_CODES.OK,
         success: true,
-        message: `Post delete successfully!`,
-        post: deletedPost,
+        message: `Delete post ${postId} successfully!`,
+        data: { userId, postId },
       };
     } catch (error) {
       return new APIError(
         "Data Not found!",
         STATUS_CODES.INTERNAL_ERROR,
-        err.message
+        error.message
+      );
+    }
+  }
+
+  async SubscribeEvents(payload) {
+    try {
+      const { event, data } = payload;
+
+    // const { /*userId*/, postId, commentId } = data;
+
+    switch (event) {
+      // Subscribe user-service
+      case "REMOVE_POST":
+        this.removePostOfUser(userId, postId);
+        break;
+      case "ADD_POST":
+        this.addPostToUser(userId, postId);
+        break;
+      case "UPDATE_POST":
+        this.updatePostToUser(userId, postId);
+        break;
+      case "GET_POSTS":
+        this.getUserCreatedPosts(userId);
+        break;
+
+      default:
+        break;
+    }
+    } catch (error) {
+      return new APIError(
+        "Data Not found!",
+        STATUS_CODES.INTERNAL_ERROR,
+        error.message
+      );
+    }
+  }
+
+  async getPostPayloadUser(userId, post, event) {
+    try {
+      if (post) {
+        const payload = {
+          event: event,
+          data: { userId, post } ,
+        };
+        return payload;
+      } else {
+        return new APIError("No post available!", STATUS_CODES.INTERNAL_ERROR);
+      }
+    } catch (error) {
+      return new APIError(
+        "Data Not found!",
+        STATUS_CODES.INTERNAL_ERROR,
+        error.message
       );
     }
   }

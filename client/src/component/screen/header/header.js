@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from 'react-responsive-carousel';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
+import { useDispatch, useSelector } from 'react-redux';
 //Carousel
 import strawberry from '../../../images/Carousel/strawberry.jpg'
 import cabbageSoup from '../../../images/Carousel/cabbageSoup.jpg';
@@ -34,6 +35,7 @@ import lau from '../../../images/icons/lau.png';
 import meatCow from '../../../images/icons/meatCow.png';
 import meatPig from '../../../images/icons/meatPig.png';
 import milk from '../../../images/icons/milk.png';
+import { getCategoryAPI } from '../../../redux/actions/user/category/category';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -48,267 +50,26 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Header() {
     const classes = useStyles();
+    const dispatch = useDispatch();
+    const { categorys } = useSelector(state => state.categoryReducer);
+    useEffect(() => {
+        dispatch(getCategoryAPI());
+    },[])
     function FormRow() {
         return (
             <React.Fragment>
+                 { categorys?.categories?.map((category) => (
                 <Grid item xs={2}>
                     <Paper className={classes.paper}>
                         <div className='category-icon'>
                             <img src={kDongGia1} alt={"kDongGia1"} />
                         </div>
                         <div className='category-title'>
-                            <span>Giảm giá 99%</span>
+                            <span>{category.title}</span>
                         </div>
                     </Paper>
                 </Grid>
-                <Grid item xs={2}>
-                    <Paper className={classes.paper}>
-                        <div className='category-icon'>
-                            <img src={kDongGia9} alt={"kDongGia9"} />
-                        </div>
-                        <div className='category-title'>
-                            <span>Giảm 50%</span>
-                        </div>
-                    </Paper>
-                </Grid>
-                <Grid item xs={2}>
-                    <Paper className={classes.paper}>
-                        <div className='category-icon'>
-                            <img src={k19} alt={"k19"} />
-                        </div>
-                        <div className='category-title'>
-                            <span>Chỉ 19k</span>
-                        </div>
-                    </Paper>
-                </Grid>
-                <Grid item xs={2}>
-                    <Paper className={classes.paper}>
-                        <div className='category-icon'>
-                            <img src={k29} alt={"k29"} />
-                        </div>
-                        <div className='category-title'>
-                            <span>Chỉ 29k</span>
-                        </div>
-                    </Paper>
-                </Grid>
-                <Grid item xs={2}>
-                    <Paper className={classes.paper}>
-                        <div className='category-icon'>
-                            <img src={deal} alt={"deal"} />
-                        </div>
-                        <div className='category-title'>
-                            <span>Deal nấm hội tụ</span>
-                        </div>
-                    </Paper>
-                </Grid>
-                <Grid item xs={2}>
-                    <Paper className={classes.paper}>
-                        <div className='category-icon'>
-                            <img src={deal1} alt={"deal1"} />
-                        </div>
-                        <div className='category-title'>
-                            <span>Món ngon ấm bụng</span>
-                        </div>
-                    </Paper>
-                </Grid>
-            </React.Fragment>
-        );
-    };
-    function FormRow1() {
-        return (
-            <React.Fragment>
-                <Grid item xs={2}>
-                    <Paper className={classes.paper}>
-                        <div className='category-icon'>
-                            <img src={fish} alt={"fish"} />
-                        </div>
-                        <div className='category-title'>
-                            <span>Deal món sườn ngon</span>
-                        </div>
-                    </Paper>
-                </Grid>
-                <Grid item xs={2}>
-                    <Paper className={classes.paper}>
-                       <div className='category-icon'>
-                            <img src={maggi} alt={"maggi"} />
-                       </div>
-                       <div className='category-title'>
-                            <span>Today's Special</span>
-                        </div>
-                    </Paper>
-                </Grid>
-                <Grid item xs={2}>
-                    <Paper className={classes.paper}>
-                        <div className='category-icon'>
-                            <img src={pack} alt={"pack"} />
-                        </div>
-                        <div className='category-title'>
-                            <span>MAGGI Pack</span>
-                        </div>
-                    </Paper>
-                </Grid>
-                <Grid item xs={2}>
-                    <Paper className={classes.paper}>
-                        <div className='category-icon'>
-                            <img src={pack2} alt={"pack2"} />
-                        </div>
-                        <div className='category-title'>
-                            <span>Mua lẻ giá sỉ</span>
-                        </div>
-                    </Paper>
-                </Grid>
-                <Grid item xs={2}>
-                    <Paper className={classes.paper}>
-                        <div className='category-icon'>
-                            <img src={reice} alt={"reice"} />
-                        </div>
-                        <div className='category-title'>
-                            <span>Cooky Pack</span>
-                        </div>
-                    </Paper>
-                </Grid>
-                <Grid item xs={2}>
-                    <Paper className={classes.paper}>
-                        <div className='category-icon'>
-                            <img src={today} alt={"today"} />
-                        </div>
-                        <div className='category-title'>
-                            <span>Pack ướp sẵn</span>
-                        </div>
-                    </Paper>
-                </Grid>
-            </React.Fragment>
-        );
-    };
-    function FormRow2() {
-        return (
-            <React.Fragment>
-                <Grid item xs={2}>
-                    <Paper className={classes.paper}>
-                        <div className='category-icon'>
-                            <img src={drink} alt={"drink"} />
-                        </div>
-                        <div className='category-title'>
-                            <span>Deal món sườn ngon</span>
-                        </div>
-                    </Paper>
-                </Grid>
-                <Grid item xs={2}>
-                    <Paper className={classes.paper}>
-                       <div className='category-icon'>
-                            <img src={dungcubep} alt={"dungcubep"} />
-                       </div>
-                       <div className='category-title'>
-                            <span>Today's Special</span>
-                        </div>
-                    </Paper>
-                </Grid>
-                <Grid item xs={2}>
-                    <Paper className={classes.paper}>
-                        <div className='category-icon'>
-                            <img src={eggs} alt={"eggs"} />
-                        </div>
-                        <div className='category-title'>
-                            <span>MAGGI Pack</span>
-                        </div>
-                    </Paper>
-                </Grid>
-                <Grid item xs={2}>
-                    <Paper className={classes.paper}>
-                        <div className='category-icon'>
-                            <img src={food} alt={"food"} />
-                        </div>
-                        <div className='category-title'>
-                            <span>Mua lẻ giá sỉ</span>
-                        </div>
-                    </Paper>
-                </Grid>
-                <Grid item xs={2}>
-                    <Paper className={classes.paper}>
-                        <div className='category-icon'>
-                            <img src={friut} alt={"friut"} />
-                        </div>
-                        <div className='category-title'>
-                            <span>Cooky Pack</span>
-                        </div>
-                    </Paper>
-                </Grid>
-                <Grid item xs={2}>
-                    <Paper className={classes.paper}>
-                        <div className='category-icon'>
-                            <img src={giaVi} alt={"giaVi"} />
-                        </div>
-                        <div className='category-title'>
-                            <span>Pack ướp sẵn</span>
-                        </div>
-                    </Paper>
-                </Grid>
-            </React.Fragment>
-        );
-    };
-    function FormRow3() {
-        return (
-            <React.Fragment>
-                <Grid item xs={2}>
-                    <Paper className={classes.paper}>
-                        <div className='category-icon'>
-                            <img src={hoaPham} alt={"hoaPham"} />
-                        </div>
-                        <div className='category-title'>
-                            <span>Deal món sườn ngon</span>
-                        </div>
-                    </Paper>
-                </Grid>
-                <Grid item xs={2}>
-                    <Paper className={classes.paper}>
-                       <div className='category-icon'>
-                            <img src={lau} alt={"lau"} />
-                       </div>
-                       <div className='category-title'>
-                            <span>Today's Special</span>
-                        </div>
-                    </Paper>
-                </Grid>
-                <Grid item xs={2}>
-                    <Paper className={classes.paper}>
-                        <div className='category-icon'>
-                            <img src={meatCow} alt={"meatCow"} />
-                        </div>
-                        <div className='category-title'>
-                            <span>MAGGI Pack</span>
-                        </div>
-                    </Paper>
-                </Grid>
-                <Grid item xs={2}>
-                    <Paper className={classes.paper}>
-                        <div className='category-icon'>
-                            <img src={meatPig} alt={"meatPig"} />
-                        </div>
-                        <div className='category-title'>
-                            <span>Mua lẻ giá sỉ</span>
-                        </div>
-                    </Paper>
-                </Grid>
-                <Grid item xs={2}>
-                    <Paper className={classes.paper}>
-                        <div className='category-icon'>
-                            <img src={friut} alt={"friut"} />
-                        </div>
-                        <div className='category-title'>
-                            <span>Cooky Pack</span>
-                        </div>
-                    </Paper>
-                </Grid>
-                <Grid item xs={2}>
-                    <Paper className={classes.paper}>
-                        <div className='category-icon'>
-                            <img src={milk} alt={"milk"} />
-                        </div>
-                        <div className='category-title'>
-                            <span>Pack ướp sẵn</span>
-                        </div>
-                    </Paper>
-                </Grid>
+                  ))}
             </React.Fragment>
         );
     };
@@ -339,19 +100,6 @@ export default function Header() {
                         <Grid container spacing={1}>
                             <Grid container item xs={12} spacing={3}>
                                 <FormRow />
-                            </Grid>
-                            <Grid container item xs={12} spacing={3}>
-                                <FormRow1 />
-                            </Grid>
-                        </Grid>
-                    </div>
-                    <div className={classes.root}>
-                        <Grid container spacing={1}>
-                            <Grid container item xs={12} spacing={3}>
-                                <FormRow2 />
-                            </Grid>
-                            <Grid container item xs={12} spacing={3}>
-                                <FormRow3 />
                             </Grid>
                         </Grid>
                     </div>

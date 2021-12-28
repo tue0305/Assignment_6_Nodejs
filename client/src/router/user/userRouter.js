@@ -5,6 +5,7 @@ import DetailRecipe from '../../component/user/detail/detailRecipe';
 import ForgotPassword from '../../component/user/forgotPassword/forgotPassword';
 import ResetPassword from '../../component/user/reset-password/resetPassword';
 import ProfileUser from '../../component/user/profile/profileUser';
+import Login from '../../component/admin/login/login';
 const userRouter = [
     {
         path: '/',
@@ -41,6 +42,7 @@ const userRouter = [
         exact: true,
         component: ProfileUser
     },
+  
 ];
 
 export {userRouter}

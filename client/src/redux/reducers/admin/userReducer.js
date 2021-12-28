@@ -32,10 +32,10 @@ const userReducer = (state = initialState, action) =>{
                 user: action.payload,
                 loading: false
             }
-        case 'test':
+        case actType.SIGN_IN_ADMIN:
             return{
                 ...state,
-                user: null,
+                user: action.payload,
                 loading: false
             }
         default:

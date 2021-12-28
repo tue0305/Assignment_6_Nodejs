@@ -3,36 +3,27 @@ const router = express.Router();
 const { verifyToken, CategoryController} = require('../api')
 
 // @route GET api/Category
-// @des get Categorys
+// @des get Categories
 // @access Public
 router.get('/', CategoryController.getCategories);
 
-// @route GET api/Category
-// @des get Categorys by category
-// @access Public
-router.get('/:category', CategoryController.getCategoriesByCategory);
-
-// @route GET api/Category/user
-// @desc get user's Category
-// @access Public
-router.get('/user', verifyToken,  CategoryController.getUserCategorys );
 
 
 // @route Category api/Category/user/create
 // @desc create Category
 // @access Public
-router.Category('user/create', verifyToken,  CategoryController.createCategory );
+router.post('/create', verifyToken,  CategoryController.createCategory );
 
 // @route PUT api/Category/edit
 // @desc edit Category
 // @access Public
-router.put('user/edit/:CategoryId', verifyToken, CategoryController.editCategory);
+router.put('/edit/:categoryId', verifyToken, CategoryController.editCategory);
 
 
-// @route DELETE api/Category/user/delete/CategoryId
+// @route DELETE api/Category/user/delete/categoryId
 // @des send reset password's to Category's email
 // @access Public
-router.delete('user/delete/:CategoryId', verifyToken, CategoryController.deleteCategory);
+router.delete('user/delete/:categoryId', verifyToken, CategoryController.deleteCategory);
 
 
 

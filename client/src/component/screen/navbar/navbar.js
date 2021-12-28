@@ -116,7 +116,7 @@ export default function Navbar() {
         setAnchorEl(null);
     };
     const logout = () => {
-        localStorage.removeItem("user");
+        localStorage.clear("accessToken");
         localStorage.setItem("prevLocation", location?.pathname || "");
         history.push("/"); //logout se redirect ve trang /login
     };

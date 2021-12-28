@@ -1,13 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import * as adminSignIn from '../../../redux/actions/admin/signIn';
-import { useFormik } from "formik";
-import * as Yup from 'yup';
-import { connect } from "react-redux";
+import { useDispatch } from 'react-redux';
+import {signInAdminAPI} from '../../../redux/actions/admin/signIn';
 // IMAGES 
 import gogd from '../../../images/Sign-in-up/vincentgogh.jpg';
 
@@ -33,25 +31,33 @@ const divStyle = makeStyles((theme) => ({
 function Login(props) {
     const classes = useStyles();
     const styleButton = divStyle();
-    const formik = useFormik({
-        initialValues: {
-            email: '',
-            password: ''
-        },
-        validationSchema: Yup.object({
-            email: Yup.string().email('Must have address email!'),
-            password: Yup.string()
-        }),
-        onSubmit: (values, e) => {
-            console.log(values);
-            e.preventDefault();
-        }
+    let dispatch = useDispatch();
+    const [state, setState] = useState({
+        email: '',
+        password: '',
     });
-    const handleOnSubmit = (user) => {
-        props.signIn({
-            user
-        });
+    const { email, password } = state;
+    const handleInputChange = (e) => {
+        let { name, value } = e.target;
+        setState({ ...state, [name]: value })
     };
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (!email || !password) {
+            setError('Please input field');
+        }
+        if(!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)){
+            setError('Email must be email address ex: @gmail')
+        }
+        // if( /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/.test(password)){
+        //     setError('The password must contain at least 8  characters including at least 1 uppercase, 1 lowercase, one digit.')
+        // }
+        else {
+            dispatch(signInAdminAPI(state));
+            setError('');
+        }
+    };
+    const [error, setError] = useState('');
     return (
         <div className='login-admin-backround'>
             <div className='login-admin'>
@@ -62,44 +68,31 @@ function Login(props) {
                                 <div className='login-admin-left'>
                                     <h2>SIGN IN</h2>
                                     <div className='login-admin-form'>
-                                        <form
-                                            onSubmit={formik.handleSubmit}
-                                            method='POST'
-                                        >
+                                        <form onSubmit={handleSubmit}>
                                             <div className='form-input' className={styleButton.root}>
                                                 <TextField
                                                     id="outlined-basic"
                                                     label="Email"
                                                     variant="outlined"
                                                     type="email"
-                                                    onChange={formik.handleChange}
-                                                    onBlur={formik.handleBlur}
-                                                    value={formik.values.email}
+                                                    value={state.email}
                                                     name='email'
+                                                    onChange={handleInputChange}
                                                 />
-                                                {
-                                                    formik.touched.email && formik.errors.email
-                                                        ? <div className='error_msg'>{formik.errors.email}</div> : null
-                                                }
                                             </div>
                                             <div className='form-input' className={styleButton.root}>
                                                 <TextField
                                                     id="outlined-basic"
                                                     label="Password"
                                                     variant="outlined"
-                                                    onChange={formik.handleChange}
-                                                    onBlur={formik.handleBlur}
-                                                    value={formik.values.password}
+                                                    value={state.password}
+                                                    onChange={handleInputChange}
                                                     name='password'
                                                     type='password'
                                                 />
-                                                {
-                                                    formik.touched.password && formik.errors.password
-                                                        ? <div className='error_msg'>{formik.errors.password}</div> : null
-                                                }
                                             </div>
                                             <div className='form-button'>
-                                                <Button variant="contained" color="secondary" type='submit' onClick={handleOnSubmit}>
+                                                <Button variant="contained" color="secondary" type='submit'>
                                                     SIGN IN NOW
                                                 </Button>
                                             </div>
@@ -122,11 +115,5 @@ function Login(props) {
         </div>
     )
 }
-const mapDispatchToProps = dispatch => {
-    return {
-        signIn: data => {
-            dispatch(adminSignIn.actSignInAdmin(data));
-        }
-    };
-};
-export default connect(null, mapDispatchToProps)(Login)
+
+export default (Login)

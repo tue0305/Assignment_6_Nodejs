@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {  useEffect } from 'react';
 import PropTypes from 'prop-types';
 import SwipeableViews from 'react-swipeable-views';
 import { useTheme } from '@mui/material/styles';
@@ -95,21 +95,19 @@ export default function ProfileUser() {
                                     <Container>
                                         <Grid container >
                                             {user && ( <>
-                                                <Grid item xs={8} >
+                                                <Grid item xs={5} >
                                                     <div className='tap-one-image'>
-                                                        <img src={test} alt='test' />
+                                                        <img src={user.avatar} alt='test' />
                                                     </div>
                                                 </Grid>
                                                 
                                             {/* ---- */}
-                                            <Grid item xs={4} >
+                                            <Grid item xs={5} >
                                                 <div className='tap-one-info-email'>
                                                     <span>Email:{user.email}</span>
                                                 </div>
                                             </Grid>
-                                            
                                             </>)}
-
                                         </Grid>
                                     </Container>
                                 </div>

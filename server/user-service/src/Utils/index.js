@@ -1,5 +1,6 @@
 const argon2 = require("argon2");
 const jwt = require("jsonwebtoken");
+const axios = require("axios");
 
 
 const { ACCESS_SECRET_TOKEN } = require("../config/config");
@@ -18,8 +19,7 @@ const validatePassword = async (savedPassword, enteredPassword ) => {
 };
 
 // ***** Access token utilities  *****
-const verifySignature = async (req) => {
-  
+const verifySignature = async (req, next) => {
   const authHeader = req.header('Authorization')
   const token = authHeader && authHeader.split(' ')[1]
   
@@ -57,17 +57,25 @@ const checkPassword = async (password) =>{
 };
 
 
-// module.exports.PublishCustomerEvent = async (payload) => {
-//   axios.post("http://localhost:8000/customer/app-events", {
-//     payload,
-//   });
-// };
+const PublishCommentEvent = async (payload) => {
+  try {
+    await axios.post("http://localhost:8000/post/app-events", {
+    payload,
+  });
+  } catch (error) {
+    console.log(error.message)
+  }
+};
 
-// module.exports.PublishShoppingEvent = async (payload) => {
-//   axios.post("http://localhost:8000/shopping/app-events", {
-//     payload,
-//   });
-// };
+const PublishPostEvent = async (payload) => {
+  try {
+    await axios.post("http://localhost:8000/post/app-events", {
+    payload,
+  });
+  } catch (error) {
+    console.log(error.message)
+  }
+};
 
 // **************************************
 module.exports = {
@@ -77,5 +85,8 @@ module.exports = {
   generateSignature,
   verifySignature,
   sendEmail,
-  checkEmail
+  checkEmail,
+
+  PublishCommentEvent,
+  PublishPostEvent
 };

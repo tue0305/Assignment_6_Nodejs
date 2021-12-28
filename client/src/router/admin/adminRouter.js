@@ -6,11 +6,11 @@ const adminRouter = [
         exact: true,
         component: DashboardAdmin
     },
-    {
-        path: '/sign-in-admin',
-        exact: true,
-        component: Login
-    },
+    // {
+    //     path: '/sign-in-admin',
+    //     exact: true,
+    //     component: Login
+    // },
 ];
 
 export {adminRouter}

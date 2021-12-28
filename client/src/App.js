@@ -1,10 +1,10 @@
 import React  from 'react';
-import { BrowserRouter,  Switch } from 'react-router-dom';
+import { BrowserRouter,  Switch, Route } from 'react-router-dom';
 import {userRouter} from "./router/user/userRouter";
 import {adminRouter} from './router/admin/adminRouter';
 import UserTemplate from './component/template/user/userTemplate';
 import AdminTemplate from './component/template/admin/adminTemplate';
-
+import Login from './component/admin/login/login';
 function App() {
   //USER
   const ShowMenuHome = (routes) => {
@@ -29,6 +29,7 @@ function App() {
         <Switch>
           {ShowMenuHome(userRouter)}
           {ShowMenuAdmin(adminRouter)}
+          <Route path="/sign-in-admin" component={Login} />
         </Switch>
       </div>
     </BrowserRouter>

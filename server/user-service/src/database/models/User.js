@@ -19,7 +19,6 @@ const UserSchema = new Schema({
 
   avatar: {
     type: String,
-    default: DEFAULT_AVATAR,
   },
 
   role: {
@@ -35,12 +34,11 @@ const UserSchema = new Schema({
     default: Date.now,
   },
   created_posts: [
-    {
-      post: {
+    { 
         _id: { type: String, require: true }
-      }
     },
   ],
-});
+},
+{timestamp:true});
 
 module.exports = mongoose.model("users", UserSchema);

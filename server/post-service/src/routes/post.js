@@ -21,18 +21,18 @@ router.get('/user', verifyToken,  PostController.getUserPosts );
 // @route POST api/post/user/create
 // @desc create post
 // @access Public
-router.post('user/create', verifyToken,  PostController.createPost );
+router.post('/user/create', verifyToken,  PostController.createPost );
 
 // @route PUT api/post/edit
 // @desc edit post
 // @access Public
-router.put('user/edit/:postId', verifyToken, PostController.editPost);
+router.put('/user/edit/:postId', verifyToken, PostController.editPost);
 
 
 // @route DELETE api/post/user/delete/postId
 // @des send reset password's to post's email
 // @access Public
-router.delete('user/delete/:postId', verifyToken, PostController.deletePost);
+router.delete('/user/delete/:postId', verifyToken, PostController.deletePost);
 
 
 

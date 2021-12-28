@@ -9,7 +9,7 @@ import GTranslateIcon from '@material-ui/icons/GTranslate';
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import { Link } from 'react-router-dom';
 import {signInAPI} from '../../../redux/actions/user/signIn-signUp/userSignIn'
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 // IMAGES 
 import salad from '../../../images/Sign-in-up/salad.jpg';
 
@@ -58,7 +58,6 @@ function SignIn(props) {
         // }
         else {
             dispatch(signInAPI(state));
-            console.log(dispatch(signInAPI(state)),'st');
             setError('');
         }
     };

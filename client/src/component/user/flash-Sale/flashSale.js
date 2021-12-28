@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import { useDispatch, useSelector } from 'react-redux';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -11,6 +12,7 @@ import RauNgotNhat from '../../../images/Flash Sale/RauNgotNhat.jpeg';
 import suonNonHeo from '../../../images/Flash Sale/suonNonHeo.jpeg';
 import SuSu from '../../../images/Flash Sale/SuSu.jpeg';
 import ThanBoXaoBongThienLi from '../../../images/Flash Sale/ThanBoXaoBongThienLi.jpeg';
+import { getCategoryAPI } from '../../../redux/actions/user/category/category';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -25,10 +27,15 @@ const useStyles = makeStyles((theme) => ({
 
 export default function FlashSale() {
     const classes = useStyles();
+    const dispatch = useDispatch();
+    const { categorys } = useSelector(state => state.categoryReducer);
+    useEffect(() => {
+        dispatch(getCategoryAPI());
+    },[])
     function FormRow() {
         return (
             <React.Fragment>
-                <Grid item xs={2}>
+                {/* <Grid item xs={2}>
                     <Paper className={classes.paper}>
                         <div className='flash-sale-icon'>
                             <img src={KimChiCaiThao} alt={"KimChiCaiThao"} />
@@ -37,18 +44,22 @@ export default function FlashSale() {
                             <span>Giảm giá 99%</span>
                         </div>
                     </Paper>
-                </Grid>
-                <Grid item xs={2}>
-                    <Paper className={classes.paper}>
-                        <div className='flash-sale-icon'>
-                            <img src={NhoDenMy} alt={"NhoDenMy"} />
-                        </div>
-                        <div className='flash-sale-title'>
-                            <span>Giảm 50%</span>
-                        </div>
-                    </Paper>
-                </Grid>
-                <Grid item xs={2}>
+                </Grid> */}
+               
+                { categorys?.categories?.map((category) => (
+                        <Grid item xs={2}>
+                            <Paper className={classes.paper}>
+                                <div className='flash-sale-icon'>
+                                    <img src={KimChiCaiThao} alt={"NhoDenMy"} />
+                                </div>
+                                <div className='flash-sale-title'>
+                                    <span>{category.title}</span>
+                                </div>
+                            </Paper>
+                        </Grid>
+                    ))}
+
+                {/* <Grid item xs={2}>
                     <Paper className={classes.paper}>
                         <div className='flash-sale-icon'>
                             <img src={RauNgotNhat} alt={"RauNgotNhat"} />
@@ -87,7 +98,7 @@ export default function FlashSale() {
                             <span>Món ngon ấm bụng</span>
                         </div>
                     </Paper>
-                </Grid>
+                </Grid> */}
             </React.Fragment>
         );
     };

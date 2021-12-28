@@ -9,6 +9,7 @@ app.use(cors());
 // SET UP SATIC FILE 
 const publicPathDirectory = path.join(__dirname, "./public");
 app.use("/public", express.static(publicPathDirectory));
+app.use('/public',express.static('public'));
 
 const StartServer = async() => {
     
