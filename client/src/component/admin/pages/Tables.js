@@ -92,97 +92,6 @@ function Tables(props) {
   const sample = modelSample();
   const classes = useStyles();
 
-  let dispatch = useDispatch();
-  const { userId } = useParams();
-  const { users } = useSelector(state => state.data);
-  // console.log(user,'detail')
-  /*----- */
-  const [open, setOpen] = React.useState(false);
-  /*----- */
-  // const [currUser, setCurrUser] = useState(user);
-  // useEffect(()=>{
-  //   setCurrUser(user);
-  // }, [user]);
-  const handleOpen = () => {
-    setOpen(true);
-    // useEffect(() =>{
-      dispatch(getDetailUsers(userId))
-      // console.log(userId,'userId');
-    // })
-  };
-
-  const handleOpenHigh =() =>{
-    setOpen(true);
-  }
-  const handleClose = () => {
-    setOpen(false);
-  };
-  /*----- */
-  useEffect(() => {
-    dispatch(loadUsers());
-  }, []);
-
-  /*----- */
-
-  /*----- */
-
-  // useEffect(() => {
-  //   if(user){
-  //     setState({...user})
-  //   }
-  // }, [user]);
-  /*----- */
-  const handleDelete = (userId) => {
-    if (window.confirm('d')) {
-      dispatch(deleteUsers(userId))
-    }
-  };
-  /*----- */
-  // const handleUpdate = (userId) => {
-  //     dispatch(getDetailUsers(userId))
-  // };
-  /*----- */
-  const [state, setState] = useState({
-    email: '',
-    password: '',
-    role: 'NORMAL'
-  });
-  const { email, password, role } = state;
-  /*----- */
-  const handleInputChange = (e) => {
-    let { name, value } = e.target;
-
-    setState({ ...state, [name]: value })
-  };
-  /*----- */
-  const [error, setError] = useState('');
-  /*----- */
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!email || !password) {
-      setError('Please input field');
-    }
-    else {
-      dispatch(addUsers(state));
-      setError('');
-    }
-  };
-  /*----- */
-  // const handleSubmitUpdate = (e) => {
-  //   e.preventDefault();
-  //   if (!email || !password) {
-  //     setError('Please input field');
-  //   }
-  //   else {
-  //     dispatch(updateUsers(state));
-  //     setError('');
-  //   }
-  // };
-  /*----- */
-  const [value, setValue] = React.useState('NORMAL');
-  const handleChange = (event) => {
-    setValue(event.target.value);
-  };
   /*----- */
   return (
     <>
@@ -195,82 +104,6 @@ function Tables(props) {
               title="Authors Table"
             >
               <div className="table-responsive">
-                <div className="table-add-user">
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={handleOpenHigh}
-                  >
-                    <ContactsIcon />
-                  </Button>
-                  <Modal
-                    aria-labelledby="spring-modal-title"
-                    aria-describedby="spring-modal-description"
-                    className={sample.modal}
-                    open={open}
-                    onClose={handleClose}
-                    closeAfterTransition
-                    BackdropComponent={Backdrop}
-                    BackdropProps={{
-                      timeout: 500,
-                    }}
-                  >
-                    <Fade in={open}>
-                      <form onSubmit={handleSubmit}>
-                        <div className={sample.paper}>
-                          <div className={divInput}>
-                            <TextField
-                              id="outlined-basic"
-                              label="Email"
-                              variant="outlined"
-                              type="email"
-                              name='email'
-                              value={email}
-                              onChange={handleInputChange}
-                            />
-                            {error && <h3 style={{ color: 'red' }}>{error}</h3>}
-                          </div>
-                          <div className={divInput}>
-                            <TextField
-                              id="outlined-basic"
-                              label="Password"
-                              variant="outlined"
-                              name='password'
-                              type="password"
-                              value={password}
-                              onChange={handleInputChange}
-                            />
-                          </div>
-                          <div className={divInput}>
-                            <RadioGroup className="Register-form" value={value} onChange={handleChange}>
-                              <FormControlLabel
-                                control={<Radio />}
-                                label="ADMIN"
-                                value="ADMIN"
-                                name="type"
-                              />
-                              <FormControlLabel
-                                control={<Radio />}
-                                label="USER"
-                                value="NORMAL"
-                                name="type"
-                              />
-                            </RadioGroup>
-                          </div>
-                          <div className="form-buttton">
-                            <Button
-                              type="submit"
-                              variant="contained"
-                              color="secondary"
-                            >
-                              Create User
-                            </Button>
-                          </div>
-                        </div>
-                      </form>
-                    </Fade>
-                  </Modal>
-                </div>
                 {/* --- */}
                 <TableContainer component={Paper}>
                   <Table className={classes.table} aria-label="simple table">
@@ -284,35 +117,32 @@ function Tables(props) {
                     </TableHead>
                     {/* ----- */}
                     <TableBody>
-                      {users && users.map((user) => (
-                        <TableRow key={user.userId}>
+
+                        <TableRow >
                           <TableCell component="th" scope="row" align="center">
-                            {user.email}
+                            <img src=""/> a
                           </TableCell>
-                          <TableCell align="center"><p>{user.password}</p></TableCell>
-                          <TableCell align="center">{user.role}</TableCell>
-                          <TableCell align="right">
+                          <TableCell align="center">email</TableCell>
+                          <TableCell align="center"><p>password</p></TableCell>
+                          <TableCell align="center">admin</TableCell>
+                          <TableCell align="center">
                             {/* ----- */}
                             <Button
                               variant="contained"
                               color="secondary"
-                              onClick={() => { handleDelete(user.userId) }}
                             >
                               <DeleteForeverIcon />
                             </Button>
                             {/* ----- */}
-                            {/* ----- */}
                             <Button
                               variant="contained"
                               color="secondary"
-                              onClick={()=>handleOpen(user.userId)}
                             >
                               <EditIcon />
                             </Button>
                             {/* ----- */}
                           </TableCell>
                         </TableRow>
-                      ))}
                     </TableBody>
                   </Table>
                 </TableContainer>

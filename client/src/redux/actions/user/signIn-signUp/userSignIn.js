@@ -97,7 +97,8 @@ export const forgotAPI = (data) =>{
     }
 };
 
-export const resetAPI = (data, userId, token) =>{
+export const resetPasswordAPI = (data, userId, token) =>{
+    console.log('aa');
     return function (dispatch) {
      axios({
          method: 'POST',
@@ -105,6 +106,7 @@ export const resetAPI = (data, userId, token) =>{
          data: data
      })
      .then((res) =>{
+         console.log(res.data);
          if(res.data.success === true){
          Swal.fire({
              icon: 'success',
@@ -117,16 +119,44 @@ export const resetAPI = (data, userId, token) =>{
             });
          })}
          else{
-             Swal.fire({
-                 icon: 'error',
-                 title: 'Hãy thử lại!',
-                 width: '400px',
-                 padding: '0 0 20px 0'
-             });
+             if(res.data.success === false){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Hãy thử lại!',
+                    width: '400px',
+                    padding: '0 0 20px 0'
+                });
+             } 
          }
      })
      .catch((err) =>{
-         console.log(err);
+         console.log(err,'err');
+     })
+    }
+};
+
+// const getInfomationuser = (user) =>({
+//     type: ActionType.GET_INFORMATION_USER,
+//     payload: user
+// });
+
+
+export const getInformationUserAPI = () =>{
+    const token = localStorage.getItem('accessToken');
+    return  (dispatch) => {
+     axios({
+         method: 'GET',
+         url:`http://localhost:8001/api/user/profile`,
+         headers: {'Authorization': 'Bearer '+ token}
+     })
+     .then((res) =>{
+         dispatch({
+            type: ActionType.GET_INFORMATION_USER,
+            payload: res.data
+        });
+     })
+     .catch((err) =>{
+         console.log(err,'err');
      })
     }
 };

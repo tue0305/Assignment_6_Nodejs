@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 // IMAGES 
 import salad from '../../../images/Sign-in-up/salad.jpg';
 import {  signUpAPI } from '../../../redux/actions/user/signIn-signUp/userSignIn';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
     root: {

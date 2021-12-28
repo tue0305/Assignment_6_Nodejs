@@ -2,7 +2,7 @@
     p{
         white-space: nowrap;
         border: solid 1px white;
-        width: 355px;
+        width: 350px;
         height: 18px;
         text-overflow: ellipsis;
         overflow: hidden;
@@ -14,11 +14,12 @@
                     .MuiInputBase-root{
                         margin: 30px 0px;
                     }
-                }
-                
-                
-            }
+                }  
+            }   
         }
-    }   
+    } 
+    button {
+        margin: 0px 10px;
+    }  
 }
 
