@@ -10,7 +10,7 @@ router.get('/', PostController.getPosts);
 // @route GET api/post
 // @des get posts by category
 // @access Public
-router.get('/:category', PostController.getPostsByCategory);
+router.get('/:categoryId', PostController.getPostsByCategory);
 
 // @route GET api/post/user
 // @desc get user's post

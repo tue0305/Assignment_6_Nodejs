@@ -33,10 +33,11 @@ class PostService {
     }
   }
 
-  async getPostsByCategory(categoryTitle) {
+  async getPostsByCategory(categoryId) {
     try {
+      console.log(categoryId)
       // ***** GET CATEGORY_ID BY NAME*****
-      const category = await CategoryModel.findOne({ title: categoryTitle });
+      const category = await CategoryModel.findOne({ _id: categoryId });
 
       // ***** GET ALL POSTS BY CATEGORY*****
       const posts = await PostModel.find({ category: category });

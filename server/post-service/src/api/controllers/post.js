@@ -16,27 +16,17 @@ module.exports.getPosts = async (req, res, next) => {
 
 module.exports.getPostsByCategory = async (req, res, next) => {
   try {
-    const { category } = req.params;
-
-    const data = await service.getPostsByCategory(category);
-
-    return res.json(data);
-  } catch (error) {
-    next(error);
-  }
-};
-
-module.exports.getPostsByCategory = async (req, res, next) => {
-  try {
-    const { categoryTitle } = req.params.category;
-
-    const data = await service.getPostsByCategory(categoryTitle);
+    const { categoryId } = req.params;
+    console.log( req.params);
+    const data = await service.getPostsByCategory(categoryId);
 
     return res.json(data);
   } catch (error) {
     next(error);
   }
 };
+
+
 
 module.exports.getUserPosts = async (req, res, next) => {
   try {
