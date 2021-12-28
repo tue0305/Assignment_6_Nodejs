@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import SwipeableViews from 'react-swipeable-views';
 import { useTheme } from '@mui/material/styles';
@@ -9,8 +9,9 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Grid from '@material-ui/core/Grid';
-
+import { useDispatch, useSelector } from 'react-redux';
 import test from '../../../images/logo/cooking.png';
+import { getInformationUserAPI } from '../../../redux/actions/user/signIn-signUp/userSignIn';
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -49,6 +50,13 @@ function a11yProps(index) {
 export default function ProfileUser() {
     const theme = useTheme();
     const [value, setValue] = React.useState(0);
+    let dispatch = useDispatch();
+
+    const { user } = useSelector(state => state.SignUser);
+
+    useEffect(() => {
+        dispatch(getInformationUserAPI());
+    }, []);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -57,6 +65,8 @@ export default function ProfileUser() {
     const handleChangeIndex = (index) => {
         setValue(index);
     };
+
+
     return (
         <div className='profile-user'>
             <Container fixed>
@@ -71,9 +81,8 @@ export default function ProfileUser() {
                                 variant="fullWidth"
                                 aria-label="full width tabs example"
                             >
-                                <Tab label="Item One" {...a11yProps(0)} />
-                                <Tab label="Item Two" {...a11yProps(1)} />
-                                <Tab label="Item Three" {...a11yProps(2)} />
+                                <Tab label="THÔNG TIN CÁ NHÂN" {...a11yProps(0)} />
+                                <Tab label="BÀI VIẾT" {...a11yProps(1)} />
                             </Tabs>
                         </AppBar>
                         <SwipeableViews
@@ -85,30 +94,28 @@ export default function ProfileUser() {
                                 <div className='box-tap-one'>
                                     <Container>
                                         <Grid container >
-                                            <div className='tap-one-info'>
+                                            {user && ( <>
                                                 <Grid item xs={8} >
                                                     <div className='tap-one-image'>
-                                                        <img src={test} alt='test'/>
+                                                        <img src={test} alt='test' />
                                                     </div>
                                                 </Grid>
-                                                {/* ---- */}
-                                                <Grid item xs={4} >
-                                                    <div className='tap-one-email'>
-                                                        <div>
-                                                            <span></span>
-                                                        </div>
-                                                    </div>
-                                                </Grid>
-                                            </div>  
+                                                
+                                            {/* ---- */}
+                                            <Grid item xs={4} >
+                                                <div className='tap-one-info-email'>
+                                                    <span>Email:{user.email}</span>
+                                                </div>
+                                            </Grid>
+                                            
+                                            </>)}
+
                                         </Grid>
                                     </Container>
                                 </div>
                             </TabPanel>
                             <TabPanel value={value} index={1} dir={theme.direction}>
                                 Item Two
-                            </TabPanel>
-                            <TabPanel value={value} index={2} dir={theme.direction}>
-                                Item Three
                             </TabPanel>
                         </SwipeableViews>
                     </Box>

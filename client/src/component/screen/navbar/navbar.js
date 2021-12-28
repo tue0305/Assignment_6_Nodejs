@@ -16,6 +16,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import PhoneIcon from '@material-ui/icons/Phone';
+import { NavLink, useLocation, useHistory } from 'react-router-dom';
 //IMAGES
 import logo from '../../../images/logo/cooking.png';
 
@@ -105,7 +106,8 @@ const StyledMenuItem = withStyles((theme) => ({
 export default function Navbar() {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState(null);
-
+    const location = useLocation();
+    const history = useHistory();
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -113,56 +115,66 @@ export default function Navbar() {
     const handleClose = () => {
         setAnchorEl(null);
     };
-
-    // const isLogin = () => {
-	// 	if (localStorage.getItem("user")) {
-	// 		let user = JSON.parse(localStorage.getItem("user"));
-	// 		//Logged
-	// 		return (
-	// 			<>
-	// 				<div>
-	// 					<Button aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
-	// 						<Avatar>
-	// 							<img src={user.avatar} className="Navbar-Img"/>
-	// 						</Avatar> 
-	// 						<span className="Navbar-span">{user.name}</span>
-	// 					</Button>
-	// 					<div className="Navbar-Menu">
-	// 						<Menu
-	// 							id="simple-menu"
-	// 							anchorEl={anchorEl}
-	// 							keepMounted
-	// 							open={Boolean(anchorEl)}
-	// 							onClose={handleClose}
-	// 						>
-    //                             <>
-    //                             <NavLink exact to={{pathname:'/information-user'}}  style={divLine}>
-    //                                     <MenuItem onClick={handleClose}>Thông tin cá nhân</MenuItem>
-    //                                 </NavLink>
-    //                             </>
-	// 							<Link to="/login" onClick={handleClose}><AccountCircleIcon className="Navbar-Icon"/></Link>  
-	// 							<MenuItem onClick={handleClose} onClick={logout} href="# ">Đăng xuất</MenuItem>
-	// 						</Menu>
-	// 					</div>
-	// 				</div>
-	// 			</>
-	// 		);
-	// 	}
-		//check Not logged in
-	// 	return (
-	// 		<NavLink
-	// 			className="user d-flex align-items-center"
-	// 			activeClassName="active"
-	// 			exact
-	// 			to={{
-	// 				pathname: `/login`,
-	// 			}}
-	// 		>
-	// 			{/* <AccountCircleIcon />s */}
-	// 			<Link to="/login" onClick={handleClose}><AccountCircleIcon className="Navbar-Icon"/></Link>  
-	// 		</NavLink>
-	// 	);
-	// };
+    const logout = () => {
+        localStorage.removeItem("user");
+        localStorage.setItem("prevLocation", location?.pathname || "");
+        history.push("/"); //logout se redirect ve trang /login
+    };
+    const isLogin = () => {
+        if (localStorage.getItem("accessToken")) {
+            //Logged
+            return (
+                <>
+                    <div>
+                        <div className="Navbar-Menu">
+                            <StyledMenuItem
+                                id="simple-menu"
+                                anchorEl={anchorEl}
+                                keepMounted
+                                open={Boolean(anchorEl)}
+                                onClose={handleClose}
+                            >
+                                <ListItemIcon>
+                                <>
+                                    <NavLink exact to={{ pathname: '/profile-user' }} >
+                                        <MenuItem onClick={handleClose}>Thông tin cá nhân</MenuItem>
+                                    </NavLink>
+                                </>
+                                </ListItemIcon>
+                                <MenuItem onClick={handleClose} onClick={logout} href="# ">Đăng xuất</MenuItem>
+                            </StyledMenuItem>
+                            {/* <Menu
+                                id="simple-menu"
+                                anchorEl={anchorEl}
+                                keepMounted
+                                open={Boolean(anchorEl)}
+                                onClose={handleClose}
+                            >
+                                <>
+                                    <NavLink exact to={{ pathname: '/profile-user' }} >
+                                        <MenuItem onClick={handleClose}>Thông tin cá nhân</MenuItem>
+                                    </NavLink>
+                                </>
+                                <Link to="/login" onClick={handleClose}><AccountCircleIcon className="Navbar-Icon" /></Link>
+                                <MenuItem onClick={handleClose} onClick={logout} href="# ">Đăng xuất</MenuItem>
+                            </Menu> */}
+                        </div>
+                    </div>
+                </>
+            );
+        }
+        // check Not logged in
+        return (
+            <Link to="/sign-in">
+                <StyledMenuItem>
+                    <ListItemIcon>
+                        <AccountCircleIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText primary="Sign In" className='Navbar-icon-title' />
+                </StyledMenuItem>
+            </Link>
+        );
+    };
 
     return (
         <div id='Navbar'>
@@ -192,12 +204,15 @@ export default function Navbar() {
                                 >
                                     <Link to="/sign-in">
                                         <StyledMenuItem>
-                                            <ListItemIcon>
+                                            {/* <ListItemIcon>
                                                 <AccountCircleIcon fontSize="small" />
                                             </ListItemIcon>
-                                            <ListItemText primary="Sign In" className='Navbar-icon-title' />
+                                            <ListItemText primary="Sign In" className='Navbar-icon-title' /> */}
+                                            {isLogin()}
                                         </StyledMenuItem>
                                     </Link>
+                                    <StyledMenu>
+                                    </StyledMenu>
                                     <StyledMenuItem>
                                         <ListItemIcon>
                                             <PhoneIcon fontSize="small" />

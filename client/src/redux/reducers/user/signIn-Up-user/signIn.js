@@ -1,7 +1,8 @@
 import * as ActionType from '../../../constants/constans';
 
 let initialState = {
-    user:{}
+    user:{},
+    loading: true
 };
 
 const SignUser = (state = initialState, action) => {
@@ -25,6 +26,13 @@ const SignUser = (state = initialState, action) => {
             return {
                 ...state,
                 user: action.payload
+            }
+        case ActionType.GET_INFORMATION_USER:
+
+            return {
+                ...state,
+                user: action.payload,
+                loading: false
             }
         default:
             return { ...state};

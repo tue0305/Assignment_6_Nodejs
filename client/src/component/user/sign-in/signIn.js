@@ -53,9 +53,9 @@ function SignIn(props) {
         if(!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)){
             setError('Email must be email address ex: @gmail')
         }
-        if( /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/.test(password)){
-            setError('The password must contain at least 8  characters including at least 1 uppercase, 1 lowercase, one digit.')
-          }
+        // if( /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/.test(password)){
+        //     setError('The password must contain at least 8  characters including at least 1 uppercase, 1 lowercase, one digit.')
+        // }
         else {
             dispatch(signInAPI(state));
             console.log(dispatch(signInAPI(state)),'st');

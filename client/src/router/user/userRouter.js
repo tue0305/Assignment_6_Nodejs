@@ -27,12 +27,12 @@ const userRouter = [
         component: DetailRecipe
     },
     {
-        path: '/forgot-password',
+        path: `/forgot-password`,
         exact: true,
         component: ForgotPassword
     },
     {
-        path: '/reset-password',
+        path: `/reset-password/:userId/:token`,
         exact: true,
         component: ResetPassword
     },

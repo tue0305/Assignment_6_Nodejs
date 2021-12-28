@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import { makeStyles } from '@material-ui/core/styles';
@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 // IMAGES 
 import salad from '../../../images/Sign-in-up/salad.jpg';
+import { resetPasswordAPI } from '../../../redux/actions/user/signIn-signUp/userSignIn';
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
@@ -30,6 +31,32 @@ const divStyle = makeStyles((theme) => ({
 export default function ResetPassword() {
     const classes = useStyles();
     const styleButton = divStyle();
+    let dispatch = useDispatch();
+    const [state, setState] = useState({
+        password: '',
+        confirmPassword: '',
+    });
+    const { password, confirmPassword } = state;
+    const handleInputChange = (e) => {
+        let { name, value } = e.target;
+        setState({ ...state, [name]: value })
+    };
+    console.log(state,'state');
+    const handleSubmit = (e) => {
+        console.log('d');
+        e.preventDefault();
+        if (!confirmPassword || !password) {
+            setError('Please input field');
+        }
+        // if( /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/.test(password)){
+        //     setError('The password must contain at least 8  characters including at least 1 uppercase, 1 lowercase, one digit.')
+        // }
+        else {
+            dispatch(resetPasswordAPI(state));
+            setError('');
+        }
+    };
+    const [error, setError] = useState('');
     return (
         <div className='reset-password'>
         <div className={classes.root}>
@@ -39,15 +66,15 @@ export default function ResetPassword() {
                         <div className='reset-password-left'>
                             <h2>RESET PASSWORD</h2>
                             <div className='reset-password-form'>
-                                <form >
+                                <form onSubmit={handleSubmit}>
                                     <div className='form-input' className={styleButton.root}>
                                         <TextField
                                             id="outlined-basic"
                                             label="Enter your password, Please!"
                                             variant="outlined"
-                                            name='email'
-                                            // value={state.email}
-                                            // onChange={handleInputChange}
+                                            name='password'
+                                            value={state.password}
+                                            onChange={handleInputChange}
                                         />
                                     </div>
                                     <div className='form-input' className={styleButton.root}>
@@ -55,9 +82,9 @@ export default function ResetPassword() {
                                             id="outlined-basic"
                                             label="Confirm password, Please!"
                                             variant="outlined"
-                                            name='email'
-                                            // value={state.email}
-                                            // onChange={handleInputChange}
+                                            name='confirmPassword'
+                                            value={state.confirmPassword}
+                                            onChange={handleInputChange}
                                         />
                                     </div>
                                     <div className='form-button'>

@@ -91,6 +91,7 @@ function Tables(props) {
     const sample = modelSample();
     const classes = useStyles();
 
+<<<<<<< HEAD
     let dispatch = useDispatch();
     const { userId } = useParams();
     const { users } = useSelector((state) => state.data);
@@ -373,6 +374,72 @@ function Tables(props) {
             </div>
         </>
     );
+=======
+  const sample = modelSample();
+  const classes = useStyles();
+
+  /*----- */
+  return (
+    <>
+      <div className="tabled">
+        <Row gutter={[24, 0]}>
+          <Col xs="24" xl={24}>
+            <Card
+              bordered={false}
+              className="criclebox tablespace mb-24"
+              title="Authors Table"
+            >
+              <div className="table-responsive">
+                {/* --- */}
+                <TableContainer component={Paper}>
+                  <Table className={classes.table} aria-label="simple table">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell align="center">Avatar</TableCell>
+                        <TableCell align="center">Email</TableCell>
+                        <TableCell align="center">Password</TableCell>
+                        <TableCell align="center">Role</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    {/* ----- */}
+                    <TableBody>
+
+                        <TableRow >
+                          <TableCell component="th" scope="row" align="center">
+                            <img src=""/> a
+                          </TableCell>
+                          <TableCell align="center">email</TableCell>
+                          <TableCell align="center"><p>password</p></TableCell>
+                          <TableCell align="center">admin</TableCell>
+                          <TableCell align="center">
+                            {/* ----- */}
+                            <Button
+                              variant="contained"
+                              color="secondary"
+                            >
+                              <DeleteForeverIcon />
+                            </Button>
+                            {/* ----- */}
+                            <Button
+                              variant="contained"
+                              color="secondary"
+                            >
+                              <EditIcon />
+                            </Button>
+                            {/* ----- */}
+                          </TableCell>
+                        </TableRow>
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </div>
+            </Card>
+          </Col>
+        </Row>
+      </div>
+    </>
+  );
+>>>>>>> b628f0a98294cea26a2468f879210cb00e85ab04
 }
 
 export default Tables;

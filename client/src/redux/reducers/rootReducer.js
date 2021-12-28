@@ -7,7 +7,7 @@ import SignUser from './user/signIn-Up-user/signIn';
 import userReducer from './admin/userReducer';
 
 const rootReducers = combineReducers({
-    SignUser,
+        SignUser,
     data: userReducer
 });
 
