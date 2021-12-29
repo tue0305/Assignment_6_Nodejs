@@ -48,11 +48,11 @@ class UserService {
         userId: user._id,
         accessToken,
       };
-    } catch (err) {
+    } catch (error) {
       return new APIError(
         "Data Not found!",
         STATUS_CODES.BAD_REQUEST,
-        err.message
+        error.message
       );
     }
   }
@@ -94,11 +94,11 @@ class UserService {
         userId: newUser._id,
         token,
       };
-    } catch (err) {
+    } catch (error) {
       return new APIError(
         "Data Not found!",
         STATUS_CODES.BAD_REQUEST,
-        err.message
+        error.message
       );
     }
   }
@@ -110,11 +110,11 @@ class UserService {
       if (!user) return new APIError("Data Not found!", STATUS_CODES.NOT_FOUND);
 
       return user;
-    } catch (err) {
+    } catch (error) {
       return new APIError(
         "Data Not found!",
         STATUS_CODES.UN_AUTHORIZED,
-        err.message
+        error.message
       );
     }
   }
@@ -420,7 +420,7 @@ class UserService {
       return new APIError(
         "No post available!",
         STATUS_CODES.INTERNAL_ERROR,
-        err.message
+        
       );
     }
   }

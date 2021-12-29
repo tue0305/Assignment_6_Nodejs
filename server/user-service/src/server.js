@@ -2,6 +2,8 @@ const express = require('express');
 const { PORT } = require('./config/config');
 const { DB_Connection } = require('./database/index');
 const expressApp = require('./express_app');
+const {createChannel} = require('./utils')
+
 
 const StartServer = async() => {
 
@@ -9,6 +11,8 @@ const StartServer = async() => {
     
     await DB_Connection();
     
+    global.channel = await createChannel()
+
     await expressApp(app);
 
     app.listen(PORT, () => {
@@ -18,6 +22,9 @@ const StartServer = async() => {
         console.log(err);
         process.exit();
     })
+   
 }
 
 StartServer();
+
+// module.exports = channel

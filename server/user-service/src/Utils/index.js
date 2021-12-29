@@ -1,8 +1,10 @@
 const argon2 = require("argon2");
 const jwt = require("jsonwebtoken");
-const axios = require("axios");
 
-const { ACCESS_SECRET_TOKEN } = require("../config/config");
+const amqplib = require("amqplib");
+const {APIError, STATUS_CODES} = require("./app-errors")
+
+const { ACCESS_SECRET_TOKEN, MESSAGE_BROKER_URL, EXCHANGE_NAME } = require("../config/config");
 
 // ================================== UTILITY FUNCTIONS =================================
 
@@ -13,21 +15,20 @@ const generatePassword = async (enteredPassword) => {
   return await argon2.hash(enteredPassword);
 };
 
-const validatePassword = async (savedPassword, enteredPassword ) => {
+const validatePassword = async (savedPassword, enteredPassword) => {
   return await argon2.verify(savedPassword, enteredPassword);
 };
 
 // ***** Access token utilities  *****
 const verifySignature = async (req, next) => {
-  const authHeader = req.header('Authorization')
-  const token = authHeader && authHeader.split(' ')[1]
-  
+  const authHeader = req.header("Authorization");
+  const token = authHeader && authHeader.split(" ")[1];
 
   if (token) {
-    const decoded = await jwt.verify(token, ACCESS_SECRET_TOKEN)
-    
-    req.userId = decoded._id
-    return true
+    const decoded = await jwt.verify(token, ACCESS_SECRET_TOKEN);
+
+    req.userId = decoded._id;
+    return true;
   }
 
   return false;
@@ -37,33 +38,90 @@ const generateSignature = async (userId) => {
   return await jwt.sign(userId, ACCESS_SECRET_TOKEN, { expiresIn: "1d" });
 };
 
-
-
-const PublishCommentEvent = async (payload) => {
-  await axios.post("http://localhost:8000/comment/app-events", {
-    payload,
-  });
-};
-
-const PublishPostEvent = async (payload) => {
+// =========================== MESSAGE BROKER ==============================
+// ### Create channel
+const createChannel = async () => {
   try {
-    await axios.post("http://localhost:8000/post/app-events", {
-    payload,
-  });
+    const connection = await amqplib.connect(MESSAGE_BROKER_URL);
+    const channel = await connection.createChannel();
+
+    await channel.assertExchange(EXCHANGE_NAME, "direct", false);
+    
+    return channel;
   } catch (error) {
-    console.log(error.message)
+    const err =  new APIError(
+      "Create channel error!",
+      STATUS_CODES.INTERNAL_ERROR, 
+      error.message
+    );
+    console.log(err)
   }
 };
+
+// ### Publish message
+const publishMessage = async (channel, binding_key, message) => {
+try {
+  await channel.publish(EXCHANGE_NAME, binding_key, Buffer.from(message));
+} catch (error) {
+  const err = new APIError(
+    "publishMessage error!",
+    STATUS_CODES.INTERNAL_ERROR, 
+    error.message
+  );
+  console.log(err)
+}
+};
+// ### Subscribe message
+const subscribeMessage = async (channel, service, binding_key) => {
+try {
+  const appQueue = await channel.assertQueue(QUEUE_NAME);
+
+  channel.bindQueue(appQueue.queue, EXCHANGE_NAME, binding_key)
+  channel.consume(appQueue.queue, data => {
+    console.log('Receive data');
+    console.log(data.content.toString());
+    channel.ack(data)
+  })
+
+} catch (error) {
+  const err = new APIError(
+    "subscribeMessage error!",
+    STATUS_CODES.INTERNAL_ERROR, 
+    error.message
+  );
+  console.log(err)
+}
+};
+
+
+// const PublishCommentEvent = async (payload) => {
+//   await axios.post("http://localhost:8000/comment/app-events", {
+//     payload,
+//   });
+// };
+
+// const PublishPostEvent = async (payload) => {
+//   try {
+//     await axios.post("http://localhost:8000/post/app-events", {
+//     payload,
+//   });
+//   } catch (error) {
+//     console.console.log(error.message)
+//   }
+// };
 
 // **************************************
 module.exports = {
   generatePassword,
   validatePassword,
-
+  createChannel,
   generateSignature,
   verifySignature,
   sendEmail,
+  
+  publishMessage,
+  subscribeMessage,
 
-  PublishCommentEvent,
-  PublishPostEvent
+  // PublishCommentEvent,
+  // PublishPostEvent
 };
