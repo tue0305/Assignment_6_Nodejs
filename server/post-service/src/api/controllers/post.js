@@ -14,6 +14,17 @@ module.exports.getPosts = async (req, res, next) => {
   }
 };
 
+module.exports.getPost = async (req, res, next) => {
+  try {
+    const { postId } = req.params
+    const data = await service.getPost();
+
+    return res.json(data);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports.getPostsByCategory = async (req, res, next) => {
   try {
     const { categoryId } = req.params;

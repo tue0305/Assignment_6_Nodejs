@@ -33,7 +33,27 @@ class PostService {
     }
   }
 
-  async getPostsByCategory(categoryId) {
+  async getPost(postId) {
+    try {
+      // ***** GET ALL POSTS *****
+      const post = await PostModel.findById(postId);
+
+      return {
+        status: STATUS_CODES.OK,
+        success: true,
+        message: `Get post ${post._id} successfully!`,
+        posts: post,
+      };
+    } catch (error) {
+      return new APIError(
+        "Data Not found!",
+        STATUS_CODES.INTERNAL_ERROR,
+        error.message
+      );
+    }
+  }
+
+  async getPostsByCategory(categoryTitle) {
     try {
       console.log(categoryId)
       // ***** GET CATEGORY_ID BY NAME*****
@@ -93,7 +113,7 @@ class PostService {
   }
 
   async createPost(title, image, content, gradients, categoryTitle, userId) {
-    const category = await CategoryModel.findOne({ title: categoryTitle });
+    var category = await CategoryModel.findOne({ title: categoryTitle });
     // **** Simple validation ****
     if (!title || !content || !gradients || !category || !userId) {
       return new APIError("Missing information!!", STATUS_CODES.BAD_REQUEST);
@@ -110,9 +130,16 @@ class PostService {
         image,
         userId,
       });
-
+      console.log(category);
       await newPost.save();
 
+      var post = { 
+        _id: newPost._id,
+        title: newPost.title,
+        image: newPost.image
+      }
+      await category.posts.push(post);
+      await category.save()
       return {
         status: STATUS_CODES.OK,
         success: true,
@@ -239,7 +266,7 @@ class PostService {
     } catch (error) {
       return new APIError(
         "Data Not found!",
-        STATUS_CODES.INTERNAL_ERROR,
+        STATUS_CODES.INTERNAL_ERROR,~
         error.message
       );
     }
