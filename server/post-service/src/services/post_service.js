@@ -33,6 +33,26 @@ class PostService {
     }
   }
 
+  async getPost(postId) {
+    try {
+      // ***** GET ALL POSTS *****
+      const post = await PostModel.findById(postId);
+
+      return {
+        status: STATUS_CODES.OK,
+        success: true,
+        message: `Get post ${post._id} successfully!`,
+        posts: post,
+      };
+    } catch (error) {
+      return new APIError(
+        "Data Not found!",
+        STATUS_CODES.INTERNAL_ERROR,
+        error.message
+      );
+    }
+  }
+
   async getPostsByCategory(categoryTitle) {
     try {
       // ***** GET CATEGORY_ID BY NAME*****
@@ -245,7 +265,7 @@ class PostService {
     } catch (error) {
       return new APIError(
         "Data Not found!",
-        STATUS_CODES.INTERNAL_ERROR,
+        STATUS_CODES.INTERNAL_ERROR,~
         error.message
       );
     }

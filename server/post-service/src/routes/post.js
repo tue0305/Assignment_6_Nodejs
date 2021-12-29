@@ -7,7 +7,7 @@ const { verifyToken, PostController} = require('../api')
 // @access Public
 router.get('/', PostController.getPosts);
 
-// @route GET api/post
+// @route GET api/post/categoryId
 // @des get posts by category
 // @access Public
 router.get('/:category', PostController.getPostsByCategory);
@@ -16,6 +16,11 @@ router.get('/:category', PostController.getPostsByCategory);
 // @desc get user's post
 // @access Public
 router.get('/user', verifyToken,  PostController.getUserPosts );
+
+// @route GET api/post/postId
+// @desc get post detail
+// @access Public
+router.get('/:postId', PostController.getPost );
 
 
 // @route POST api/post/user/create
