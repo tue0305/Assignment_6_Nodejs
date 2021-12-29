@@ -92,7 +92,7 @@ class PostService {
   }
 
   async createPost(title, image, content, gradients, categoryTitle, userId) {
-    const category = await CategoryModel.findOne({ title: categoryTitle });
+    var category = await CategoryModel.findOne({ title: categoryTitle });
     // **** Simple validation ****
     if (!title || !content || !gradients || !category || !userId) {
       return new APIError("Missing information!!", STATUS_CODES.BAD_REQUEST);
@@ -109,9 +109,16 @@ class PostService {
         image,
         userId,
       });
-
+      console.log(category);
       await newPost.save();
 
+      var post = { 
+        _id: newPost._id,
+        title: newPost.title,
+        image: newPost.image
+      }
+      await category.posts.push(post);
+      await category.save()
       return {
         status: STATUS_CODES.OK,
         success: true,
