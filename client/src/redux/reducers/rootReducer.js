@@ -1,14 +1,14 @@
 import { combineReducers } from "redux";
 
-        // USER 
-import SignUser from './user/signIn-Up-user/signIn';
+// USER
+import SignUser from "./user/signIn-Up-user/signIn";
 
-        // ADMIN 
-import userReducer from './admin/userReducer';
+// ADMIN
+import userReducer from "./admin/userReducer";
 
 const rootReducers = combineReducers({
-        SignUser,
-    data: userReducer
+    SignUser,
+    userReducer,
 });
 
 export default rootReducers;
