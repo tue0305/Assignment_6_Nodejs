@@ -17,7 +17,7 @@ module.exports.getPosts = async (req, res, next) => {
 module.exports.getPost = async (req, res, next) => {
   try {
     const { postId } = req.params
-    const data = await service.getPost();
+    const data = await service.getPost(postId);
 
     return res.json(data);
   } catch (error) {
@@ -44,7 +44,7 @@ module.exports.getUserPosts = async (req, res, next) => {
     const userId = req.userId;
     // GET PAYLOAD TO SEND USER_SERVICE
 
-    const result = await service.getUserPosts(userId, "GET_POSTS");
+    const result = await service.getUserPosts(userId);
     
     const payload = await service.getPostPayloadUser(
       userId,
@@ -53,7 +53,7 @@ module.exports.getUserPosts = async (req, res, next) => {
     );
 
     PublishUserEvent(payload);
-    return res.json(data);
+    return res.json(result);
   } catch (error) {
     next(error);
   }

@@ -7,7 +7,10 @@ const { verifyToken, CategoryController} = require('../api')
 // @access Public
 router.get('/', CategoryController.getCategories);
 
-
+// @route GET api/get-detail-category/:categoryId
+// @des get  Detail Categories
+// @access Public
+router.get('/get-detail-category/:categoryId', CategoryController.detailCategory);
 
 // @route Category api/Category/user/create
 // @desc create Category

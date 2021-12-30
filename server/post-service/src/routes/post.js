@@ -15,12 +15,12 @@ router.get('/:categoryId', PostController.getPostsByCategory);
 // @route GET api/post/user
 // @desc get user's post
 // @access Public
-router.get('/user', verifyToken,  PostController.getUserPosts );
+router.get('/user/:userId', verifyToken,  PostController.getUserPosts );
 
 // @route GET api/post/postId
 // @desc get post detail
 // @access Public
-router.get('/:postId', PostController.getPost );
+router.get('/detail/:postId', PostController.getPost );
 
 
 // @route POST api/post/user/create

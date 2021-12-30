@@ -53,7 +53,7 @@ class PostService {
     }
   }
 
-  async getPostsByCategory(categoryTitle) {
+  async getPostsByCategory(categoryId) {
     try {
       console.log(categoryId)
       // ***** GET CATEGORY_ID BY NAME*****
@@ -87,9 +87,7 @@ class PostService {
   async getUserPosts(userId) {
     try {
       // ***** GET ALL USER's POSTS *****
-      const posts = await PostModel.find({ userId: userId }).populate(`user`, [
-        `email`,
-      ]);
+      const posts = await PostModel.find({ userId: userId })
       if (!posts) {
         return {
           status: STATUS_CODES.NOT_FOUND,

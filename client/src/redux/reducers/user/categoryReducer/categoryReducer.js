@@ -14,6 +14,30 @@ const categoryReducer = (state = initialState, action) =>{
                 categorys: action.payload,
                 loading: false
             }
+        case actionType.GET_CATEGORY_POST:
+            return {
+                ... state,
+                categorys: action.payload,
+                loading: false
+            }
+        case actionType.GET_DETAIL_CATEGORY:
+            return {
+                ... state,
+                category: action.payload,
+                loading: false
+            }
+        case actionType.GET_DETAIL_CATEGORY_POST:
+            return {
+                ... state,
+                category: action.payload,
+                loading: false
+            }
+        case actionType.GET_USER_POST:
+            return {
+                ... state,
+                categorys: action.payload,
+                loading: false
+            }
         default:
             return {...state};
     }

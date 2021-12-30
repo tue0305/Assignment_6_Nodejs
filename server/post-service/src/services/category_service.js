@@ -34,6 +34,27 @@ class CategoryService {
     }
   }
 
+  async getDetailCategory(categoryId){
+    try{
+          // GET DETAIL CATEGORY 
+        const getDetail =  await CategoryModel.findById(categoryId);
+        
+        return {
+          status: STATUS_CODES.OK,
+          success: true,
+          message: `GET DETAIL ${getDetail._id} SUCCESSFULLY!`,
+          getDetail: getDetail
+        }
+    }
+    catch(err) {
+      return new APIError(
+        "Data Not found!",
+        STATUS_CODES.INTERNAL_ERROR,
+        error.message
+      );
+    }
+  }
+
   async createCategory(newCategory) {
     const  title  = newCategory;
 
@@ -99,6 +120,8 @@ class CategoryService {
       );
     }
   }
+
+
 
   //   async deleteCategory(deleteCategory) {
   //     const { categoryTitle } =  newCategory;

@@ -1,18 +1,12 @@
 import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { useDispatch, useSelector } from 'react-redux';
-import Paper from '@material-ui/core/Paper';
+import { useDispatch, useSelector, usePa } from 'react-redux';
+import {Link} from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
 //Carousel
-import KimChiCaiThao from '../../../images/Flash Sale/KimChiCaiThao.jpeg'
-import NhoDenMy from '../../../images/Flash Sale/NhoDenMy.jpeg';
-import RauNgotNhat from '../../../images/Flash Sale/RauNgotNhat.jpeg';
-import suonNonHeo from '../../../images/Flash Sale/suonNonHeo.jpeg';
-import SuSu from '../../../images/Flash Sale/SuSu.jpeg';
-import ThanBoXaoBongThienLi from '../../../images/Flash Sale/ThanBoXaoBongThienLi.jpeg';
-import { getCategoryAPI } from '../../../redux/actions/user/category/category';
+import { getCategoryPostAPI } from '../../../redux/actions/user/category/category';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -30,92 +24,57 @@ export default function FlashSale() {
     const dispatch = useDispatch();
     const { categorys } = useSelector(state => state.categoryReducer);
     useEffect(() => {
-        dispatch(getCategoryAPI());
-    },[])
-    function FormRow() {
-        return (
-            <React.Fragment>
-                {/* <Grid item xs={2}>
-                    <Paper className={classes.paper}>
-                        <div className='flash-sale-icon'>
-                            <img src={KimChiCaiThao} alt={"KimChiCaiThao"} />
-                        </div>
-                        <div className='flash-sale-title'>
-                            <span>Giảm giá 99%</span>
-                        </div>
-                    </Paper>
-                </Grid> */}
-               
-                { categorys?.categories?.map((category) => (
-                        <Grid item xs={2}>
-                            <Paper className={classes.paper}>
-                                <div className='flash-sale-icon'>
-                                    <img src={KimChiCaiThao} alt={"NhoDenMy"} />
-                                </div>
-                                <div className='flash-sale-title'>
-                                    <span>{category.title}</span>
-                                </div>
-                            </Paper>
-                        </Grid>
-                    ))}
-
-                {/* <Grid item xs={2}>
-                    <Paper className={classes.paper}>
-                        <div className='flash-sale-icon'>
-                            <img src={RauNgotNhat} alt={"RauNgotNhat"} />
-                        </div>
-                        <div className='flash-sale-title'>
-                            <span>Chỉ 19k</span>
-                        </div>
-                    </Paper>
-                </Grid>
-                <Grid item xs={2}>
-                    <Paper className={classes.paper}>
-                        <div className='flash-sale-icon'>
-                            <img src={suonNonHeo} alt={"suonNonHeo"} />
-                        </div>
-                        <div className='flash-sale-title'>
-                            <span>Chỉ 29k</span>
-                        </div>
-                    </Paper>
-                </Grid>
-                <Grid item xs={2}>
-                    <Paper className={classes.paper}>
-                        <div className='flash-sale-icon'>
-                            <img src={SuSu} alt={"SuSu"} />
-                        </div>
-                        <div className='flash-sale-title'>
-                            <span>Deal nấm hội tụ</span>
-                        </div>
-                    </Paper>
-                </Grid>
-                <Grid item xs={2}>
-                    <Paper className={classes.paper}>
-                        <div className='flash-sale-icon'>
-                            <img src={ThanBoXaoBongThienLi} alt={"ThanBoXaoBongThienLi"} />
-                        </div>
-                        <div className='category-title'>
-                            <span>Món ngon ấm bụng</span>
-                        </div>
-                    </Paper>
-                </Grid> */}
-            </React.Fragment>
-        );
-    };
+        dispatch(getCategoryPostAPI());
+    }, [])
     return (
-        <div className='flash-sale'>
+        <div className='category-post'>
             <div className={classes.root}>
                 <CssBaseline />
                 <Container maxWidth="lg">
-                    <h1>Flash Sale</h1>
-                    <Grid container spacing={1}>
-                        <Grid container item xs={12} spacing={3}>
-                            <FormRow />
-                        </Grid>
-                    </Grid>
+                    {categorys?.categories?.map((category) => (<>
+                        <div className='category-post-item'>
+                            <h1>{category.title}</h1>
+                            <Grid container spacing={1}>
+                                <Grid container item xs={12} spacing={3}>
+                                    {category.posts.reverse().map((post) => (<>
+                                        <Link to = {`/detail-recipe/${post._id}`}>
+                                            <Grid item xs={2}>
+                                                <div className='category-post-icon'>
+                                                    <img src={post.image} />
+                                                </div>
+                                                <div className='category-post-title'>
+                                                    <span>{post.title}</span>
+                                                </div>
+                                            </Grid>
+                                        </Link>
+                                    </>))}
+                                </Grid>
+                            </Grid>
+                        </div>
+                    </>))}
                 </Container>
             </div>
         </div>
-
     )
-}
+};
+{/* <Grid container spacing={1}>
+                        <Grid container item xs={12} spacing={3}>
+                            {categorys?.categories?.map((category) => (
+                                <Grid item xs={2}>
+                                    <h1>{category.title}</h1>
+                                    <Paper className={classes.paper}>
+
+                                        {category.posts.reverse().map((post) => (<>
+                                            <div className='flash-sale-icon'>
+                                                <img src={post.image} />
+                                            </div>
+                                            <div className='flash-sale-title'>
+                                                <span>{post.title}</span>
+                                            </div>
+                                        </>))}
+
+                                    </Paper>
+                                </Grid>
+                            ))}
+                        </Grid>
+</Grid> */}

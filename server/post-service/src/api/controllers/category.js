@@ -49,3 +49,14 @@ module.exports.deleteCategory = async (req, res, next) => {
     next(err);
   }
 };
+
+module.exports.detailCategory = async (req, res, next) =>{
+  try{
+    const { categoryId } = req.params;
+    const data = await service.getDetailCategory(categoryId)
+    return res.json(data);
+  }
+  catch(err) {
+    next(err)
+  }
+};
