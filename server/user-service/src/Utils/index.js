@@ -94,22 +94,6 @@ try {
 };
 
 
-// const PublishCommentEvent = async (payload) => {
-//   await axios.post("http://localhost:8000/comment/app-events", {
-//     payload,
-//   });
-// };
-
-// const PublishPostEvent = async (payload) => {
-//   try {
-//     await axios.post("http://localhost:8000/post/app-events", {
-//     payload,
-//   });
-//   } catch (error) {
-//     console.console.log(error.message)
-//   }
-// };
-
 // **************************************
 module.exports = {
   generatePassword,
@@ -121,7 +105,4 @@ module.exports = {
   
   publishMessage,
   subscribeMessage,
-
-  // PublishCommentEvent,
-  // PublishPostEvent
 };
