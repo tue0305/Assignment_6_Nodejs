@@ -119,11 +119,14 @@ class PostService {
 
     try {
       // ***** CREATE NEW POST *****
-
+      const categoryPost = {
+        _id:category._id,
+        title: category.title
+      }
       const newPost = new PostModel({
         title,
         content,
-        category,
+        category:categoryPost,
         gradients,
         image,
         userId,

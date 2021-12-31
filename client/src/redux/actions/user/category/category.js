@@ -97,4 +97,22 @@ export const getPostUserAPI = (userId) =>{
             console.log(err,'err');
         })
     }
-}
+};
+
+// export const createPostUserAPI = (userId) =>{
+//     const token = localStorage.getItem('accessToken');
+//     return function(dispatch){
+//         axios({
+//             method: 'POST',
+//             url: `http://localhost:8002/api/post/user/create`,
+//             headers: {'Authorization': 'Bearer '+ token}
+//         })
+//         .then((res) =>{
+//             dispatch(getPostUser(res.data));
+//             dispatch(getPostUser(res.data));
+//         })
+//         .catch((err) =>{
+//             console.log(err,'err');
+//         })
+//     }
+// };

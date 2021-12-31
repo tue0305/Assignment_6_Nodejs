@@ -25,8 +25,12 @@ const PostSchema = new Schema(
     ],
 
     category: {
-      type: Schema.Types.ObjectId,
+      _id:{
+        type: Schema.Types.ObjectId,
       ref: "categories",
+        
+      },
+      title: String
     },
 
     userId: {
