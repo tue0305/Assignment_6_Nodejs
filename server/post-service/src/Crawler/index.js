@@ -18,6 +18,7 @@ const crawlData = async () => {
         .then((res) => {
             const data = res.data;
             let dataJson = {};
+            console.log('d');
             data.forEach((element) => {
                 dataJson.id_food = element.id_food;
                 dataJson.title = element.title;
@@ -25,11 +26,13 @@ const crawlData = async () => {
                     ingredients: element.ingredients,
                     instructions: element.instructions,
                 };
-
                 dataJson.image = element.image;
-                resData.push(dataJson);
+                // resData.push(dataJson);
+                if(resData.push(dataJson)){
+                    throw 'Break';
+                }
             });
-            fs.writeFileSync("data.json", JSON.stringify(resData));
+            fs.writeFileSync("data.json", JSON.stringify(resData)); 
         })
         .catch((err) => {
             console.log(err);
