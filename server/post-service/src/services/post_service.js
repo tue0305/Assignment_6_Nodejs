@@ -122,7 +122,9 @@ class PostService {
       const categoryPost = {
         _id:category._id,
         title: category.title
-      }
+      };
+      // const urlImage = `http://localhost:8001/${file.path}`;
+      // image: urlImage,
       const newPost = new PostModel({
         title,
         content,
@@ -130,6 +132,7 @@ class PostService {
         gradients,
         image,
         userId,
+        file
       });
       console.log(category);
       await newPost.save();

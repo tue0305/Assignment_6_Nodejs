@@ -57,24 +57,3 @@ export default function FlashSale() {
         </div>
     )
 };
-{/* <Grid container spacing={1}>
-                        <Grid container item xs={12} spacing={3}>
-                            {categorys?.categories?.map((category) => (
-                                <Grid item xs={2}>
-                                    <h1>{category.title}</h1>
-                                    <Paper className={classes.paper}>
-
-                                        {category.posts.reverse().map((post) => (<>
-                                            <div className='flash-sale-icon'>
-                                                <img src={post.image} />
-                                            </div>
-                                            <div className='flash-sale-title'>
-                                                <span>{post.title}</span>
-                                            </div>
-                                        </>))}
-
-                                    </Paper>
-                                </Grid>
-                            ))}
-                        </Grid>
-</Grid> */}

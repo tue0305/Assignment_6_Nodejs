@@ -63,6 +63,7 @@ module.exports.createPost = async (req, res, next) => {
   try {
     const userId = req.userId;
     const { title, image, content, gradients, categoryTitle } = req.body;
+    // const {file} = req;
 
     const result = await service.createPost(
       title,
@@ -70,7 +71,8 @@ module.exports.createPost = async (req, res, next) => {
       content,
       gradients,
       categoryTitle,
-      userId
+      userId,
+      // file
     );
 
 

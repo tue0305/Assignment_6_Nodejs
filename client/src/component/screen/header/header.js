@@ -51,7 +51,6 @@ export default function Header() {
                                 </Link>
                             </Paper>
                         </Grid>
-                   
                 ))}
             </React.Fragment>
         );

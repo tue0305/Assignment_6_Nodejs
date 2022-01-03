@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { verifyToken, PostController} = require('../api')
+const { verifyToken, PostController} = require('../api');
+const {uploadImage} = require('../api/middlewares/uploadImage');
 
 // @route GET api/post
 // @des get posts
@@ -15,7 +16,7 @@ router.get('/:categoryId', PostController.getPostsByCategory);
 // @route GET api/post/user
 // @desc get user's post
 // @access Public
-router.get('/user/:userId', verifyToken,  PostController.getUserPosts );
+router.get('/user/:userId', verifyToken,   PostController.getUserPosts );
 
 // @route GET api/post/postId
 // @desc get post detail
@@ -26,6 +27,7 @@ router.get('/detail/:postId', PostController.getPost );
 // @route POST api/post/user/create
 // @desc create post
 // @access Public
+// , uploadImage('uploadPost')
 router.post('/user/create', verifyToken,  PostController.createPost );
 
 // @route PUT api/post/edit

@@ -1,13 +1,12 @@
 const UserService = require("../../services/user_service");
 const { PublishCommentEvent, PublishPostEvent } = require("../../utils");
-const gravatarUrl = require('gravatar');
 
 const service = new UserService();
 
 module.exports.signUp = async (req, res, next) => {
   try {
     const { email, password, role } = req.body;
-    const {file} = req
+    const {file} = req;
 
     console.log(req);
 
