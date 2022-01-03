@@ -4,8 +4,10 @@ const {
   generatePassword,
   generateSignature,
   sendEmail,
+  checkEmail,
+  checkPassword
 } = require("../utils");
-
+const gravatarUrl = require('gravatar');
 const {
   STATUS_CODES,
   APIError,
@@ -13,6 +15,7 @@ const {
 } = require("../utils/app-errors");
 
 class UserService {
+
   async checkSignIn(userInputs) {
     const { email, password } = userInputs;
 
@@ -40,11 +43,12 @@ class UserService {
 
       // **** True password and return the access token ****
       const accessToken = await generateSignature({ _id: user._id });
-
+      console.log(user);
       return {
         status: STATUS_CODES.OK,
         success: true,
         message: `Login successfully!`,
+        role: user.role,
         userId: user._id,
         accessToken,
       };
@@ -58,7 +62,7 @@ class UserService {
   }
 
   async createUser(userInputs) {
-    const { email, password } = userInputs;
+    const { email, password, role, file } = userInputs;
 
     // simple validation
     if (!email || !password) {
@@ -68,6 +72,18 @@ class UserService {
       );
     }
 
+    // check email
+    const emailValid = await checkEmail(email);
+    if (!emailValid) {
+      return new APIError("The email must email address!", STATUS_CODES.BAD_REQUEST);
+    };
+
+    //check password
+    const passwordValid = await checkPassword(password);
+    if(!passwordValid){
+      return new APIError("The password must contain at least 8  characters including at least 1 uppercase, 1 lowercase, one digit.", STATUS_CODES.BAD_REQUEST);
+    }
+
     try {
       const userModel = await UserModel.findOne({ email: email });
       // ***** UserModel existed *****
@@ -75,13 +91,20 @@ class UserService {
         return new APIError("Email already taken!", STATUS_CODES.BAD_REQUEST);
       }
 
-      // ***** New userModel *****
+      // ***** New userModel ****
+      
+      const emailAvatar = gravatarUrl.url(email);
+      const urlImage = file ?`http://localhost:8001/${file.path}` : emailAvatar;
+
+
 
       let userPassword = await generatePassword(password);
 
       const newUser = new UserModel({
         email: email,
         password: userPassword,
+        role: role,
+        avatar: urlImage
       });
 
       await newUser.save();
@@ -106,7 +129,7 @@ class UserService {
   async getProfile(id) {
     try {
       const user = await UserModel.findById(id).select(`-password`);
-
+      
       if (!user) return new APIError("Data Not found!", STATUS_CODES.NOT_FOUND);
 
       return user;
@@ -115,6 +138,60 @@ class UserService {
         "Data Not found!",
         STATUS_CODES.UN_AUTHORIZED,
         error.message
+      );
+    }
+  }
+
+  async deleteUser(userId){
+    try{
+      const deleteUser = await UserModel.findOneAndDelete({userId});
+      if(deleteUser)
+      return{
+        status: 200,
+        success: true,
+        message: `Delete account ${userId} success!`,
+        userId: userId
+      }
+      return deleteUser
+    }
+    catch(err){
+      return new APIError(
+        "Data Not Found!",
+        STATUS_CODES.BAD_REQUEST,
+        err.message
+      )
+    }
+  }
+
+  async updateUser(password, email, userId){
+    try{
+      const hashPassword = await generatePassword(password);
+      const updaUser = await UserModel.findByIdAndUpdate({password: hashPassword, email, userId})
+      if(updaUser){
+        return user;
+      }
+    }
+    catch(err){
+      return new APIError(
+        "Data Not found!",
+        STATUS_CODES.UN_AUTHORIZED,
+        err.message
+      );
+    }
+  }
+
+  async getDetailUser(userId){
+    try{
+      // const 
+      const getDetail = await UserModel.findById(userId)
+      if(getDetail)
+        return getDetail;
+    }
+    catch(err){
+      return new APIError(
+        "Data Not found!",
+        STATUS_CODES.UN_AUTHORIZED,
+        err.message
       );
     }
   }
@@ -140,7 +217,7 @@ class UserService {
       }
 
       // ### Generate link reset password and send to user's email
-      const resetLink = `${process.env.BASE_URL}/user/reset-password/${user._id}/${token.token}`;
+      const resetLink = `${process.env.URL_FRONT_END }/${user._id}/${token.token}`;
       await sendEmail(user.email, "reset-password", resetLink);
 
       // **** Send forgot password request  succeed ****
@@ -159,6 +236,7 @@ class UserService {
       );
     }
   }
+
   async resetPassword(password, confirmPassword, userId, resetPasswordToken) {
     // Simple validation
     if (password !== confirmPassword) {
@@ -346,6 +424,22 @@ class UserService {
     }
   }
 
+  async getAllUser(){
+    try{
+      const getAll = await UserModel.find({});
+      if(getAll){
+        return getAll;
+      }  
+    }
+    catch(err){
+      return new APIError(
+        "Data Not Found!",
+        STATUS_CODES.BAD_REQUEST,
+        err.message
+      )
+    }
+  }
+  
   //=================== COMMENT SERVICE PAYLOAD
   async getCommentServiceChange(userId, comment, event) {
     try {

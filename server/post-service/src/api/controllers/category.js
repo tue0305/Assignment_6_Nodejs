@@ -64,4 +64,20 @@ module.exports = async (app, channel) => {
       next(err);
     }
   });
+
+  // @route GET /get-detail-category/:categoryId
+  // @des Get detail Category
+  // @access Public
+  app.get('/get-detail-category/:categoryId', async (req, res, next) =>{
+    try{
+      const { categoryId } = req.params;
+      const data = await service.getDetailCategory(categoryId)
+      return res.json(data);
+    }
+    catch(err) {
+      next(err)
+    }
+  });
 };
+
+

@@ -142,7 +142,8 @@ module.exports = async (app, channel) => {
   // @route DELETE api/post/user/delete/postId
   // @des send reset password's to post's email
   // @access Public
-  app.delete("/post/user/delete/:postId",
+  app.delete(
+    "/post/user/delete/:postId",
     verifyToken,
     async (req, res, next) => {
       try {
@@ -163,5 +164,6 @@ module.exports = async (app, channel) => {
       } catch (error) {
         next(error);
       }
-    });
+    }
+  );
 };

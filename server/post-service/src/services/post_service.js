@@ -53,10 +53,11 @@ class PostService {
     }
   }
 
-  async getPostsByCategory(categoryTitle) {
+  async getPostsByCategory(categoryId) {
     try {
+      console.log(categoryId)
       // ***** GET CATEGORY_ID BY NAME*****
-      const category = await CategoryModel.findOne({ title: categoryTitle });
+      const category = await CategoryModel.findOne({ _id: categoryId });
 
       // ***** GET ALL POSTS BY CATEGORY*****
       const posts = await PostModel.find({ category: category });
@@ -86,9 +87,7 @@ class PostService {
   async getUserPosts(userId) {
     try {
       // ***** GET ALL USER's POSTS *****
-      const posts = await PostModel.find({ userId: userId }).populate(`user`, [
-        `email`,
-      ]);
+      const posts = await PostModel.find({ userId: userId })
       if (!posts) {
         return {
           status: STATUS_CODES.NOT_FOUND,
@@ -120,14 +119,19 @@ class PostService {
 
     try {
       // ***** CREATE NEW POST *****
-
+      const categoryPost = {
+        _id:category._id,
+        title: category.title
+      };
+     
       const newPost = new PostModel({
         title,
         content,
-        category,
+        category:categoryPost,
         gradients,
         image,
         userId,
+        file
       });
       console.log(category);
       await newPost.save();
@@ -242,7 +246,6 @@ class PostService {
     try {
       const { event, data } = payload;
 
-    // const { /*userId*/, postId, commentId } = data;
 
     switch (event) {
       // Subscribe user-service

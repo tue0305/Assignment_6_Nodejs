@@ -1,0 +1,25 @@
+.tabled{
+    p{
+        white-space: nowrap;
+        border: solid 1px white;
+        width: 350px;
+        height: 18px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+    .table-responsiv{
+        form{
+            .divInput{
+                .MuiFormControl-root{
+                    .MuiInputBase-root{
+                        margin: 30px 0px;
+                    }
+                }  
+            }   
+        }
+    } 
+    button {
+        margin: 0px 10px;
+    }  
+}
+

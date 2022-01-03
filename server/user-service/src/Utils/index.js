@@ -40,6 +40,24 @@ const generateSignature = async (userId) => {
   return await jwt.sign(userId, ACCESS_SECRET_TOKEN, { expiresIn: "1d" });
 };
 
+const checkEmail = async(email) =>{
+  if(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)){
+    return true;
+  }
+  else{
+    return false;
+  }
+};
+
+const checkPassword = async (password) =>{
+    if( /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/.test(password)){
+      return true;
+    }
+    else{
+      return false;
+    }
+};
+
 // =========================== MESSAGE BROKER ==============================
 // ### Create channel
 const createChannel = async () => {
@@ -51,14 +69,14 @@ const createChannel = async () => {
     
     return channel;
   } catch (error) {
-    return  new APIError(
+    return new APIError(
       "Create channel error!",
-      STATUS_CODES.INTERNAL_ERROR, 
+      STATUS_CODES.INTERNAL_ERROR,
       error.message
     );
     
   }
-};
+}
 
 // ### Publish message
 const publishMessage = async (channel, USER_BINDING_KEY, message) => {
@@ -98,12 +116,14 @@ try {
 
 // **************************************
 module.exports = {
+  checkPassword,
   generatePassword,
   validatePassword,
   createChannel,
   generateSignature,
   verifySignature,
   sendEmail,
+  checkEmail,
   
   publishMessage,
   subscribeMessage,
