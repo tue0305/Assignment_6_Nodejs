@@ -10,7 +10,6 @@ module.exports = async (app, channel) => {
   const service = new UserService();
   subscribeMessage(channel, service);
 
-  const service = new UserService();
 
   // @route GET api/user
   // @des Check if user is logged in

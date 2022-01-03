@@ -131,7 +131,6 @@ class PostService {
         gradients,
         image,
         userId,
-        file
       });
       console.log(category);
       await newPost.save();

@@ -16,4 +16,4 @@ const authorize =  (permission) => {
      }
 };
 
-module.exports = {authorize}
+module.exports = authorize
