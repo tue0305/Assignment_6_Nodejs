@@ -9,8 +9,14 @@ if (process.env.NODE_ENV !== "prod") {
 
 module.exports = {
 
-  // ***** KAFKA CONFIG*****
-  BROKERS: process.env.KAFKA_BROKERS,
+  // ***** RABITMQ CONFIG*****
+  MESSAGE_BROKER_URL: process.env.MESSAGE_BROKER_URL,
+  EXCHANGE_NAME: 'NAU_AN_NE',
+  POST_BINDING_KEY: 'POST_SERVICE',
+  USER_BINDING_KEY: 'USER_SERVICE',
+  COMMENT_BINDING_KEY: 'COMMENT_SERVICE',
+  QUEUE_NAME: 'NAU_AN_NE_QUEUE',
+
 
   PORT: process.env.PORT,
   DB_URL: process.env.DB_URI,

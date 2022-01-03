@@ -1,51 +1,67 @@
 const CategoryService = require("../../services/category_service");
 
 const service = new CategoryService();
+const  verifyToken  = require("../middlewares/auth");
 
-module.exports.getCategories = async (req, res, next) => {
-  try {
-    const data = await service.getCategories();
 
-    return res.json(data);
-  } catch (err) {
-    next(err);
-  }
-};
+module.exports = async (app, channel) => {
+  // @route GET api/Category
+  // @des get Categories
+  // @access Public
+  app.get("/category", async (req, res, next) => {
+    try {
+      const data = await service.getCategories();
 
-module.exports.createCategory = async (req, res, next) => {
-  try {
-    const { title } = req.body;
+      return res.json(data);
+    } catch (err) {
+      next(err);
+    }
+  });
 
-    const data = await service.createCategory(title);
+  // @route Category api/Category/user/create
+  // @desc create Category
+  // @access Public
+  app.post("/category/create", verifyToken, async (req, res, next) => {
+    try {
+      const { title } = req.body;
 
-    return res.json(data);
-  } catch (err) {
-    next(err);
-  }
-};
+      const data = await service.createCategory(title);
 
-module.exports.editCategory = async (req, res, next) => {
-  try {
-    const { categoryId } = req.params;
+      return res.json(data);
+    } catch (err) {
+      next(err);
+    }
+  });
 
-    const { title } = req.body;
+  // @route PUT api/Category/edit
+  // @desc edit Category
+  // @access Public
+  app.put("category/edit/:categoryId", verifyToken, async (req, res, next) => {
+    try {
+      const { categoryId } = req.params;
 
-    const data = await service.updateCategory(categoryId, title);
+      const { title } = req.body;
 
-    return res.json(data);
-  } catch (err) {
-    next(err);
-  }
-};
+      const data = await service.updateCategory(categoryId, title);
 
-module.exports.deleteCategory = async (req, res, next) => {
-  try {
-    const { categoryId } = req.params;
+      return res.json(data);
+    } catch (err) {
+      next(err);
+    }
+  });
 
-    const data = await service.editCategory(categoryId);
+  // @route DELETE api/Category/user/delete/categoryId
+  // @des send reset password's to Category's email
+  // @access Public
+  app.delete("category/delete/:categoryId", verifyToken, async (req, res, next) => {
+    try {
+      const { categoryId } = req.params;
 
-    return res.json(data);
-  } catch (err) {
-    next(err);
-  }
+      const data = await service.deleteCategory(categoryId);
+
+      return res.json(data);
+    } catch (err) {
+      next(err);
+    }
+  });
 };

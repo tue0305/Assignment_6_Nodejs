@@ -1,25 +1,18 @@
 const express = require("express");
 const cors = require("cors");
-// const { appEvent } = require("./api");
-const UserController = require("./api/controllers/user")
 
 const HandleErrors = require("./utils/error-handler");
 
-// ***** ROUTES *****
-const userRouter = require("./routes/user");
+const { UserController } = require("./api");
 
-
-
-module.exports = async (app) => {
+module.exports = async (app, channel) => {
   app.use(express.json({ limit: "25mb" }));
   app.use(express.urlencoded({ extended: true, limit: "25mb" }));
   app.use(cors());
   app.use(express.static(__dirname + "/public"));
-  // //Listen to Events //
-  // appEvent(app);
 
-  // ### Using routes == not done
-  app.use("/api/user", userRouter);
+  // ### Using routes API
+  UserController(app, channel);
 
   // error handling
   app.use(HandleErrors);

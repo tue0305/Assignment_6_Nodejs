@@ -1,31 +1,31 @@
-version: '3'
+version: '3.2'
 
 networks:
   kafka-net:
     driver: bridge
 
 services:
+  rabbitmq:
 
-  zookeeper-server:
-    image: 'bitnami/zookeeper:latest'
-    networks:
-      - kafka-net
+    image: rabbitmq:3-management-alpine
+
+    container_name: 'rabbitmq'
+
     ports:
-      - '2181:2181'
-    environment:
-      - ALLOW_ANONYMOUS_LOGIN=yes
-  kafka-server1:
-    image: 'bitnami/kafka:latest'
+
+        - 5672:5672
+
+        - 15672:15672
+
+    volumes:
+
+        - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+
+        - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+
     networks:
-      - kafka-net
-    ports:
-      - '9092:9092'
-    environment:
-      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper-server:2181
-      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092
-      - ALLOW_PLAINTEXT_LISTENER=yes
-    depends_on:
-      - zookeeper-server
+
+        - rabbitmq_go_net
   
   nosql-db:
     image: mongo
