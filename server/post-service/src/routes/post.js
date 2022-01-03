@@ -7,7 +7,7 @@ const { verifyToken, PostController } = require("../api");
 // @access Public
 router.get("/", PostController.getPosts);
 
-// @route GET api/post
+// @route GET api/post/categoryId
 // @des get posts by category
 // @access Public
 router.get("/:category", PostController.getPostsByCategory);

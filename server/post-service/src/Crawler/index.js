@@ -1,8 +1,9 @@
 var axios = require("axios").default;
 const PostService = require("../services/post_service");
 const service = new PostService();
+const Post = require("../database/models/Post");
 const fs = require("fs");
-const crawlData = async () => {
+const crawlData = () => {
     let resData = [];
     var options = {
         method: "GET",
@@ -13,34 +14,42 @@ const crawlData = async () => {
                 "fb265b725dmshdf4ad2395c7ed62p1d07f5jsn54a16ee0e489",
         },
     };
-    await axios
+    axios
         .request(options)
         .then((res) => {
             const data = res.data;
             let dataJson = {};
             data.forEach((element) => {
-                dataJson.id_food = element.id_food;
+                let content_data = "";
+                dataJson.id_food = element.id;
                 dataJson.title = element.title;
-                dataJson.description = {
-                    ingredients: element.ingredients,
-                    instructions: element.instructions,
-                };
-
+                dataJson.ingredients = [...element.ingredients];
                 dataJson.image = element.image;
-                resData.push(dataJson);
+                let content = element.instructions;
+                content.forEach((obj) => {
+                    content_data += obj.text;
+                });
+                // console.log(dataJson.ingredients);
+                listIngre = [];
+                dataJson.ingredients.map((ingredient) => {
+                    listIngre.push({ name: ingredient });
+                });
+
+                dataJson.content = content_data;
+
+                console.log(dataJson.ingredients);
+                const newPost = Post({
+                    title: dataJson.title,
+                    image: dataJson.image,
+                    content: dataJson.content,
+                    gradients: listIngre,
+                });
+                newPost.save();
+                console.log(newPost);
             });
-            fs.writeFileSync("data.json", JSON.stringify(resData));
         })
         .catch((err) => {
             console.log(err);
         });
-
-    //             // service.createPost(
-    //             //     element.title,
-    //             //     element.image,
-    //             //     element.instructions,
-    //             //     element.ingredients,
-    //             //     "",
-    //             //     ""
 };
 module.exports = crawlData;

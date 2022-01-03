@@ -2,6 +2,7 @@ const express = require(`express`);
 const router = express.Router();
 const { verifyToken, UserController } = require('../api');
 const {authorize} = require('../api/middlewares/authorize');
+const {uploadAvatar} = require('../api/middlewares/uploadAvatar');
 // @route GET api/user
 // @des Check if user is logged in
 // @access Public
@@ -10,7 +11,7 @@ router.get('/profile', verifyToken, UserController.getUserInfo);
 // @route POST api/user/signup
 // @desc signup user
 // @access Public
-router.post('/signup', UserController.signUp);
+router.post('/signup', uploadAvatar('avatarUser'), UserController.signUp);
 
 // @route POST api/user/login
 // @desc Login user
@@ -48,6 +49,10 @@ router.get('/get-all-users',  (UserController.getUser) );
 // @route GET api/user/detail-user/:userId
 // @access Public
 router.get('/detail-user/:userId',  UserController.detailUser);
+
+// @route GET api/user/logout
+// @access Public
+router.get('/logout', verifyToken,  UserController.logout);
 
 
 

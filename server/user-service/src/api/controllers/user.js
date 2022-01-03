@@ -1,16 +1,20 @@
 const UserService = require("../../services/user_service");
 const { PublishCommentEvent, PublishPostEvent } = require("../../utils");
-
+const gravatarUrl = require('gravatar');
 
 const service = new UserService();
 
 module.exports.signUp = async (req, res, next) => {
   try {
     const { email, password, role } = req.body;
-    const data = await service.createUser({ email, password, role });
+    const {file} = req
+
+    console.log(req);
+
+    const data = await service.createUser({ email, password, role, file });
     
-    PublishPostEvent(data, 'AVC')
-    PublishCommentEvent(data,'dsad')
+    // PublishPostEvent(data, 'AVC')
+    // PublishCommentEvent(data,'dsad')
     return res.json(data);
   } catch (err) {
     next(err);
@@ -64,6 +68,18 @@ module.exports.updateUser = async (req, res, next) =>{
     next(error);
   }
 };
+
+module.exports.logout = async (req, res, next) =>{
+  try{
+    req.clearCookie('jwt');
+    return res.status(200).json({success: true, message: 'Logout'});
+  }
+  catch(err){
+    console.log(err, 'err');
+    res.status(500).json({succes: false, message: 'Logout Fail'});
+  }
+}
+
 
 module.exports.getUser = async (req, res, next) =>{
   try{

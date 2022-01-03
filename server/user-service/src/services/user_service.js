@@ -7,7 +7,7 @@ const {
     checkEmail,
     checkPassword,
 } = require("../utils");
-
+const gravatarUrl = require("gravatar");
 const {
     STATUS_CODES,
     APIError,

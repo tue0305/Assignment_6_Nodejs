@@ -2,6 +2,8 @@ import * as ActionType from '../../../constants/constans';
 import axios from 'axios';
 import Swal from "sweetalert2";
 
+
+
 export const signInAPI = (data) =>{
    return function (dispatch) {
     axios({
@@ -134,12 +136,6 @@ export const resetPasswordAPI = (data, userId, token) =>{
      })
     }
 };
-
-// const getInfomationuser = (user) =>({
-//     type: ActionType.GET_INFORMATION_USER,
-//     payload: user
-// });
-
 
 export const getInformationUserAPI = () =>{
     const token = localStorage.getItem('accessToken');

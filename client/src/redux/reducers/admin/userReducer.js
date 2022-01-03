@@ -29,6 +29,7 @@ const userReducer = (state = initialState, action) => {
             return {
                 ...state,
                 user: action.payload,
+<<<<<<< HEAD
                 loading: false,
             };
         case "test":
@@ -37,6 +38,16 @@ const userReducer = (state = initialState, action) => {
                 user: null,
                 loading: false,
             };
+=======
+                loading: false
+            }
+        case actType.SIGN_IN_ADMIN:
+            return{
+                ...state,
+                user: action.payload,
+                loading: false
+            }
+>>>>>>> b50b31156ce6df0550143136f2894f61debadf4d
         default:
             break;
     }

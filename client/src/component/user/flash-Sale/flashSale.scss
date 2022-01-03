@@ -1,13 +1,16 @@
-.flash-sale{
+.category-post{
     margin-bottom: 100px;
-    .flash-sale-icon{
+    .category-post-icon{
         img {
             height: 190px;
         }
     }
-    .flash-sale-title{
+    .category-post-title{
         span{
             text-align: center;
         }
+    }
+    .category-post-item{
+        margin: 25px 0px;
     }
 }

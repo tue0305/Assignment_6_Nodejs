@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 const mailer = require("nodemailer");
 const {
     EMAIL_HOST,
@@ -8,6 +9,12 @@ const {
 } = require("../config/config");
 
 const sendEmail = async (email, subject, resetLink) => {
+=======
+const mailer = require('nodemailer')
+const { EMAIL_HOST, EMAIL_SERVICE, EMAIL_PORT, EMAIL_USER, EMAIL_PASS } = require('../config/config');
+
+const sendEmail = async(email, subject, resetLink) => {
+>>>>>>> b50b31156ce6df0550143136f2894f61debadf4d
     try {
         const transporter = mailer.createTransport({
             host: EMAIL_HOST,
@@ -16,15 +23,28 @@ const sendEmail = async (email, subject, resetLink) => {
             secure: true,
             auth: {
                 user: EMAIL_USER,
+<<<<<<< HEAD
                 pass: EMAIL_PASS,
             },
         });
+=======
+                pass: EMAIL_PASS
+            }
+
+        })
+>>>>>>> b50b31156ce6df0550143136f2894f61debadf4d
 
         await transporter.sendMail({
             from: EMAIL_USER,
             to: email,
             subject: subject,
+<<<<<<< HEAD
             html: `<html lang="en-US">
+=======
+            html: 
+           
+                `<html lang="en-US">
+>>>>>>> b50b31156ce6df0550143136f2894f61debadf4d
                 
                 <head>
                     <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
@@ -105,8 +125,13 @@ const sendEmail = async (email, subject, resetLink) => {
                 </script>
                 
                 </html>`,
+<<<<<<< HEAD
         });
         console.log(`Email send successfully!`);
+=======
+        })
+        console.log(`Email send successfully!`)
+>>>>>>> b50b31156ce6df0550143136f2894f61debadf4d
     } catch (error) {
         console.log(error, `Email sent failed: ${error.message}!`);
     }

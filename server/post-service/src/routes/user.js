@@ -33,6 +33,7 @@ router.get(`/`, verifyToken, async (req, res) => {
 // @route POST api/user/register
 // @desc Register user
 // @access Public
+<<<<<<< HEAD
 router.post("/register", async (req, res) => {
     const { email, password, confirmPassword } = req.body;
 
@@ -97,6 +98,70 @@ router.post("/register", async (req, res) => {
             message: `Internal server error`,
         });
     }
+=======
+router.post('/register', async (req, res) => {
+  const { email, password, confirmPassword } = req.body;
+
+  // simple validation
+  if (!email || !password || !confirmPassword) {
+    return res.status(400).json({
+      success: false,
+      message: `Missing email or password!`,
+    });
+  }
+
+  try {
+    // #### check existing email
+    const user = await User.findOne({ email: email });
+
+    // ***** User existed *****
+    if (user)
+      return res.status(400).json({
+        success: false,
+        message: `Email already taken!`,
+      });
+
+    // check confirmPassword
+      if(confirmPassword !== password){
+        return res.status(400).json({
+          success: false,
+          message: `Your password or confirm password not match!`
+        })
+      };
+
+    // ***** New user *****
+
+    // Using argon2 to hash password
+    const hashedPassword = await argon2.hash(password);
+
+    // ### Creating new user
+    const newUser = new User({
+      email: email,
+      password: hashedPassword,
+      confirmPassword: hashedPassword,
+    });
+
+    
+    await newUser.save();
+
+    // Return access token using json web token
+    const accessToken = jwt.sign(
+      { userId: newUser._id },
+      process.env.ACCESS_TOKEN_SECRET
+    );
+
+    res.json({
+      status: 200,
+      success: true,
+      message: `User created successfully!`,
+      userId: newUser._id,
+      accessToken,
+    });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ success: false, message: `Internal server error` });
+  }
+>>>>>>> b50b31156ce6df0550143136f2894f61debadf4d
 });
 
 // @route POST api/user/login
@@ -210,6 +275,7 @@ router.post("/forgot-password", async (req, res) => {
 // @route POST api/user/reset-password
 // @des Reset password with userId and forgot password's token generate in user's email
 // @access Public
+<<<<<<< HEAD
 router.post("/reset-password/:userId/:token", async (req, res) => {
     const { password, confirmPassword } = req.body;
 
@@ -253,6 +319,29 @@ router.post("/reset-password/:userId/:token", async (req, res) => {
             success: false,
             message: `Internal server error`,
         });
+=======
+router.post('/reset-password/:userId/:token', async (req, res) => {
+  const { password, confirmPassword} = req.body;
+
+  try {
+    // ### Find user by id in params
+    const user = await User.findById(req.params.userId);
+    if (!user)
+      return res.status(400).json({
+        success: false,
+        message: `Invalid link or expired token!`,
+      }); 
+    
+    const token = await Token.findOne({
+      userId: user._id,
+      token: req.params.token
+    })
+    if (!token) {
+      return res.status(400).json({
+        success: false,
+        message: `Invalid link or expired token!`,
+      }); 
+>>>>>>> b50b31156ce6df0550143136f2894f61debadf4d
     }
 });
 

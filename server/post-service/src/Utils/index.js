@@ -58,4 +58,4 @@ module.exports = {
     PublishUserEvent,
     PublishCommentEvent,
 };
-0
+0;

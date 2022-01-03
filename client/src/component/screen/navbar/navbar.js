@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {  useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -17,8 +17,12 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import PhoneIcon from '@material-ui/icons/Phone';
 import { NavLink, useLocation, useHistory } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import Avatar from "@material-ui/core/Avatar";
+import Button from '@material-ui/core/Button';
 //IMAGES
 import logo from '../../../images/logo/cooking.png';
+import { getInformationUserAPI } from '../../../redux/actions/user/signIn-signUp/userSignIn';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -108,24 +112,31 @@ export default function Navbar() {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const location = useLocation();
     const history = useHistory();
+    let dispatch = useDispatch();
+    const { user } = useSelector(state => state.SignUser);
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
-
     const handleClose = () => {
         setAnchorEl(null);
     };
     const logout = () => {
-        localStorage.removeItem("user");
+        localStorage.clear("accessToken");
         localStorage.setItem("prevLocation", location?.pathname || "");
-        history.push("/"); //logout se redirect ve trang /login
+        history.push("/"); 
     };
     const isLogin = () => {
         if (localStorage.getItem("accessToken")) {
             //Logged
             return (
                 <>
+                {user && (
                     <div>
+                        <Button aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
+							<Avatar>
+								<img src={user.avatar} className="Navbar-Img"/>
+							</Avatar> 
+						</Button>
                         <div className="Navbar-Menu">
                             <StyledMenuItem
                                 id="simple-menu"
@@ -143,23 +154,25 @@ export default function Navbar() {
                                 </ListItemIcon>
                                 <MenuItem onClick={handleClose} onClick={logout} href="# ">Đăng xuất</MenuItem>
                             </StyledMenuItem>
-                            {/* <Menu
+                            {/* --- */}
+                            <StyledMenuItem
                                 id="simple-menu"
                                 anchorEl={anchorEl}
                                 keepMounted
                                 open={Boolean(anchorEl)}
                                 onClose={handleClose}
                             >
-                                <>
-                                    <NavLink exact to={{ pathname: '/profile-user' }} >
-                                        <MenuItem onClick={handleClose}>Thông tin cá nhân</MenuItem>
+                                <ListItemIcon>
+                                <>  
+                                    <NavLink exact to={{ pathname: `/post-user/${user._id}` }} >
+                                        <MenuItem onClick={handleClose}>Đăng bài viết</MenuItem>
                                     </NavLink>
                                 </>
-                                <Link to="/login" onClick={handleClose}><AccountCircleIcon className="Navbar-Icon" /></Link>
-                                <MenuItem onClick={handleClose} onClick={logout} href="# ">Đăng xuất</MenuItem>
-                            </Menu> */}
+                                </ListItemIcon>
+                            </StyledMenuItem>
                         </div>
                     </div>
+                    )}
                 </>
             );
         }
@@ -175,7 +188,9 @@ export default function Navbar() {
             </Link>
         );
     };
-
+    useEffect(() => {
+        dispatch(getInformationUserAPI());
+    }, []);
     return (
         <div id='Navbar'>
             <div className={classes.root}>
@@ -204,10 +219,6 @@ export default function Navbar() {
                                 >
                                     <Link to="/sign-in">
                                         <StyledMenuItem>
-                                            {/* <ListItemIcon>
-                                                <AccountCircleIcon fontSize="small" />
-                                            </ListItemIcon>
-                                            <ListItemText primary="Sign In" className='Navbar-icon-title' /> */}
                                             {isLogin()}
                                         </StyledMenuItem>
                                     </Link>

@@ -5,6 +5,8 @@ import DetailRecipe from '../../component/user/detail/detailRecipe';
 import ForgotPassword from '../../component/user/forgotPassword/forgotPassword';
 import ResetPassword from '../../component/user/reset-password/resetPassword';
 import ProfileUser from '../../component/user/profile/profileUser';
+import Detailcategory from '../../component/user/detail-category/detailCategory';
+import ManagePost from '../../component/user/user-post/userPost';
 const userRouter = [
     {
         path: '/',
@@ -22,7 +24,7 @@ const userRouter = [
         component: SignUp
     },
     {
-        path: '/detail-recipe',
+        path: '/detail-recipe/:postId',
         exact: true,
         component: DetailRecipe
     },
@@ -40,6 +42,16 @@ const userRouter = [
         path: '/profile-user',
         exact: true,
         component: ProfileUser
+    },
+    {
+        path: '/detail-category/:categoryId',
+        exact: true,
+        component: Detailcategory
+    },
+    {
+        path: '/post-user/:userId',
+        exact: true,
+        component: ManagePost
     },
 ];
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {  useEffect } from 'react';
 import PropTypes from 'prop-types';
 import SwipeableViews from 'react-swipeable-views';
 import { useTheme } from '@mui/material/styles';
@@ -10,9 +10,7 @@ import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Grid from '@material-ui/core/Grid';
 import { useDispatch, useSelector } from 'react-redux';
-import test from '../../../images/logo/cooking.png';
 import { getInformationUserAPI } from '../../../redux/actions/user/signIn-signUp/userSignIn';
-
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
 
@@ -66,12 +64,11 @@ export default function ProfileUser() {
         setValue(index);
     };
 
-
     return (
         <div className='profile-user'>
             <Container fixed>
                 <div className='profile-user-box'>
-                    <Box sx={{ bgcolor: 'background.paper', width: 500 }}>
+                    <Box sx={{ bgcolor: 'background.paper' }}>
                         <AppBar position="static">
                             <Tabs
                                 value={value}
@@ -81,6 +78,7 @@ export default function ProfileUser() {
                                 variant="fullWidth"
                                 aria-label="full width tabs example"
                             >
+
                                 <Tab label="THÔNG TIN CÁ NHÂN" {...a11yProps(0)} />
                                 <Tab label="BÀI VIẾT" {...a11yProps(1)} />
                             </Tabs>
@@ -95,28 +93,26 @@ export default function ProfileUser() {
                                     <Container>
                                         <Grid container >
                                             {user && ( <>
-                                                <Grid item xs={8} >
+                                                <Grid item xs={5} >
                                                     <div className='tap-one-image'>
-                                                        <img src={test} alt='test' />
+                                                        <img src={user.avatar} alt='test' />
                                                     </div>
                                                 </Grid>
                                                 
                                             {/* ---- */}
-                                            <Grid item xs={4} >
+                                            <Grid item xs={5} >
                                                 <div className='tap-one-info-email'>
                                                     <span>Email:{user.email}</span>
                                                 </div>
                                             </Grid>
-                                            
                                             </>)}
-
                                         </Grid>
                                     </Container>
                                 </div>
                             </TabPanel>
-                            <TabPanel value={value} index={1} dir={theme.direction}>
-                                Item Two
-                            </TabPanel>
+                                <TabPanel value={value} index={1} dir={theme.direction}>
+
+                                </TabPanel>               
                         </SwipeableViews>
                     </Box>
                 </div>
