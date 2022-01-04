@@ -6,7 +6,7 @@ export const signInAPI = (data) => {
   return function (dispatch) {
     axios({
       method: "POST",
-      url: "http://localhost:8001/api/user/signin",
+      url: "http://localhost:8001/signin",
       data: data,
     })
       .then((res) => {
@@ -43,7 +43,7 @@ export const signUpAPI = (data) => {
   return function (dispatch) {
     axios({
       method: "POST",
-      url: "http://localhost:8001/api/user/signup",
+      url: "http://localhost:8001/signup",
       data: data,
     })
       .then((res) => {
@@ -67,7 +67,7 @@ export const forgotAPI = (data) => {
   return function (dispatch) {
     axios({
       method: "POST",
-      url: "http://localhost:8001/api/user/forgot-password",
+      url: "http://localhost:8001/forgot-password",
       data: data,
     })
       .then((res) => {
@@ -102,7 +102,7 @@ export const resetPasswordAPI = (data, userId, token) => {
   return function (dispatch) {
     axios({
       method: "POST",
-      url: `http://localhost:8001/api/user/reset-password/${userId}/${token}`,
+      url: `http://localhost:8001/reset-password/${userId}/${token}`,
       data: data,
     })
       .then((res) => {
@@ -138,7 +138,7 @@ export const resetPasswordAPI = (data, userId, token) => {
 export const getInformationUserAPI = () => {
   return (dispatch) => {
     axios
-      .get(`user/profile`)
+      .get(`/profile`)
       .then((res) => {
         dispatch({
           type: ActionType.GET_INFORMATION_USER,

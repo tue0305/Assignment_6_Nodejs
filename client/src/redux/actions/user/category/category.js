@@ -11,7 +11,7 @@ export const getCategoryAPI = () => {
   return function (dispatch) {
     axios({
       method: "GET",
-      url: "http://localhost:8002/api/category/",
+      url: "http://localhost:8002/category/",
     }).then((res) => {
       dispatch(getCategory(res.data));
     });
@@ -27,7 +27,7 @@ export const getCategoryPostAPI = () => {
   return function (dispatch) {
     axios({
       method: "GET",
-      url: "http://localhost:8002/api/category",
+      url: "http://localhost:8002/category",
     })
       .then((res) => {
         dispatch(getCategoryPost(res.data));
@@ -48,7 +48,7 @@ export const getDetailCategoryAPI = (categoryId) => {
   return function (dispatch) {
     axios({
       method: "GET",
-      url: `http://localhost:8002/api/category/get-detail-category/${categoryId}`,
+      url: `http://localhost:8002/category/get-detail-category/${categoryId}`,
     }).then((res) => {
       dispatch(detailCategory(res.data));
     });
@@ -65,9 +65,10 @@ export const getDetailCategoryPostAPI = (postId) => {
   return function (dispatch) {
     axios({
       method: "GET",
-      url: `http://localhost:8002/api/post/detail/${postId}`,
+      url: `http://localhost:8002/post/${postId}`,
     })
       .then((res) => {
+        console.log(res.data, "data");
         dispatch(detailCategoryPost(res.data));
       })
       .catch((err) => {
@@ -81,15 +82,17 @@ const getPostUser = (categorys) => ({
   type: actionType.GET_USER_POST,
   payload: categorys,
 });
+
 export const getPostUserAPI = (userId) => {
   const token = localStorage.getItem("accessToken");
   return function (dispatch) {
     axios({
       method: "GET",
-      url: `http://localhost:8002/api/post/user/${userId}`,
+      url: `http://localhost:8002/post/user/${userId}`,
       headers: { Authorization: "Bearer " + token },
     })
       .then((res) => {
+        console.log(res.data, "data");
         dispatch(getPostUser(res.data));
       })
       .catch((err) => {
@@ -103,7 +106,7 @@ export const createPostUserAPI = (category) => {
   return function (dispatch) {
     axios({
       method: "POST",
-      url: `http://localhost:8002/api/post/user/create`,
+      url: `http://localhost:8002/post/user/create`,
       category,
       headers: { Authorization: "Bearer " + token },
     })
@@ -126,7 +129,7 @@ export const deletePostUserAPI = (postId) => {
   return function (dispatch) {
     axios({
       method: "DELETE",
-      url: `http://localhost:8002/api/post/user/delete/${postId}`,
+      url: `http://localhost:8002/post/user/delete/${postId}`,
       headers: { Authorization: "Bearer " + token },
     })
       .then((res) => {

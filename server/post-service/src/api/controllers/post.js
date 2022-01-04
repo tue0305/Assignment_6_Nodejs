@@ -29,7 +29,7 @@ module.exports = async (app, channel) => {
   app.get("/post/:postId", async (req, res, next) => {
     try {
       const { postId } = req.params;
-      const data = await service.getPost();
+      const data = await service.getPost(postId);
 
       return res.json(data);
     } catch (error) {
@@ -40,7 +40,7 @@ module.exports = async (app, channel) => {
   // @route GET api/post/categoryId
   // @des get posts by category
   // @access Public
-  app.get("/post/:category", async (req, res, next) => {
+  app.get("/post/detail-category/:category", async (req, res, next) => {
     try {
       const { category } = req.params;
 
@@ -55,7 +55,7 @@ module.exports = async (app, channel) => {
   // @route GET api/post/user
   // @desc get user's post
   // @access Public
-  app.get("/post/user", verifyToken, async (req, res, next) => {
+  app.get("/post/user/:userID", verifyToken, async (req, res, next) => {
     try {
       const userId = req.userId;
       // GET PAYLOAD TO SEND USER_SERVICE
@@ -68,8 +68,7 @@ module.exports = async (app, channel) => {
         "GET_POSTS"
       );
 
-      PublishUserEvent(payload);
-      return res.json(data);
+      return res.json(result);
     } catch (error) {
       next(error);
     }

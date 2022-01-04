@@ -1,8 +1,7 @@
 const CategoryService = require("../../services/category_service");
 
 const service = new CategoryService();
-const  verifyToken  = require("../middlewares/auth");
-
+const verifyToken = require("../middlewares/auth");
 
 module.exports = async (app, channel) => {
   // @route GET api/Category
@@ -53,31 +52,35 @@ module.exports = async (app, channel) => {
   // @route DELETE api/Category/user/delete/categoryId
   // @des send reset password's to Category's email
   // @access Public
-  app.delete("category/delete/:categoryId", verifyToken, async (req, res, next) => {
-    try {
-      const { categoryId } = req.params;
+  app.delete(
+    "category/delete/:categoryId",
+    verifyToken,
+    async (req, res, next) => {
+      try {
+        const { categoryId } = req.params;
 
-      const data = await service.deleteCategory(categoryId);
+        const data = await service.deleteCategory(categoryId);
 
-      return res.json(data);
-    } catch (err) {
-      next(err);
+        return res.json(data);
+      } catch (err) {
+        next(err);
+      }
     }
-  });
+  );
 
   // @route GET /get-detail-category/:categoryId
   // @des Get detail Category
   // @access Public
-  app.get('/get-detail-category/:categoryId', async (req, res, next) =>{
-    try{
-      const { categoryId } = req.params;
-      const data = await service.getDetailCategory(categoryId)
-      return res.json(data);
+  app.get(
+    "/category/get-detail-category/:categoryId",
+    async (req, res, next) => {
+      try {
+        const { categoryId } = req.params;
+        const data = await service.getDetailCategory(categoryId);
+        return res.json(data);
+      } catch (err) {
+        next(err);
+      }
     }
-    catch(err) {
-      next(err)
-    }
-  });
+  );
 };
-
-

@@ -10,7 +10,6 @@ module.exports = async (app, channel) => {
   const service = new UserService();
   subscribeMessage(channel, service);
 
-
   // @route GET api/user
   // @des Check if user is logged in
   // @access Public
@@ -80,7 +79,7 @@ module.exports = async (app, channel) => {
     }
   );
 
-  // @route GET /logout 
+  // @route GET /logout
   // @desc Logout user
   // @access Public
   app.get("/logout", async (req, res, next) => {
@@ -96,14 +95,19 @@ module.exports = async (app, channel) => {
   // @route GET /get-all-users
   // @desc Get all users
   // @access Public
-  app.get("/get-all-users", authorize(["ADMIN"]), async (req, res, next) => {
-    try {
-      const getAll = await service.getAllUser();
-      res.json(getAll);
-    } catch (err) {
-      next(err);
+  app.get(
+    "/get-all-users",
+    verifyToken,
+    authorize(["ADMIN"]),
+    async (req, res, next) => {
+      try {
+        const getAll = await service.getAllUser();
+        res.json(getAll);
+      } catch (err) {
+        next(err);
+      }
     }
-  });
+  );
 
   // @route GET /detail-user/:userId
   // @desc Get detail user
