@@ -19,12 +19,11 @@ const crawlData = () => {
         .then((res) => {
             const data = res.data;
             let dataJson = {};
-            console.log('d');
+            console.log("d");
             data.forEach((element) => {
                 let content_data = "";
                 dataJson.id_food = element.id;
                 dataJson.title = element.title;
-<<<<<<< HEAD
                 dataJson.ingredients = [...element.ingredients];
                 dataJson.image = element.image;
                 let content = element.instructions;
@@ -49,19 +48,6 @@ const crawlData = () => {
                 newPost.save();
                 console.log(newPost);
             });
-=======
-                dataJson.description = {
-                    ingredients: element.ingredients,
-                    instructions: element.instructions,
-                };
-                dataJson.image = element.image;
-                // resData.push(dataJson);
-                if(resData.push(dataJson)){
-                    throw 'Break';
-                }
-            });
-            fs.writeFileSync("data.json", JSON.stringify(resData)); 
->>>>>>> c3920a6481ba4211ceb6630a5f23db681ba320ed
         })
         .catch((err) => {
             console.log(err);

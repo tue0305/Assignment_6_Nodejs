@@ -1,72 +1,35 @@
 // const CommentService = require("../../services/comment_service");
 
-// const service = new CommentService();
-// const {PublishUserEvent, PublishPostEvent} = require("../../utils")
+// const { USER_BINDING_KEY, POST_BINDING_KEY } = require("../../config/config");
+// const verifyToken = require("../middlewares/auth");
+// const { publishMessage, subscribeMessage } = require("../../utils");
 
+// module.exports = (app, channel) => {
+//   const service = new CommentService();
 
-// module.exports.getAllComment = async (req, res, next) => {
-//   try {
-//     const {postId}  = req.params;
-//   // GET PAYLOAD TO SEND USER_SERVICE
+//   // @route GET api/comment
+//   // @des Get all comments by postId
+//   // @access Public
+//   app.get("/:postId", verifyToken, "");
 
-//     const { data } = await service.getUserPosts(postId, 'GET_COMMENTS');
+//   // @route POST api/comment/signup
+//   // @desc signup comment
+//   // @access Public
+//   app.post("/:postId", verifyToken, "");
 
-//     PublishUserEvent(data)
-//     PublishPostEvent(data)
-    
-//     return res.json(data);
-//   } catch (err) {
-//     next(err);
-//   }
-// };
+//   // @route POST api/comment/login
+//   // @desc Login comment
+//   // @access Public
+//   app.post(`/signin`, "");
 
-// module.exports.signIn = async (req, res, next) => {
-  
-//   try {
-//     const { email, password } = req.body;
+//   // @route POST api/comment/forgot-password
+//   // @des send reset password's to comment's email
+//   // @access Public
+//   app.post("/forgot-password", "");
 
-//     const data = await service.checkSignIn({ email, password });
-
-//     return res.json(data);
-//   } catch (err) {
-//     next(err);
-//   }
-// };
-
-// module.exports.getUserInfo = async (req, res, next) => {
-//   try {
-//     const userId =req.userId
-    
-//     const user = await service.getProfile(userId);
-    
-//     return res.json(user);
-//   } catch (error) {
-//     next(error);
-//   }
-// };
-
-// module.exports.forgotPasswordRequest = async (req, res, next) => {
-  
-//   try {
-//     const { email } = req.body;
-//     const result = await service.forgotPasswordRequest(email);
-
-//     return res.json(result);
-//   } catch (error) {
-//     next(error);
-//   }
-// };
-
-// module.exports.resetPassword = async (req, res, next) => {
-  
-//   try {
-//     const { userId, token } = req.params;
-//     const { password, confirmPassword } = req.body;
-
-//     const result = await service.resetPassword(password, confirmPassword, userId, token);
-
-//     return res.json(result);
-//   } catch (error) {
-//     next(error);
-//   }
+//   // @route POST api/comment/reset-password
+//   // @des Reset password with userId and forgot password's token generate in comment's email
+//   // @access Public
+//   app.post("/reset-password/:userId/:token", "");
+//   //   const { newPassword} = req.body;
 // };

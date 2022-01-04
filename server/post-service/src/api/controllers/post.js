@@ -1,195 +1,182 @@
 const PostService = require("../../services/post_service");
 
-const service = new PostService();
+const {
+    USER_BINDING_KEY,
+    COMMENT_BINDING_KEY,
+} = require("../../config/config");
+const verifyToken = require("../middlewares/auth");
+const { publishMessage, subscribeMessage } = require("../../utils");
 
-const { PublishUserEvent, PublishCommentEvent } = require("../../utils");
+module.exports = async (app, channel) => {
+    const service = new PostService();
 
-module.exports.getPosts = async (req, res, next) => {
-    try {
-        const data = await service.getPosts();
+    // @route GET api/post
+    // @des get posts
+    // @access Public
+    app.get("/post", async (req, res, next) => {
+        try {
+            const data = await service.getPosts();
 
-        return res.json(data);
-    } catch (error) {
-        next(error);
-    }
-};
+            return res.json(data);
+        } catch (error) {
+            next(error);
+        }
+    });
 
-module.exports.getPostsByCategory = async (req, res, next) => {
-    try {
-        const { category } = req.params;
+    // @route GET api/post/postId
+    // @desc get post detail
+    // @access Public
+    app.get("/post/:postId", async (req, res, next) => {
+        try {
+            const { postId } = req.params;
+            const data = await service.getPost(postId);
 
-        const data = await service.getPostsByCategory(category);
+            return res.json(data);
+        } catch (error) {
+            next(error);
+        }
+    });
 
-        return res.json(data);
-    } catch (error) {
-        next(error);
-    }
-};
+    // @route GET api/post/categoryId
+    // @des get posts by category
+    // @access Public
+    app.get("/post/detail-category/:category", async (req, res, next) => {
+        try {
+            const { category } = req.params;
 
-module.exports.getPostsByCategory = async (req, res, next) => {
-    try {
-        const { categoryTitle } = req.params.category;
+            const data = await service.getPostsByCategory(category);
 
-        const data = await service.getPostsByCategory(categoryTitle);
+            return res.json(data);
+        } catch (error) {
+            next(error);
+        }
+    });
 
-        return res.json(data);
-    } catch (error) {
-        next(error);
-    }
-};
+    // @route GET api/post/user
+    // @desc get user's post
+    // @access Public
+    app.get("/post/user/:userID", verifyToken, async (req, res, next) => {
+        try {
+            const userId = req.userId;
+            // GET PAYLOAD TO SEND USER_SERVICE
 
-module.exports.getUserPosts = async (req, res, next) => {
-    try {
-        const userId = req.userId;
-        // GET PAYLOAD TO SEND USER_SERVICE
+            const result = await service.getUserPosts(userId, "GET_POSTS");
 
-        const result = await service.getUserPosts(userId, "GET_POSTS");
+            const payload = await service.getPostPayloadUser(
+                userId,
+                result.data,
+                "GET_POSTS"
+            );
 
-        const payload = await service.getPostPayload(
-            userId,
-            result.data,
-            "GET_POSTS"
-        );
+            return res.json(result);
+        } catch (error) {
+            next(error);
+        }
+    });
 
-        PublishUserEvent(payload);
-        return res.json(data);
-    } catch (error) {
-        next(error);
-    }
-};
+    // @route POST api/post/user/create
+    // @desc create post
+    // @access Public
+    app.post("/post/user/create", verifyToken, async (req, res, next) => {
+        try {
+            const userId = req.userId;
+            const { title, image, content, gradients, categoryTitle } =
+                req.body;
 
-module.exports.getUserPosts = async (req, res, next) => {
-    try {
-        const { userId } = req.params;
+            const result = await service.createPost(
+                title,
+                image,
+                content,
+                gradients,
+                categoryTitle,
+                userId
+            );
 
-        const data = await service.getUserPosts(userId);
+            const payload = await service.getPostPayloadUser(
+                userId,
+                result.data,
+                "ADD_POST"
+            );
 
-        return res.json(data);
-    } catch (err) {
-        next(err);
-    }
-};
+            publishMessage(channel, USER_BINDING_KEY, JSON.stringify(payload));
+            return res.json(result);
+        } catch (error) {
+            next(error);
+        }
+    });
 
-module.exports.getPostsByCategory = async (req, res, next) => {
-    try {
-        const { categoryTitle } = req.params.category;
+    // @route PUT api/post/edit
+    // @desc edit post
+    // @access Public
+    app.put("/post/user/edit/:postId", verifyToken, async (req, res, next) => {
+        try {
+            const { postId } = req.params;
+            const userId = req.userId;
+            const { title, image, content, gradients, categoryTitle } =
+                req.body;
 
-        const data = await service.getPostsByCategory(categoryTitle);
+            const result = await service.editPost(
+                postId,
+                title,
+                image,
+                content,
+                gradients,
+                categoryTitle,
+                userId
+            );
 
-        return res.json(data);
-    } catch (err) {
-        next(err);
-    }
-};
+            const payload = await service.getPostPayloadUser(
+                userId,
+                result.data,
+                "UPDATE_POST"
+            );
 
-module.exports.createPost = async (req, res, next) => {
-    try {
-        const userId = req.userId;
-        const { title, image, content, gradients, categoryTitle } = req.body;
-        const result = await service.createPost(
-            title,
-            image,
-            content,
-            gradients,
-            categoryTitle,
-            userId
-        );
+            publishMessage(channel, USER_BINDING_KEY, JSON.stringify(payload));
+            publishMessage(
+                channel,
+                COMMENT_BINDING_KEY,
+                JSON.stringify(payload)
+            );
 
-        const payload = await service.getPostPayload(
-            userId,
-            result.data,
-            "CREATE_POST"
-        );
+            return res.json(result);
+        } catch (error) {
+            next(error);
+        }
+    });
 
-        PublishUserEvent(payload);
-        return res.json(result);
-    } catch (error) {
-        next(error);
-        const userId = req.userId;
-        const { title, image, content, gradients, category } = req.body;
+    // @route DELETE api/post/user/delete/postId
+    // @des send reset password's to post's email
+    // @access Public
+    app.delete(
+        "/post/user/delete/:postId",
+        verifyToken,
+        async (req, res, next) => {
+            try {
+                const { postId } = req.params;
+                const userId = req.userId;
 
-        const data = await service.createPost(
-            title,
-            image,
-            content,
-            gradients,
-            category,
-            userId
-        );
+                const result = await service.deletePost(postId, userId);
 
-        return res.json(data);
-    }
-};
+                const payload = await service.getPostPayloadUser(
+                    userId,
+                    result.data,
+                    "REMOVE_POST"
+                );
 
-module.exports.editPost = async (req, res, next) => {
-    try {
-        const { postId } = req.params;
-        const userId = req.userId;
-        const { title, image, content, gradients, category } = req.body;
-
-        const result = await service.editPost(
-            postId,
-            title,
-            image,
-            content,
-            gradients,
-            category,
-            userId
-        );
-
-        const payload = await service.getPostPayload(
-            userId,
-            result.data,
-            "UPDATE_POST"
-        );
-
-        PublishCommentEvent(payload);
-        PublishUserEvent(payload);
-        return res.json(result);
-    } catch (error) {
-        next(error);
-
-        const { postId } = req.params;
-        const userId = req.userId;
-        const { title, image, content, gradients, category } = req.body;
-
-        const data = await service.editPost(
-            postId,
-            title,
-            image,
-            content,
-            gradients,
-            category,
-            userId
-        );
-
-        return res.json(data);
-    }
-};
-
-module.exports.deletePost = async (req, res, next) => {
-    try {
-        const { postId } = req.params;
-        const userId = req.userId;
-
-        const result = await service.deletePost(postId, userId);
-
-        const payload = await service.getPostPayload(
-            userId,
-            result.data,
-            "REMOVE_POST"
-        );
-
-        PublishCommentEvent(payload);
-        PublishUserEvent(payload);
-        return res.json(result);
-    } catch (error) {
-        next(error);
-    }
-    const { postId } = req.params;
-    const userId = req.userId;
-
-    const data = await service.editPost(postId, userId);
-
-    return res.json(data);
+                publishMessage(
+                    channel,
+                    USER_BINDING_KEY,
+                    JSON.stringify(payload)
+                );
+                publishMessage(
+                    channel,
+                    COMMENT_BINDING_KEY,
+                    JSON.stringify(payload)
+                );
+                return res.json(result);
+            } catch (error) {
+                next(error);
+            }
+        }
+    );
 };

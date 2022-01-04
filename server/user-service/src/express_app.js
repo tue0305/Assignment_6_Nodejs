@@ -1,21 +1,24 @@
 const express = require("express");
 const cors = require("cors");
-const { appEvent } = require("./api");
+const path = require('path');
 const HandleErrors = require("./utils/error-handler");
 
-// ***** ROUTES *****
-const userRouter = require("./routes/user");
+const { UserController } = require("./api");
 
-module.exports = async (app) => {
+module.exports = async (app, channel) => {
+  const publicPathDirectory = path.join(__dirname, "./public");
   app.use(express.json({ limit: "25mb" }));
   app.use(express.urlencoded({ extended: true, limit: "25mb" }));
   app.use(cors());
   app.use(express.static(__dirname + "/public"));
-  //Listen to Events //
-  appEvent(app);
+  
 
-  // ### Using routes
-  app.use("/api/user", userRouter);
+  app.use("/public", express.static(publicPathDirectory));
+
+  app.use("/public", express.static("public"));
+
+  // ### Using routes API
+  UserController(app, channel);
 
   // error handling
   app.use(HandleErrors);
