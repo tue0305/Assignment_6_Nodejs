@@ -243,6 +243,8 @@ class PostService {
 
   async SubscribeEvents(payload) {
     try {
+      payload.JSON.parse(payload)
+
       const { event, data } = payload;
 
 
