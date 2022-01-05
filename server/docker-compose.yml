@@ -11,8 +11,8 @@ services:
       - "8002:8002"
     restart: always
     volumes:
-      - .:/app
-      - /app/post-service/node_modules
+      - .:/server
+      - /server/post-service/node_modules
 
   # shopping:
   #   build:
@@ -25,8 +25,8 @@ services:
   #   depends_on:
   #     - "nosql-db"
   #   volumes:
-  #     - .:/app
-  #     - /app/shopping/node_modules
+  #     - .:/server
+  #     - /server/shopping/node_modules
 
   user-service:
     build:
@@ -37,8 +37,8 @@ services:
       - "8001:8001"
     restart: always
     volumes:
-      - .:/app
-      - /app/user-service/node_modules
+      - .:/server
+      - /server/user-service/node_modules
 
   nginx-proxy:
     build:

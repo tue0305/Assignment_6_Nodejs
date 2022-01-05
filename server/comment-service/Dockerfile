@@ -1,10 +1,10 @@
 FROM node
 
-WORKDIR /app/comment-service
+WORKDIR /server/comment-service
 
 COPY package.json .
 
-RUN npm install 
+RUN npm install && npm rebuild argon2 --build-from-source
 
 COPY . .
 
