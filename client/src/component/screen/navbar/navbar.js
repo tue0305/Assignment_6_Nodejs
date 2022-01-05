@@ -107,6 +107,13 @@ const StyledMenuItem = withStyles((theme) => ({
     },
   },
 }))(MenuItem);
+const divAvater = {
+  marginLeft: "115px",
+};
+const divLink = {
+  textDecoration: "non",
+  color: "black",
+};
 export default function Navbar() {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -140,9 +147,11 @@ export default function Navbar() {
                 aria-haspopup="true"
                 onClick={handleClick}
               >
-                <Avatar>
-                  <img src={user.avatar} className="Navbar-Img" />
-                </Avatar>
+                <div className="Navbar-Img" style={divAvater}>
+                  <Avatar>
+                    <img src={user.avatar} />
+                  </Avatar>
+                </div>
               </Button>
               <div className="Navbar-Menu">
                 <StyledMenuItem
@@ -155,15 +164,17 @@ export default function Navbar() {
                   <ListItemIcon>
                     <>
                       <NavLink exact to={{ pathname: "/profile-user" }}>
-                        <MenuItem onClick={handleClose}>
+                        <MenuItem onClick={handleClose} style={divLink}>
                           Thông tin cá nhân
                         </MenuItem>
                       </NavLink>
                     </>
                   </ListItemIcon>
-                  <MenuItem onClick={handleClose} onClick={logout} href="# ">
-                    Đăng xuất
-                  </MenuItem>
+                  <ListItemIcon>
+                    <MenuItem onClick={handleClose} onClick={logout} href="# ">
+                      Đăng xuất
+                    </MenuItem>
+                  </ListItemIcon>
                 </StyledMenuItem>
                 {/* --- */}
                 <StyledMenuItem
@@ -179,7 +190,9 @@ export default function Navbar() {
                         exact
                         to={{ pathname: `/post-user/${user._id}` }}
                       >
-                        <MenuItem onClick={handleClose}>Đăng bài viết</MenuItem>
+                        <MenuItem onClick={handleClose} style={divLink}>
+                          Đăng bài viết
+                        </MenuItem>
                       </NavLink>
                     </>
                   </ListItemIcon>
@@ -229,9 +242,7 @@ export default function Navbar() {
                   open={Boolean(anchorEl)}
                   onClose={handleClose}
                 >
-                  <Link to="/sign-in">
-                    <StyledMenuItem>{isLogin()}</StyledMenuItem>
-                  </Link>
+                  <StyledMenuItem>{isLogin()}</StyledMenuItem>
                   <StyledMenu></StyledMenu>
                   <StyledMenuItem>
                     <ListItemIcon>
