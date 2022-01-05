@@ -217,9 +217,24 @@ class PostService {
     try {
       const postDeleteConditions = { _id: postId, userId: userId };
 
-      deletedPost = await PostModel.findOneAndDelete(postDeleteConditions);
+      const post = await PostModel.findOne(postDeleteConditions);
 
-      if (!deletedPost) {
+      const category = await CategoryModel.findById(post.category._id);
+
+      category.posts.map((item) => {
+        if (item._id.toString() === post._id.toString()) {
+          const index = category.posts.indexOf(item);
+          category.posts.splice(index, 1);
+        } else {
+          return new APIError("Post doesn't exist!", STATUS_CODES.NOT_FOUND);
+        }
+      });
+      await category.save();
+      await PostModel.findOneAndDelete(postDeleteConditions) 
+     
+      
+      
+      if (!post) {
         return new APIError(
           "User not authorized to update or post not found! ",
           STATUS_CODES.NOT_FOUND
@@ -229,8 +244,9 @@ class PostService {
       return {
         status: STATUS_CODES.OK,
         success: true,
-        message: `Delete post ${postId} successfully!`,
-        data: { userId, postId },
+        message: `Delete post ${post._id} successfully!`,
+        category: category,
+        data: post,
       };
     } catch (error) {
       return new APIError(

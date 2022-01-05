@@ -98,6 +98,7 @@ module.exports = async (app, channel) => {
       );
 
       publishMessage(channel, USER_BINDING_KEY, JSON.stringify(payload));
+
       return res.json(result);
     } catch (error) {
       next(error);
@@ -130,7 +131,7 @@ module.exports = async (app, channel) => {
       );
 
       publishMessage(channel, USER_BINDING_KEY, JSON.stringify(payload));
-      publishMessage(channel, COMMENT_BINDING_KEY, JSON.stringify(payload));
+      // publishMessage(channel, COMMENT_BINDING_KEY, JSON.stringify(payload));
 
       return res.json(result);
     } catch (error) {
@@ -149,8 +150,8 @@ module.exports = async (app, channel) => {
         const { postId } = req.params;
         const userId = req.userId;
 
-        const result = await service.deletePost(postId, userId);
-
+        const result = await service.deletePost( userId, postId);
+        console.log(result);
         const payload = await service.getPostPayloadUser(
           userId,
           result.data,
@@ -158,7 +159,7 @@ module.exports = async (app, channel) => {
         );
 
         publishMessage(channel, USER_BINDING_KEY, JSON.stringify(payload));
-        publishMessage(channel, COMMENT_BINDING_KEY, JSON.stringify(payload));
+        // publishMessage(channel, COMMENT_BINDING_KEY, JSON.stringify(payload));
         return res.json(result);
       } catch (error) {
         next(error);
