@@ -69,7 +69,6 @@ export const getDetailCategoryPostAPI = (postId) => {
       url: `http://localhost:8002/post/${postId}`,
     })
       .then((res) => {
-        console.log(res.data, "data");
         dispatch(detailCategoryPost(res.data));
       })
       .catch((err) => {

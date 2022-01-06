@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
@@ -30,13 +30,6 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.text.secondary,
   },
 }));
-const useStylesPopper = makeStyles((theme) => ({
-  paper: {
-    border: "1px solid",
-    padding: theme.spacing(1),
-    backgroundColor: theme.palette.background.paper,
-  },
-}));
 const divIcon = {
   paddingTop: "18px",
   fontSize: "70px",
@@ -62,24 +55,53 @@ const divP = {
 };
 export default function DetailRecipe() {
   const classes = useStyles();
+
   const { category } = useSelector((state) => state.categoryReducer);
+
   const dispatch = useDispatch();
+
   const { postId } = useParams();
+
   const [loading, setLoading] = useState(false);
+  //  -----
+  const [error, setError] = useState("");
+
+  const handeleInputChange = (e) => {
+    let { name, value } = e.target;
+    setState({ ...state, [name]: value });
+  };
+  useEffect(() => {
+    setState({ ...state, text: content });
+  }, []);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!comment || !text) {
+      setError("Hãy nhập bình luận của bạn!");
+    } else {
+      dispatch(console.log("aa"));
+      console.log("a");
+      setError("");
+    }
+  };
+  const [state, setState] = useState({
+    comment: "",
+    text: "",
+  });
+  const { comment, text } = state;
+  console.log(state, "state");
+  // -----
   useEffect(() => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
     }, 1000);
   }, []);
+
   useEffect(() => {
     dispatch(getDetailCategoryPostAPI(postId));
   }, []);
 
-  const [anchorEl, setAnchorEl] = React.useState(null);
   const [content, setContent] = React.useState(null);
-
-  const open = Boolean(anchorEl);
 
   function PopUp() {
     const useStyles = makeStyles((theme) => ({
@@ -112,29 +134,51 @@ export default function DetailRecipe() {
           }}
         >
           <Fade in={true}>
-            <div className={classes.paper}>
-              <h2 id="transition-modal-title">Bình luận</h2>
-              <div className="modal-input">
-                <input placeholder="Nhập bình luận" style={divInput} />
+            <form onSubmit={handleSubmit}>
+              <div className={classes.paper}>
+                <h2 id="transition-modal-title">Bình luận</h2>
+                <div className="modal-input">
+                  <input
+                    placeholder="Nhập bình luận"
+                    style={divInput}
+                    name="comment"
+                    value={state.comment}
+                    onChange={handeleInputChange}
+                  />
+                  {error && <h3>{error}</h3>}
+                </div>
+                <div className="modal-button">
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    style={divButton}
+                    type="submit"
+                  >
+                    Bình luận
+                  </Button>
+                </div>
+                <p
+                  id="transition-modal-description"
+                  style={divP}
+                  name="text"
+                  value={state.text.content}
+                  onChange={handeleInputChange}
+                >
+                  {content}
+                </p>
               </div>
-              <div className="modal-button">
-                <Button variant="contained" color="primary" style={divButton}>
-                  Bình luận
-                </Button>
-              </div>
-              <p id="transition-modal-description" style={divP}>
-                {content}
-              </p>
-            </div>
+            </form>
           </Fade>
         </Modal>
       </div>
     );
   }
+
   const handleSelectText = () => {
     console.log(`Selected text: ${window.getSelection().toString()}`);
     setContent(window.getSelection().toString());
   };
+
   const resetContent = () => {
     setContent(null);
   };
@@ -215,17 +259,18 @@ export default function DetailRecipe() {
                           <h2>Bình Luận</h2>
                           <div className="recipe-right">
                             <div className="recipe-right-comment">
-                              <span>
-                                <AccountCircleIcon style={divIcon} />
-                                <input placeholder="what's your on mind?" />
-                              </span>
-
-                              <div className="recipe-right-comment-button">
-                                <Button variant="contained" color="primary">
-                                  {" "}
-                                  Bình luận
-                                </Button>
-                              </div>
+                              <form>
+                                <span>
+                                  <AccountCircleIcon style={divIcon} />
+                                  <input placeholder="what's your on mind?" />
+                                </span>
+                                <div className="recipe-right-comment-button">
+                                  <Button variant="contained" color="primary">
+                                    {" "}
+                                    Bình luận
+                                  </Button>
+                                </div>
+                              </form>
                             </div>
                           </div>
                         </Container>
@@ -237,7 +282,6 @@ export default function DetailRecipe() {
             </Container>
           </div>
         )}
-
         <TextSelector
           events={[
             {
@@ -251,7 +295,7 @@ export default function DetailRecipe() {
           colorText={true}
         />
       </div>
-      <PopUp />
+      {content && <PopUp />}
     </>
   );
 }

@@ -91,7 +91,7 @@ function SignIn(props) {
                             id="outlined-basic"
                             label="Email"
                             variant="outlined"
-                            // type="email"
+                            type="email"
                             value={state.email}
                             name="email"
                             onChange={handleInputChange}
@@ -118,7 +118,7 @@ function SignIn(props) {
                             color="secondary"
                             type="submit"
                           >
-                            SIGN IN NOW
+                            ĐĂNG NHẬP
                           </Button>
                         </div>
                       </form>
