@@ -13,7 +13,6 @@ const {
 } = require("../utils/app-errors");
 
 class CategoryService {
-    
   async getCategories() {
     try {
       // ***** GET ALL CATEGORY *****
@@ -34,19 +33,18 @@ class CategoryService {
     }
   }
 
-  async getDetailCategory(categoryId){
-    try{
-          // GET DETAIL CATEGORY 
-        const getDetail =  await CategoryModel.findById(categoryId);
-        
-        return {
-          status: STATUS_CODES.OK,
-          success: true,
-          message: `GET DETAIL ${getDetail._id} SUCCESSFULLY!`,
-          getDetail: getDetail
-        }
-    }
-    catch(err) {
+  async getDetailCategory(categoryId) {
+    try {
+      // GET DETAIL CATEGORY
+      const getDetail = await CategoryModel.findById(categoryId);
+
+      return {
+        status: STATUS_CODES.OK,
+        success: true,
+        message: `GET DETAIL ${getDetail._id} SUCCESSFULLY!`,
+        getDetail: getDetail,
+      };
+    } catch (err) {
       return new APIError(
         "Data Not found!",
         STATUS_CODES.INTERNAL_ERROR,
@@ -56,20 +54,23 @@ class CategoryService {
   }
 
   async createCategory(newCategory) {
-    const  title  = newCategory;
+    const { title, file } = newCategory;
 
     // **** Simple validation ****
     if (!title) {
       return new APIError("Missing information!!", STATUS_CODES.BAD_REQUEST);
     }
-
+    const urlImage = file
+      ? `http://localhost:8002/${file.path}`
+      : `http://localhost:8002/public/images/categoryImage/meal.png`;
     try {
       // ***** CREATE NEW CATEGORY *****
       var newCategory = new CategoryModel({
         title,
+        image: urlImage,
       });
 
-      await newCategory.save()
+      await newCategory.save();
 
       return {
         status: 200,
@@ -86,8 +87,7 @@ class CategoryService {
     }
   }
 
-  async updateCategory(categoryId,title) {
-   
+  async updateCategory(categoryId, title) {
     // **** Simple validation ****
     if (!title || !categoryId) {
       return new APIError("Missing information!!", STATUS_CODES.BAD_REQUEST);
@@ -105,7 +105,7 @@ class CategoryService {
       if (!updatedCategory) {
         return new APIError("Update category failed!", STATUS_CODES.NOT_FOUND);
       }
-      await updatedCategory.save()
+      await updatedCategory.save();
       return {
         status: 200,
         success: true,
@@ -120,8 +120,6 @@ class CategoryService {
       );
     }
   }
-
-
 
   //   async deleteCategory(deleteCategory) {
   //     const { categoryTitle } =  newCategory;
