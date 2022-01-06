@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Grid from "@material-ui/core/Grid";
 import Container from "@material-ui/core/Container";
 import { makeStyles } from "@material-ui/core/styles";
@@ -10,6 +10,7 @@ import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
 import { Link } from "react-router-dom";
 import { signInAPI } from "../../../redux/actions/user/signIn-signUp/userSignIn";
 import { useDispatch } from "react-redux";
+import Loading from "../../screen/loading/loading";
 // IMAGES
 import salad from "../../../images/Sign-in-up/salad.jpg";
 
@@ -35,10 +36,17 @@ function SignIn(props) {
   const classes = useStyles();
   const styleButton = divStyle();
   let dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
   const [state, setState] = useState({
     email: "",
     password: "",
   });
+  useEffect(() => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+    }, 5000);
+  }, []);
   const { email, password } = state;
   const handleInputChange = (e) => {
     let { name, value } = e.target;
@@ -63,88 +71,98 @@ function SignIn(props) {
   const [error, setError] = useState("");
   return (
     <div className="bg-signIn">
-      <div className="Sign-In">
-        <div className={classes.root}>
-          <Grid container>
-            <Grid item xs={6}>
-              <Container>
-                <div className="sign-in-left">
-                  <h2>SIGN IN</h2>
-                  <div className="sign-in-form">
-                    <form onSubmit={handleSubmit}>
-                      <div className="form-input" className={styleButton.root}>
-                        <TextField
-                          id="outlined-basic"
-                          label="Email"
-                          variant="outlined"
-                          // type="email"
-                          value={state.email}
-                          name="email"
-                          onChange={handleInputChange}
-                        />
-                        {/* {error && <h3>{error}</h3>} */}
-                      </div>
-                      <div className="form-input" className={styleButton.root}>
-                        <TextField
-                          id="outlined-basic"
-                          label="Password"
-                          variant="outlined"
-                          value={state.password}
-                          onChange={handleInputChange}
-                          name="password"
-                          type="password"
-                        />
-                      </div>
-                      <div className="form-button">
-                        <Button
-                          variant="contained"
-                          color="secondary"
-                          type="submit"
+      {loading ? (
+        <Loading />
+      ) : (
+        <div className="Sign-In">
+          <div className={classes.root}>
+            <Grid container>
+              <Grid item xs={6}>
+                <Container>
+                  <div className="sign-in-left">
+                    <h2>SIGN IN</h2>
+                    <div className="sign-in-form">
+                      <form onSubmit={handleSubmit}>
+                        <div
+                          className="form-input"
+                          className={styleButton.root}
                         >
-                          SIGN IN NOW
+                          <TextField
+                            id="outlined-basic"
+                            label="Email"
+                            variant="outlined"
+                            type="email"
+                            value={state.email}
+                            name="email"
+                            onChange={handleInputChange}
+                          />
+                          {/* {error && <h3>{error}</h3>} */}
+                        </div>
+                        <div
+                          className="form-input"
+                          className={styleButton.root}
+                        >
+                          <TextField
+                            id="outlined-basic"
+                            label="Password"
+                            variant="outlined"
+                            value={state.password}
+                            onChange={handleInputChange}
+                            name="password"
+                            type="password"
+                          />
+                        </div>
+                        <div className="form-button">
+                          <Button
+                            variant="contained"
+                            color="secondary"
+                            type="submit"
+                          >
+                            ĐĂNG NHẬP
+                          </Button>
+                        </div>
+                      </form>
+                      <div className="sign-in-landing">
+                        <span className="landing">
+                          <Link to="/forgot-password">FORGOT PASSWORD</Link>
+                        </span>
+                        <span className="landing">
+                          <Link to="/sign-up">SIGN UP NOW</Link>
+                        </span>
+                      </div>
+                    </div>
+                    <div className="sign-in-social">
+                      <div className="social-button">
+                        <Button variant="contained" color="primary">
+                          <FacebookIcon /> SIGN IN WITH FACEBOOK
                         </Button>
                       </div>
-                    </form>
-                    <div className="sign-in-landing">
-                      <span className="landing">
-                        <Link to="/forgot-password">FORGOT PASSWORD</Link>
-                      </span>
-                      <span className="landing">
-                        <Link to="/sign-up">SIGN UP NOW</Link>
-                      </span>
+                      <div className="social-button">
+                        <Button variant="contained" color="primary">
+                          <GTranslateIcon /> SIGN IN WITH Google
+                        </Button>
+                      </div>
+                      <div className="social-button">
+                        <Button variant="contained" color="primary">
+                          <AccountBalanceIcon /> SIGN IN WITH FPT SOFTWARE
+                        </Button>
+                      </div>
                     </div>
                   </div>
-                  <div className="sign-in-social">
-                    <div className="social-button">
-                      <Button variant="contained" color="primary">
-                        <FacebookIcon /> SIGN IN WITH FACEBOOK
-                      </Button>
-                    </div>
-                    <div className="social-button">
-                      <Button variant="contained" color="primary">
-                        <GTranslateIcon /> SIGN IN WITH Google
-                      </Button>
-                    </div>
-                    <div className="social-button">
-                      <Button variant="contained" color="primary">
-                        <AccountBalanceIcon /> SIGN IN WITH FPT SOFTWARE
-                      </Button>
-                    </div>
+                </Container>
+              </Grid>
+              {/* -- */}
+              <Grid item xs={6}>
+                <div className="sign-in-right">
+                  <div className="sign-in-background">
+                    <img src={salad} alt="salad" />
                   </div>
                 </div>
-              </Container>
+              </Grid>
             </Grid>
-            {/* -- */}
-            <Grid item xs={6}>
-              <div className="sign-in-right">
-                <div className="sign-in-background">
-                  <img src={salad} alt="salad" />
-                </div>
-              </div>
-            </Grid>
-          </Grid>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

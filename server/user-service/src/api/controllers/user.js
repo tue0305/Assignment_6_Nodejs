@@ -64,20 +64,16 @@ module.exports = async (app, channel) => {
   // @route UPDATE /update-user/:userId
   // @desc update user
   // @access Public
-  app.put(
-    "/update-user/:userId ",
-    authorize(["ADMIN"]),
-    async (req, res, next) => {
-      try {
-        const { userId } = req.params;
-        const { password, email } = req.body;
-        const updateUser = await service.updateUser(password, email, userId);
-        return res.json(updateUser);
-      } catch (err) {
-        next(error);
-      }
+  app.put("/update-user/:userId", async (req, res, next) => {
+    try {
+      const { userId } = req.params;
+      const { password, email } = req.body;
+      const updateUser = await service.updateUser(password, email, userId);
+      return res.json(updateUser);
+    } catch (err) {
+      next(error);
     }
-  );
+  });
 
   // @route GET /logout
   // @desc Logout user
@@ -112,19 +108,15 @@ module.exports = async (app, channel) => {
   // @route GET /detail-user/:userId
   // @desc Get detail user
   // @access Public
-  app.get(
-    "/detail-user/:userId",
-    authorize(["ADMIN"]),
-    async (req, res, next) => {
-      try {
-        const { userId } = req.params;
-        const getDetail = await service.getDetailUser(userId);
-        res.json(getDetail);
-      } catch (err) {
-        next(err);
-      }
+  app.get("/detail-user/:userId", async (req, res, next) => {
+    try {
+      const { userId } = req.params;
+      const getDetail = await service.getDetailUser(userId);
+      res.json(getDetail);
+    } catch (err) {
+      next(err);
     }
-  );
+  });
 
   // @route POST api/user/login
   // @desc Login user

@@ -1,6 +1,5 @@
 import React, { Fragment } from "react";
 import { Route, Redirect } from "react-router-dom";
-import Login from "../../admin/login/login";
 const AdminLayOut = (props) => {
   return <Fragment>{props.children}</Fragment>;
 };

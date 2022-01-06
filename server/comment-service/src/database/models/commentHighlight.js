@@ -1,12 +1,14 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const CommentSchema = new Schema(
+const CommentHighlight = new Schema(
   {
     text: {
       type: String,
       require: true,
     },
+
+    highlight_text: { type: String },
 
     userId: {
       type: String,
@@ -18,16 +20,16 @@ const CommentSchema = new Schema(
       require: true,
     },
 
-    parentId:{
-        type: String,
-        default: null
-      },
-      createdAt: {
-        type: Date,
-        default: Date.now,
-      },
+    parentId: {
+      type: String,
+      default: null,
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
   },
   { timestamp: true }
 );
 
-module.exports = mongoose.model("comments", CommentSchema);
+module.exports = mongoose.model("comment_highlight", CommentHighlight);

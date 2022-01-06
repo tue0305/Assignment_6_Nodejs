@@ -1,16 +1,22 @@
-.category-post{
-    margin-bottom: 100px;
-    .category-post-icon{
-        img {
-            height: 190px;
-        }
+.category-post {
+  margin-bottom: 100px;
+  .category-post-icon {
+    height: 200px;
+    width: 280px;
+    img {
+      height: 100%;
+      width: 100%;
     }
-    .category-post-title{
-        span{
-            text-align: center;
-        }
+  }
+  .category-post-title {
+    span {
+      text-align: center;
+      &:hover {
+        color: red;
+      }
     }
-    .category-post-item{
-        margin: 25px 0px;
-    }
+  }
+  .category-post-item {
+    margin: 25px 0px;
+  }
 }

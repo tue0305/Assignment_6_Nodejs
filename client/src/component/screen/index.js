@@ -1,12 +1,28 @@
-import React, { Fragment }  from 'react';
-import Header from './header/header';
-import FlashSale from '../user/flash-Sale/flashSale';
+import React, { Fragment, useState, useEffect } from "react";
+import Header from "./header/header";
+import FlashSale from "../user/flash-Sale/flashSale";
+import Loading from "./loading/loading";
 
 export default function Index() {
-    return (
-        <Fragment>
-            <Header/>
-            <FlashSale/>
-        </Fragment>
-    )
+  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  }, []);
+  return (
+    <>
+      <div>
+        {loading ? (
+          <Loading />
+        ) : (
+          <Fragment>
+            <Header />
+            <FlashSale />
+          </Fragment>
+        )}
+      </div>
+    </>
+  );
 }

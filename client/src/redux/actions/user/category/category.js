@@ -13,6 +13,7 @@ export const getCategoryAPI = () => {
       method: "GET",
       url: "http://localhost:8002/category/",
     }).then((res) => {
+      console.log(res.data, "data");
       dispatch(getCategory(res.data));
     });
   };
@@ -68,7 +69,6 @@ export const getDetailCategoryPostAPI = (postId) => {
       url: `http://localhost:8002/post/${postId}`,
     })
       .then((res) => {
-        console.log(res.data, "data");
         dispatch(detailCategoryPost(res.data));
       })
       .catch((err) => {
@@ -92,7 +92,6 @@ export const getPostUserAPI = (userId) => {
       headers: { Authorization: "Bearer " + token },
     })
       .then((res) => {
-        console.log(res.data, "data");
         dispatch(getPostUser(res.data));
       })
       .catch((err) => {

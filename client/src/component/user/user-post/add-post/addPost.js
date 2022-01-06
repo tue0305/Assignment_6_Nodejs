@@ -39,30 +39,40 @@ const divSelect = {
 
 export default function AddPost() {
   const [open, setOpen] = React.useState(false);
+
   const handleClose = () => {
     setOpen(false);
   };
+
   const handleOpen = () => {
     setOpen(true);
   };
+
   const dispatch = useDispatch();
+
   const { categorys } = useSelector((state) => state.categoryReducer);
+
   useEffect(() => {
     dispatch(getCategoryAPI());
   }, []);
+
   const [state, setState] = useState({
     title: "",
     content: "",
     categoryTitle: "",
     name: "",
   });
+
   const [error, setError] = useState("");
+
   const { title, content, categoryTitle, name } = state;
+
   // console.log(state,'state');
   const handleInputOnchange = (e) => {
     let { name, value } = e.target;
     setState({ ...state, [name]: value });
   };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!title || !content || !categoryTitle || !name) {
@@ -72,6 +82,7 @@ export default function AddPost() {
       setError("");
     }
   };
+
   return (
     <div className="add-post-user">
       <Button onClick={handleOpen}>Tạo bài viết</Button>
@@ -101,7 +112,7 @@ export default function AddPost() {
               </div>
               <div className="add-form-input" style={divInput}>
                 <select style={divSelect}>
-                  {categorys?.data?.reverse().map((category) => (
+                  {categorys?.categories?.reverse().map((category) => (
                     <>
                       <option
                         value={categoryTitle}

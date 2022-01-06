@@ -1,5 +1,5 @@
 const CategoryService = require("../../services/category_service");
-
+const { uploadImage } = require("../middlewares/uploadImage");
 const service = new CategoryService();
 const verifyToken = require("../middlewares/auth");
 
@@ -17,20 +17,25 @@ module.exports = async (app, channel) => {
     }
   });
 
-  // @route Category api/Category/user/create
+  // @route Category /category/create
   // @desc create Category
   // @access Public
-  app.post("/category/create", verifyToken, async (req, res, next) => {
-    try {
-      const { title } = req.body;
+  app.post(
+    "/category/create",
+    uploadImage("categoryImage"),
+    verifyToken,
+    async (req, res, next) => {
+      try {
+        const { title } = req.body;
+        const { file } = req;
+        const data = await service.createCategory({ title, file });
 
-      const data = await service.createCategory(title);
-
-      return res.json(data);
-    } catch (err) {
-      next(err);
+        return res.json(data);
+      } catch (err) {
+        next(err);
+      }
     }
-  });
+  );
 
   // @route PUT api/Category/edit
   // @desc edit Category

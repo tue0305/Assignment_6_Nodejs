@@ -98,7 +98,6 @@ export const forgotAPI = (data) => {
 };
 
 export const resetPasswordAPI = (data, userId, token) => {
-  console.log("aa");
   return function (dispatch) {
     axios({
       method: "POST",
@@ -142,6 +141,28 @@ export const getInformationUserAPI = () => {
       .then((res) => {
         dispatch({
           type: ActionType.GET_INFORMATION_USER,
+          payload: res.data,
+        });
+      })
+      .catch((err) => {
+        console.log(err, "err");
+      });
+  };
+};
+
+export const updateInformationAPI = (user, userId) => {
+  const token = localStorage.getItem("accessToken");
+  return function (dispatch) {
+    axios({
+      method: "PUT",
+      url: `http://localhost:8001/update-user/${userId}`,
+      user,
+      headers: { Authorization: "Bearer " + token },
+    })
+      .then((res) => {
+        console.log(res.data, "data");
+        dispatch({
+          type: ActionType.EDIT_PROFILE_USER,
           payload: res.data,
         });
       })

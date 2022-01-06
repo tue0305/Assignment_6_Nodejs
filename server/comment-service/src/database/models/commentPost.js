@@ -1,14 +1,12 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const HighLightCommentSchema = new Schema(
+const CommentPost = new Schema(
   {
     text: {
       type: String,
       require: true,
     },
-
-    highlight_topic: { type: String },
 
     userId: {
       type: String,
@@ -32,4 +30,4 @@ const HighLightCommentSchema = new Schema(
   { timestamp: true }
 );
 
-module.exports = mongoose.model("comments", HighLightCommentSchema);
+module.exports = mongoose.model("comment_post", CommentPost);
