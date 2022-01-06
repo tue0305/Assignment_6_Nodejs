@@ -1,54 +1,49 @@
 import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
-import SwipeableViews from "react-swipeable-views";
-import { useTheme } from "@mui/material/styles";
-import AppBar from "@mui/material/AppBar";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import Typography from "@mui/material/Typography";
-import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Grid from "@material-ui/core/Grid";
 import { useDispatch, useSelector } from "react-redux";
 import Loading from "../../screen/loading/loading";
+import { useParams, useHistory } from "react-router-dom";
 import { getInformationUserAPI } from "../../../redux/actions/user/signIn-signUp/userSignIn";
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`full-width-tabpanel-${index}`}
-      aria-labelledby={`full-width-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
-    </div>
-  );
-}
-
-TabPanel.propTypes = {
-  children: PropTypes.node,
-  index: PropTypes.number.isRequired,
-  value: PropTypes.number.isRequired,
+import Button from "@material-ui/core/Button";
+import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
+import Modal from "@material-ui/core/Modal";
+import Backdrop from "@material-ui/core/Backdrop";
+import Fade from "@material-ui/core/Fade";
+import TextField from "@material-ui/core/TextField";
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    modal: {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    paper: {
+      backgroundColor: theme.palette.background.paper,
+      border: "2px solid #000",
+      boxShadow: theme.shadows[5],
+      padding: theme.spacing(2, 4, 3),
+    },
+  })
+);
+const divButton = {
+  marginRight: "20px",
 };
-
-function a11yProps(index) {
-  return {
-    id: `full-width-tab-${index}`,
-    "aria-controls": `full-width-tabpanel-${index}`,
-  };
-}
-
 export default function ProfileUser() {
-  const theme = useTheme();
-  const [value, setValue] = React.useState(0);
+  const classes = useStyles();
+  const [open, setOpen] = React.useState(false);
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
   let dispatch = useDispatch();
+
+  let history = useHistory();
+
   const [loading, setLoading] = useState(false);
 
   const { user } = useSelector((state) => state.SignUser);
@@ -61,16 +56,8 @@ export default function ProfileUser() {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-    }, 5000);
+    }, 1000);
   }, []);
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-
-  const handleChangeIndex = (index) => {
-    setValue(index);
-  };
 
   return (
     <div className="profile-user">
@@ -79,56 +66,61 @@ export default function ProfileUser() {
       ) : (
         <Container fixed>
           <div className="profile-user-box">
-            <Box sx={{ bgcolor: "background.paper" }}>
-              <AppBar position="static">
-                <Tabs
-                  value={value}
-                  onChange={handleChange}
-                  indicatorColor="secondary"
-                  textColor="inherit"
-                  variant="fullWidth"
-                  aria-label="full width tabs example"
-                >
-                  <Tab label="THÔNG TIN CÁ NHÂN" {...a11yProps(0)} />
-                  <Tab label="BÀI VIẾT" {...a11yProps(1)} />
-                </Tabs>
-              </AppBar>
-              <SwipeableViews
-                axis={theme.direction === "rtl" ? "x-reverse" : "x"}
-                index={value}
-                onChangeIndex={handleChangeIndex}
-              >
-                <TabPanel value={value} index={0} dir={theme.direction}>
-                  <div className="box-tap-one">
-                    <Container>
-                      <Grid container>
-                        {user && (
-                          <>
-                            <Grid item xs={5}>
-                              <div className="tap-one-image">
-                                <img src={user.avatar} alt="test" />
+            <div className="box-tap-one">
+              <Container>
+                <Grid container>
+                  {user && (
+                    <>
+                      <div className="edit-profile">
+                        <Button
+                          style={divButton}
+                          variant="contained"
+                          color="primary"
+                          type="button"
+                          onClick={handleOpen}
+                        >
+                          CHỈNH SỬA
+                        </Button>
+                        {/* ----- */}
+                        <Modal
+                          aria-labelledby="transition-modal-title"
+                          aria-describedby="transition-modal-description"
+                          className={classes.modal}
+                          open={open}
+                          onClose={handleClose}
+                          closeAfterTransition
+                          BackdropComponent={Backdrop}
+                          BackdropProps={{
+                            timeout: 500,
+                          }}
+                        >
+                          <Fade in={open}>
+                            <div className={classes.paper}>
+                              <div>
+                                <TextField id="standard-basic" label="Email" />
                               </div>
-                            </Grid>
-
-                            {/* ---- */}
-                            <Grid item xs={5}>
-                              <div className="tap-one-info-email">
-                                <span>Email:{user.email}</span>
-                              </div>
-                            </Grid>
-                          </>
-                        )}
+                            </div>
+                          </Fade>
+                        </Modal>
+                        {/* ------ */}
+                      </div>
+                      <Grid item xs={5}>
+                        <div className="tap-one-image">
+                          <img src={user.avatar} alt="test" />
+                        </div>
                       </Grid>
-                    </Container>
-                  </div>
-                </TabPanel>
-                <TabPanel
-                  value={value}
-                  index={1}
-                  dir={theme.direction}
-                ></TabPanel>
-              </SwipeableViews>
-            </Box>
+
+                      {/* ---- */}
+                      <Grid item xs={5}>
+                        <div className="tap-one-info-email">
+                          <span>Email:{user.email}</span>
+                        </div>
+                      </Grid>
+                    </>
+                  )}
+                </Grid>
+              </Container>
+            </div>
           </div>
         </Container>
       )}

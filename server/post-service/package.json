@@ -1,5 +1,5 @@
 {
-  "name": "server",
+  "name": "post-service",
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
@@ -18,8 +18,8 @@
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
     "mkdirp": "^1.0.4",
-    "mongodb": "^2.2.16",
-    "mongoose": "^6.1.1",
+    "mongodb": "^2.2.36",
+    "mongoose": "^6.1.5",
     "multer": "^1.4.4",
     "nodemon": "^2.0.15",
     "winston": "^3.3.3"

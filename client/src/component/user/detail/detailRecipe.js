@@ -64,31 +64,7 @@ export default function DetailRecipe() {
 
   const [loading, setLoading] = useState(false);
   //  -----
-  const [error, setError] = useState("");
 
-  const handeleInputChange = (e) => {
-    let { name, value } = e.target;
-    setState({ ...state, [name]: value });
-  };
-  useEffect(() => {
-    setState({ ...state, text: content });
-  }, []);
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!comment || !text) {
-      setError("Hãy nhập bình luận của bạn!");
-    } else {
-      dispatch(console.log("aa"));
-      console.log("a");
-      setError("");
-    }
-  };
-  const [state, setState] = useState({
-    comment: "",
-    text: "",
-  });
-  const { comment, text } = state;
-  console.log(state, "state");
   // -----
   useEffect(() => {
     setLoading(true);
@@ -102,6 +78,14 @@ export default function DetailRecipe() {
   }, []);
 
   const [content, setContent] = React.useState(null);
+  const handleSelectText = () => {
+    console.log(`Selected text: ${window.getSelection().toString()}`);
+    setContent(window.getSelection().toString());
+  };
+
+  const resetContent = () => {
+    setContent(null);
+  };
 
   function PopUp() {
     const useStyles = makeStyles((theme) => ({
@@ -117,7 +101,38 @@ export default function DetailRecipe() {
         padding: theme.spacing(2, 4, 3),
       },
     }));
+
     const classes = useStyles();
+
+    const [error, setError] = useState("");
+
+    const [state, setState] = useState({
+      comment: "",
+      text: "",
+    });
+
+    const { comment, text } = state;
+
+    const handeleInputChange = (e) => {
+      let { name, value } = e.target;
+      setState({ ...state, [name]: value });
+    };
+
+    console.log(state, "state");
+    useEffect(() => {
+      setState({ ...state, text: content });
+    }, []);
+
+    const handleSubmit = (e) => {
+      e.preventDefault();
+      if (!comment || !text) {
+        setError("Hãy nhập bình luận của bạn!");
+      } else {
+        dispatch(console.log("aa"));
+        console.log("a");
+        setError("");
+      }
+    };
 
     return (
       <div>
@@ -161,7 +176,7 @@ export default function DetailRecipe() {
                   id="transition-modal-description"
                   style={divP}
                   name="text"
-                  value={state.text.content}
+                  value={state.text}
                   onChange={handeleInputChange}
                 >
                   {content}
@@ -173,15 +188,6 @@ export default function DetailRecipe() {
       </div>
     );
   }
-
-  const handleSelectText = () => {
-    console.log(`Selected text: ${window.getSelection().toString()}`);
-    setContent(window.getSelection().toString());
-  };
-
-  const resetContent = () => {
-    setContent(null);
-  };
 
   return (
     <>

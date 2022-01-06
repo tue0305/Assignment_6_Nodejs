@@ -2,7 +2,7 @@ const argon2 = require("argon2");
 const jwt = require("jsonwebtoken");
 
 const amqplib = require("amqplib");
-const { ACCESS_SECRET_TOKEN, MESSAGE_BROKER_URL, EXCHANGE_NAME, QUEUE_NAME } = require("../config/config");
+const { ACCESS_SECRET_TOKEN, MESSAGE_BROKER_URL, EXCHANGE_NAME, QUEUE_NAME, COMMENT_BINDING_KEY } = require("../config/config");
 const { APIError, STATUS_CODES } = require("./app-errors")
 
 
@@ -52,34 +52,35 @@ const createChannel = async () => {
     
     return channel;
   } catch (error) {
-    const err =  new APIError(
+    return  new APIError(
       "Create channel error!",
       STATUS_CODES.INTERNAL_ERROR, 
       error.message
     );
-    console.log(err)
+    
   }
 };
 
 // ### Publish message
-const publishMessage = async (channel, binding_key, message) => {
+const publishMessage = async (channel, COMMENT_BINDING_KEY, message) => {
 try {
-  await channel.publish(EXCHANGE_NAME, binding_key, Buffer.from(message));
+  await channel.publish(EXCHANGE_NAME, COMMENT_BINDING_KEY, Buffer.from(message));
+  console.log("Message has been sent " + JSON.stringify(JSON.parse(message)))
+
 } catch (error) {
-  const err = new APIError(
+ return  new APIError(
     "publishMessage error!",
     STATUS_CODES.INTERNAL_ERROR, 
     error.message
   );
-  console.log(err)
 }
 };
 // ### Subscribe message
-const subscribeMessage = async (channel, service, binding_key) => {
+const subscribeMessage = async (channel, service) => {
 try {
   const appQueue = await channel.assertQueue(QUEUE_NAME);
 
-  channel.bindQueue(appQueue.queue, EXCHANGE_NAME, binding_key)
+  channel.bindQueue(appQueue.queue, EXCHANGE_NAME, COMMENT_BINDING_KEY)
   channel.consume(appQueue.queue, data => {
     console.log('Receive data');
     console.log(data.content.toString());
@@ -87,12 +88,11 @@ try {
   })
 
 } catch (error) {
-  const err = new APIError(
+  return new APIError(
     "subscribeMessage error!",
     STATUS_CODES.INTERNAL_ERROR, 
     error.message
   );
-  console.log(err)
 }
 };
 

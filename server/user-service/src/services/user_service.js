@@ -43,7 +43,7 @@ class UserService {
 
       // **** True password and return the access token ****
       const accessToken = await generateSignature({ _id: user._id });
-      console.log(user);
+      
       return {
         status: STATUS_CODES.OK,
         success: true,
@@ -521,8 +521,9 @@ class UserService {
   
   async SubscribeEvents(payload) {
     try {
+      payload = JSON.parse(payload)
+
       const { event, data } = payload;
-      console.log(data)
       const comment = "";
       const {userId, post} = data
       

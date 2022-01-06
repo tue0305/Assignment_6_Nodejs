@@ -10,7 +10,7 @@ const StartServer = async () => {
 
   await DB_Connection();
 
-  await crawlData();
+  // await crawlData();
 
   const channel = await createChannel();
 

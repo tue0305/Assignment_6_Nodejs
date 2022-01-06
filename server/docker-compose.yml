@@ -1,40 +1,7 @@
-version: '3.2'
-
-networks:
-  kafka-net:
-    driver: bridge
+version: "3"
 
 services:
-  rabbitmq:
-
-    image: rabbitmq:3-management-alpine
-
-    container_name: 'rabbitmq'
-
-    ports:
-
-        - 5672:5672
-
-        - 15672:15672
-
-    volumes:
-
-        - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
-
-        - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
-
-    networks:
-
-        - rabbitmq_go_net
   
-  nosql-db:
-    image: mongo
-    ports:
-      - "27017:27017"
-    container_name: nosql-db
-    volumes:
-      - ./db/:/data/db
-
   post-service:
     build:
       dockerfile: Dockerfile
@@ -43,11 +10,9 @@ services:
     ports:
       - "8002:8002"
     restart: always
-    depends_on:
-      - "nosql-db"
     volumes:
-      - .:/app
-      - /app/post-service/node_modules
+      - .:/server
+      - /server/post-service/node_modules
 
   # shopping:
   #   build:
@@ -60,8 +25,8 @@ services:
   #   depends_on:
   #     - "nosql-db"
   #   volumes:
-  #     - .:/app
-  #     - /app/shopping/node_modules
+  #     - .:/server
+  #     - /server/shopping/node_modules
 
   user-service:
     build:
@@ -71,21 +36,16 @@ services:
     ports:
       - "8001:8001"
     restart: always
-    depends_on:
-      - "nosql-db"
     volumes:
-      - .:/app
-      - /app/user-service/node_modules
+      - .:/server
+      - /server/user-service/node_modules
 
   nginx-proxy:
     build:
       dockerfile: Dockerfile
       context: ./proxy
     depends_on:
-      - post-service
+      - post-service 
       - user-service
     ports:
       - "80:80"
- 
-
- 
