@@ -9,7 +9,7 @@ export default function Index() {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-    }, 5000);
+    }, 1000);
   }, []);
   return (
     <>

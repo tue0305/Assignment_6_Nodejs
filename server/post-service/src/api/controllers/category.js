@@ -17,7 +17,7 @@ module.exports = async (app, channel) => {
     }
   });
 
-  // @route Category api/Category/user/create
+  // @route Category /category/create
   // @desc create Category
   // @access Public
   app.post("/category/create", verifyToken, async (req, res, next) => {

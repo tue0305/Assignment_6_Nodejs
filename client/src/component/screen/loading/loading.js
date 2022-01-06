@@ -1,5 +1,4 @@
 import React from "react";
-import newYear from "../../../images/new-year/90390087-happy-new-year-2022.png";
 
 export default function Loading() {
   return (

@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams, Link } from "react-router-dom";
 import { getDetailCategoryAPI } from "../../../redux/actions/user/category/category";
 import Loading from "../../screen/loading/loading";
-
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -24,15 +23,21 @@ export default function Detailcategory() {
   const { categoryId } = useParams();
   const { category } = useSelector((state) => state.categoryReducer);
   const [loading, setLoading] = useState(false);
-  useEffect(() => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-    }, 5000);
-  }, []);
+
   useEffect(() => {
     dispatch(getDetailCategoryAPI(categoryId));
   }, []);
+
+  useEffect(() => {
+    // setLoading(true);
+    setLoading()
+      ? dispatch(getDetailCategoryAPI(categoryId))
+      : setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  }, []);
+
   return (
     <div className="detail-category">
       {loading ? (
@@ -41,34 +46,24 @@ export default function Detailcategory() {
         <div className={classes.root}>
           <Container>
             <Grid container>
-              <Grid item xs={4}>
-                {category?.getDetail?.posts.map((post) => (
+              {category?.getDetail?.posts.map((post) => (
+                <Grid item xs={4}>
                   <>
-                    <div className="detail-category-item-left">
-                      <img src={post.image} />
-                    </div>
-                    <div className="detail-category-item-right">
-                      <div className="item-right-name">
-                        <h4>{post.title}</h4>
+                    <Link to={`/detail-recipe/${post._id}`}>
+                      <div className="detail-category-item">
+                        <div className="detail-category-item-left">
+                          <img src={post.image} />
+                        </div>
+                        <div className="detail-category-item-right">
+                          <div className="item-right-name">
+                            <h4>{post.title}</h4>
+                          </div>
+                        </div>
                       </div>
-                    </div>
+                    </Link>
                   </>
-                ))}
-              </Grid>
-              <Grid item xs={4}>
-                <Grid item xs={2}>
-                  <div className="detail-category-item">
-                    <h2>d</h2>
-                  </div>
                 </Grid>
-              </Grid>
-              <Grid item xs={4}>
-                <Grid item xs={2}>
-                  <div className="detail-category-item">
-                    <h2>d</h2>
-                  </div>
-                </Grid>
-              </Grid>
+              ))}
             </Grid>
           </Container>
         </div>

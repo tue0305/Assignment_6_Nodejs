@@ -2,15 +2,18 @@ const argon2 = require("argon2");
 const jwt = require("jsonwebtoken");
 
 const amqplib = require("amqplib");
-const { ACCESS_SECRET_TOKEN, MESSAGE_BROKER_URL, EXCHANGE_NAME, QUEUE_NAME } = require("../config/config");
+const {
+  ACCESS_SECRET_TOKEN,
+  MESSAGE_BROKER_URL,
+  EXCHANGE_NAME,
+  QUEUE_NAME,
+} = require("../config/config");
 
-const { APIError, STATUS_CODES } = require("./app-errors")
+const { APIError, STATUS_CODES } = require("./app-errors");
 
-
-// ================================== UTILITY FUNCTIONS =================================
+// ===========================  ======= UTILITY FUNCTIONS =================================
 
 // ***** Password utilities *****
-
 
 const generatePassword = async (enteredPassword) => {
   return await argon2.hash(enteredPassword);
@@ -47,53 +50,50 @@ const createChannel = async () => {
     const channel = await connection.createChannel();
 
     await channel.assertExchange(EXCHANGE_NAME, "direct", false);
-    
+
     return channel;
   } catch (error) {
-    return  new APIError(
+    return new APIError(
       "Create channel error!",
-      STATUS_CODES.INTERNAL_ERROR, 
+      STATUS_CODES.INTERNAL_ERROR,
       error.message
     );
-    console.log(err)
+    console.log(err);
   }
 };
 
 // ### Publish message
 const publishMessage = async (channel, binding_key, message) => {
-try {
-  await channel.publish(EXCHANGE_NAME, binding_key, Buffer.from(message));
-  console.log("Message has been sent " + JSON.stringify(JSON.parse(message)))
-
-} catch (error) {
-  return new APIError(
-    "publishMessage error!",
-    STATUS_CODES.INTERNAL_ERROR, 
-    error.message
-  );
- 
-}
+  try {
+    await channel.publish(EXCHANGE_NAME, binding_key, Buffer.from(message));
+    console.log("Message has been sent " + JSON.stringify(JSON.parse(message)));
+  } catch (error) {
+    return new APIError(
+      "publishMessage error!",
+      STATUS_CODES.INTERNAL_ERROR,
+      error.message
+    );
+  }
 };
 // ### Subscribe message
 const subscribeMessage = async (channel, service, binding_key) => {
-try {
-  const appQueue = await channel.assertQueue(QUEUE_NAME);
+  try {
+    const appQueue = await channel.assertQueue(QUEUE_NAME);
 
-  channel.bindQueue(appQueue.queue, EXCHANGE_NAME, binding_key)
-  channel.consume(appQueue.queue, data => {
-    console.log('Receive data');
-    console.log(JSON.stringify(data.content.toString()));
-    channel.ack(data)
-  })
-
-} catch (error) {
-  return new APIError(
-    "subscribeMessage error!",
-    STATUS_CODES.INTERNAL_ERROR, 
-    error.message
-  );
-  console.log(err)
-}
+    channel.bindQueue(appQueue.queue, EXCHANGE_NAME, binding_key);
+    channel.consume(appQueue.queue, (data) => {
+      console.log("Receive data");
+      console.log(JSON.stringify(data.content.toString()));
+      channel.ack(data);
+    });
+  } catch (error) {
+    return new APIError(
+      "subscribeMessage error!",
+      STATUS_CODES.INTERNAL_ERROR,
+      error.message
+    );
+    console.log(err);
+  }
 };
 
 // **************************************
@@ -107,6 +107,4 @@ module.exports = {
 
   generateSignature,
   verifySignature,
-  
- 
 };

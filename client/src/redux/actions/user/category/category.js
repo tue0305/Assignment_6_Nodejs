@@ -30,6 +30,7 @@ export const getCategoryPostAPI = () => {
       url: "http://localhost:8002/category",
     })
       .then((res) => {
+        console.log(res.data, "data1");
         dispatch(getCategoryPost(res.data));
       })
       .catch((err) => {

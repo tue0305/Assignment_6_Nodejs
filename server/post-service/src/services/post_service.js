@@ -55,7 +55,7 @@ class PostService {
 
   async getPostsByCategory(categoryId) {
     try {
-      console.log(categoryId)
+      console.log(categoryId);
       // ***** GET CATEGORY_ID BY NAME*****
       const category = await CategoryModel.findOne({ _id: categoryId });
 
@@ -87,7 +87,7 @@ class PostService {
   async getUserPosts(userId) {
     try {
       // ***** GET ALL USER's POSTS *****
-      const posts = await PostModel.find({ userId: userId })
+      const posts = await PostModel.find({ userId: userId });
       if (!posts) {
         return {
           status: STATUS_CODES.NOT_FOUND,
@@ -99,7 +99,7 @@ class PostService {
         status: STATUS_CODES.OK,
         success: true,
         message: `Get posts successfully!`,
-        data:  posts ,
+        data: posts,
       };
     } catch (error) {
       return new APIError(
@@ -120,28 +120,27 @@ class PostService {
     try {
       // ***** CREATE NEW POST *****
       const categoryPost = {
-        _id:category._id,
-        title: category.title
+        _id: category._id,
+        title: category.title,
       };
-     
+
       const newPost = new PostModel({
         title,
         content,
-        category:categoryPost,
+        category: categoryPost,
         gradients,
         image,
         userId,
       });
-      console.log(category);
       await newPost.save();
 
-      var post = { 
+      var post = {
         _id: newPost._id,
         title: newPost.title,
-        image: newPost.image
-      }
+        image: newPost.image,
+      };
       await category.posts.push(post);
-      await category.save()
+      await category.save();
       return {
         status: STATUS_CODES.OK,
         success: true,
@@ -157,11 +156,24 @@ class PostService {
     }
   }
 
-  async editPost(postId, title, image, content, gradients, categoryTitle, userId) {
-   
-
+  async editPost(
+    postId,
+    title,
+    image,
+    content,
+    gradients,
+    categoryTitle,
+    userId
+  ) {
     // **** Simple validation ****
-    if (!postId || !title || !content || !gradients || !categoryTitle || !userId) {
+    if (
+      !postId ||
+      !title ||
+      !content ||
+      !gradients ||
+      !categoryTitle ||
+      !userId
+    ) {
       return new APIError("Missing information!!", STATUS_CODES.BAD_REQUEST);
     }
 
@@ -196,7 +208,7 @@ class PostService {
         status: STATUS_CODES.OK,
         success: true,
         message: `Update post ${updatePost._id} successfully!`,
-        data:  updatePost ,
+        data: updatePost,
       };
     } catch (error) {
       return new APIError(
@@ -245,30 +257,29 @@ class PostService {
     try {
       const { event, data } = payload;
 
+      switch (event) {
+        // Subscribe user-service
+        case "REMOVE_POST":
+          this.removePostOfUser(userId, postId);
+          break;
+        case "ADD_POST":
+          this.addPostToUser(userId, postId);
+          break;
+        case "UPDATE_POST":
+          this.updatePostToUser(userId, postId);
+          break;
+        case "GET_POSTS":
+          this.getUserCreatedPosts(userId);
+          break;
 
-    switch (event) {
-      // Subscribe user-service
-      case "REMOVE_POST":
-        this.removePostOfUser(userId, postId);
-        break;
-      case "ADD_POST":
-        this.addPostToUser(userId, postId);
-        break;
-      case "UPDATE_POST":
-        this.updatePostToUser(userId, postId);
-        break;
-      case "GET_POSTS":
-        this.getUserCreatedPosts(userId);
-        break;
-
-      default:
-        break;
-    }
+        default:
+          break;
+      }
     } catch (error) {
       return new APIError(
         "Data Not found!",
-        STATUS_CODES.INTERNAL_ERROR,~
-        error.message
+        STATUS_CODES.INTERNAL_ERROR,
+        ~error.message
       );
     }
   }
@@ -278,7 +289,7 @@ class PostService {
       if (post) {
         const payload = {
           event: event,
-          data: { userId, post } ,
+          data: { userId, post },
         };
         return payload;
       } else {

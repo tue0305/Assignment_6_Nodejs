@@ -1,8 +1,17 @@
-.detail-category{
-    .detail-category-item-left{
-        float: left;
+.detail-category {
+  .detail-category-item {
+    margin: 10px 10px;
+    .detail-category-item-left {
+      height: 200px;
+      width: 280px;
+      img {
+        height: 100%;
+        width: 100%;
+      }
+      float: left;
     }
-    .detail-category-item-right{
-        margin-left: 150px;
+    .detail-category-item-right {
+      margin-left: 150px;
     }
+  }
 }
