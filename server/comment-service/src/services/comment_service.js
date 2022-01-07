@@ -7,16 +7,41 @@ const {
 } = require("../utils/app-errors");
 
 class CommentService {
+  async getCommentByPostId(postId) {
+    try {
+      // ***** GET ALL COMMENTS BY CATEGORY*****
+      const comments = await CommentPostModel.find({ postId: postId });
+      if (!comments) {
+        return {
+          status: 400,
+          success: false,
+          message: `This category don't have any post!`,
+        };
+      }
+
+      return {
+        status: STATUS_CODES.OK,
+        success: true,
+        message: `Get ${postId}'s comments successfully!`,
+        data: comments,
+      };
+    } catch (error) {
+      return new APIError(
+        "Data Not found!",
+        STATUS_CODES.INTERNAL_ERROR,
+        error.message
+      );
+    }
+  }
+
   async createComment(comment) {
     try {
       const { text, userId, postId, parentId } = comment;
+      console.log(comment);
 
       // simple validation
       if (!text || !userId || !postId) {
-        return new APIError(
-          "Missing email or password!",
-          STATUS_CODES.BAD_REQUEST
-        );
+        return new APIError("Missing Information!", STATUS_CODES.BAD_REQUEST);
       }
       const newComment = new CommentPostModel(comment);
 
@@ -24,6 +49,8 @@ class CommentService {
       return {
         success: true,
         status: STATUS_CODES.OK,
+        message: `Create  comment ${newComment.text}  successfully!`,
+
         data: newComment,
       };
     } catch (error) {
@@ -35,28 +62,118 @@ class CommentService {
     }
   }
 
-  // ===========================
-  async getCommentPayload(userId, event) {
-    const user = await UserModel.findById(userId);
+  async updateComment(comment) {
+    try {
+      const { commentId, text, userId, postId } = comment;
 
-    if (user) {
-      const payload = {
-        event: event,
-        data: { user },
+      // simple validation
+      if (!commentId || !text || !userId || !postId) {
+        return new APIError("Missing information!", STATUS_CODES.BAD_REQUEST);
+      }
+      const postUpdateConditions = {
+        _id: commentId,
+        postId: postId,
+        userId: userId,
       };
-      return payload;
-    } else {
-      return new APIError("No post available!", STATUS_CODES.INTERNAL_ERROR);
+      const updateComment = await CommentPostModel.findOneAndUpdate(
+        postUpdateConditions,
+        { text: text },
+        { new: true }
+      );
+      if (!updateComment) {
+        return new APIError(
+          "User not authorized to update or comment not found! ",
+          STATUS_CODES.NOT_FOUND
+        );
+      }
+
+      return {
+        success: true,
+        status: STATUS_CODES.OK,
+        message: `Update post ${updateComment._id} successfully!`,
+        data: updateComment,
+      };
+    } catch (error) {
+      return new APIError(
+        "Data Not found!",
+        STATUS_CODES.BAD_REQUEST,
+        error.message
+      );
+    }
+  }
+
+  async deleteComment(comment) {
+    try {
+      const { commentId, userId, postId } = comment;
+
+      // simple validation
+      if (!commentId  || !userId || !postId) {
+        return new APIError("Missing information!", STATUS_CODES.BAD_REQUEST);
+      }
+      const postDeleteConditions = {
+        _id: commentId,
+        postId: postId,
+        userId: userId,
+      };
+      const deleteComment = await CommentPostModel.findOne(
+        postDeleteConditions
+      );
+
+      if (!deleteComment) {
+        return new APIError(
+          "User not authorized to update or comment not found! ",
+          STATUS_CODES.NOT_FOUND
+        );
+      }
+      await CommentPostModel.findOneAndDelete(postDeleteConditions);
+
+      return {
+        success: true,
+        status: STATUS_CODES.OK,
+        message: `Delete comment ${deleteComment._id} successfully!`,
+        data: deleteComment,
+      };
+    } catch (error) {
+      return new APIError(
+        "Data Not found!",
+        STATUS_CODES.BAD_REQUEST,
+        error.message
+      );
+    }
+  }
+
+  // ===========================
+  async getCommentPayload(comment, event) {
+    try {
+      if (comment) {
+        const payload = {
+          event: event,
+          data: { comment },
+        };
+        return payload;
+      } else {
+        return new APIError(
+          "No comment available!",
+          STATUS_CODES.INTERNAL_ERROR
+        );
+      }
+    } catch (error) {
+      return new APIError(
+        "Data Not found!",
+        STATUS_CODES.BAD_REQUEST,
+        error.message
+      );
     }
   }
 
   async SubscribeEvents(payload) {
-    const { event, data } = payload;
-
+    try {
+      const { event, data } = payload;
+    payload.JSON.parse(payload);
     // const { userId, postId } = data;
 
     switch (event) {
-      // Subcribe post-service
+      // Subscribe post-service
       case "REMOVE_POST":
         removePostOfUser(userId, postId);
         break;
@@ -70,7 +187,7 @@ class CommentService {
         getUserCreatedPosts(userId);
         break;
 
-      // Subcribe user-service
+      // Subscribe user-service
       case "GET_POSTS":
         getUserCreatedPosts(userId);
         break;
@@ -82,6 +199,13 @@ class CommentService {
         break;
       default:
         break;
+    }
+    } catch (error) {
+      return new APIError(
+        "Data Not found!",
+        STATUS_CODES.INTERNAL_ERROR,
+        error.message
+      );
     }
   }
 }

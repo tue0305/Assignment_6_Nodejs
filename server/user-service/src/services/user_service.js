@@ -143,16 +143,16 @@ class UserService {
   }
 
   async deleteUser(userId){
-    try{
-      const deleteUser = await UserModel.findOneAndDelete({userId});
-      if(deleteUser)
+    try {
+      const deleteUser = await UserModel.findById(userId);
+      await UserModel.findOneAndDelete({userId});
+     
       return{
         status: 200,
         success: true,
         message: `Delete account ${userId} success!`,
-        userId: userId
+        deleteUser: deleteUser
       }
-      return deleteUser
     }
     catch(err){
       return new APIError(
@@ -166,9 +166,14 @@ class UserService {
   async updateUser(password, email, userId){
     try{
       const hashPassword = await generatePassword(password);
-      const updaUser = await UserModel.findByIdAndUpdate({password: hashPassword, email, userId})
-      if(updaUser){
-        return user;
+      const updateUser = await UserModel.findByIdAndUpdate({password: hashPassword, email, userId})
+      if(updateUser){
+        return{
+          status: 200,
+          success: true,
+          message: `Delete account ${userId} success!`,
+          updateUser: updateUser
+        }
       }
     }
     catch(err){
@@ -512,7 +517,7 @@ class UserService {
       return payload;
     } else {
       return new APIError(
-        "No post available!",
+        "No user available!",
         STATUS_CODES.INTERNAL_ERROR,
         
       );

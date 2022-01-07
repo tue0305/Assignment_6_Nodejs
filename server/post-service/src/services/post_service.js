@@ -297,12 +297,12 @@ class PostService {
       return new APIError(
         "Data Not found!",
         STATUS_CODES.INTERNAL_ERROR,
-        ~error.message
+        error.message
       );
     }
   }
 
-  async getPostPayloadUser(userId, post, event) {
+  async getPostPayload(userId, post, event) {
     try {
       if (post) {
         const payload = {
