@@ -17,7 +17,7 @@ import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
 import Loading from "../../screen/loading/loading";
 import DOMPurify from "dompurify";
-import Popover from "@material-ui/core/Popover";
+import TextField from "@material-ui/core/TextField";
 //IMAGES
 import logo from "../../../images/logo/cooking.png";
 import { getDetailCategoryPostAPI } from "../../../redux/actions/user/category/category";
@@ -54,6 +54,9 @@ const divP = {
   overflow: "hidden",
   whiteSpace: "nowrap",
   textOverflow: "ellipsis",
+};
+const divButtonComment = {
+  marginLeft: "324px",
 };
 export default function DetailRecipe() {
   const classes = useStyles();
@@ -108,6 +111,16 @@ export default function DetailRecipe() {
   }, []);
 
   useEffect(() => {
+    const position = document.getElementsByClassName("possition");
+    window.addEventListener("scroll", function (event) {
+      var scroll_y = this.scrollY;
+      var scroll_x = this.scrollX;
+      console.log(scroll_x, scroll_y);
+      position.innerHTML = " X-axis : " + scroll_x + " và Y-axis : " + scroll_y;
+    });
+  }, []);
+
+  useEffect(() => {
     setEventShowComments();
   });
 
@@ -118,10 +131,10 @@ export default function DetailRecipe() {
         "extracted-simple-text"
       );
       for (let el of cmtSelection) {
-        el.removeEventListener("mouseenter", null);
+        el.removeEventListener("click", null);
         el.removeEventListener("mouseleave", null);
 
-        el.addEventListener("mouseenter", onMouseOver11);
+        el.addEventListener("click", onMouseOver11);
         el.addEventListener("mouseleave", onMouseLeave);
       }
     }, 500);
@@ -142,7 +155,12 @@ export default function DetailRecipe() {
         setPopupCmt({
           open: true,
           anchorEl: el,
-          content: <span style={{ color: "red" }}>test</span>, // render content
+          content: (
+            <>
+              <AccountCircleIcon style={divIcon} />
+              <span style={{ color: "red" }}>asdasdasdasdasdasdasdasd</span>
+            </>
+          ), // render content
         });
       }, 300);
     }
@@ -218,7 +236,6 @@ export default function DetailRecipe() {
       setState({ ...state, [name]: value });
     };
 
-    console.log(state, "state");
     useEffect(() => {
       setState({ ...state, text: content });
     }, []);
@@ -291,21 +308,6 @@ export default function DetailRecipe() {
 
   return (
     <>
-      <Popover
-        open={popupCmt.open || false}
-        anchorEl={popupCmt.anchorEl || null}
-        onClose={null}
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "center",
-        }}
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "center",
-        }}
-      >
-        {popupCmt.content}
-      </Popover>
       <div className="detail-recipe">
         {loading ? (
           <Loading />
@@ -375,9 +377,6 @@ export default function DetailRecipe() {
                           </>
                         ))}
                       </div>
-                    </Grid>
-                    {/* ----- */}
-                    <Grid item xs={4}>
                       <div className="detail-recipe-right">
                         <Container>
                           <h2>Bình Luận</h2>
@@ -394,6 +393,35 @@ export default function DetailRecipe() {
                                     Bình luận
                                   </Button>
                                 </div>
+                              </form>
+                            </div>
+                          </div>
+                        </Container>
+                      </div>
+                    </Grid>
+                    {/* ----- */}
+                    <Grid item xs={4}>
+                      <div className="detail-recipe-right">
+                        <div></div>
+                        <Container>
+                          <div className="recipe-right">
+                            <div className="recipe-right-comment">
+                              <form>
+                                <span className="position">
+                                  <AccountCircleIcon style={divIcon} />
+                                  <input
+                                    placeholder="what's your on mind?"
+                                    open={popupCmt.open || false}
+                                    anchorEl={popupCmt.anchorEl || null}
+                                    onClose={null}
+                                  />
+                                  {popupCmt.content}
+                                </span>
+
+                                <div
+                                  className="recipe-right-comment-button"
+                                  // style={divButtonComment}
+                                ></div>
                               </form>
                             </div>
                           </div>
