@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
@@ -16,6 +16,8 @@ import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
 import Loading from "../../screen/loading/loading";
+import DOMPurify from "dompurify";
+import Popover from "@material-ui/core/Popover";
 //IMAGES
 import logo from "../../../images/logo/cooking.png";
 import { getDetailCategoryPostAPI } from "../../../redux/actions/user/category/category";
@@ -63,6 +65,23 @@ export default function DetailRecipe() {
   const { postId } = useParams();
 
   const [loading, setLoading] = useState(false);
+
+  const timerAddEvent = useRef(null);
+
+  const [popupCmt, setPopupCmt] = useState({
+    open: false,
+    anchorEl: null,
+    content: null,
+  });
+
+  const listComments = useRef([
+    {
+      cmtId: 1,
+      postId: 2,
+      cmtOnText: "refrigerate for 15 minutes",
+      comment: "aaaa",
+    },
+  ]); /// load list comment from api
   //  -----
 
   // -----
@@ -75,12 +94,93 @@ export default function DetailRecipe() {
 
   useEffect(() => {
     dispatch(getDetailCategoryPostAPI(postId));
+    // setEventShowComments();
+    return () => {
+      const cmtSelection = document.getElementsByClassName(
+        "extracted-simple-text"
+      );
+      for (let el of cmtSelection) {
+        el.removeEventListener("mouseover", null);
+        el.removeEventListener("mouseenter", null);
+        el.removeEventListener("mouseleave", null);
+      }
+    };
   }, []);
+
+  useEffect(() => {
+    setEventShowComments();
+  });
+
+  const setEventShowComments = () => {
+    if (timerAddEvent.current) clearTimeout(timerAddEvent.current);
+    timerAddEvent.current = setTimeout(() => {
+      const cmtSelection = document.getElementsByClassName(
+        "extracted-simple-text"
+      );
+      for (let el of cmtSelection) {
+        el.removeEventListener("mouseenter", null);
+        el.removeEventListener("mouseleave", null);
+
+        el.addEventListener("mouseenter", onMouseOver11);
+        el.addEventListener("mouseleave", onMouseLeave);
+      }
+    }, 500);
+  };
 
   const [content, setContent] = React.useState(null);
   const handleSelectText = () => {
     console.log(`Selected text: ${window.getSelection().toString()}`);
     setContent(window.getSelection().toString());
+  };
+
+  const onMouseOver11 = (e) => {
+    console.log("mouseover", e.target, e.target.getAttribute("id"));
+    //xu ly hover
+    if (e.target) {
+      const el = e.target;
+      setTimeout(() => {
+        setPopupCmt({
+          open: true,
+          anchorEl: el,
+          content: <span style={{ color: "red" }}>test</span>, // render content
+        });
+      }, 300);
+    }
+  };
+
+  const onMouseLeave = (e) => {
+    console.log("mouseleave", e.target, e.target.getAttribute("id"));
+    setPopupCmt({
+      open: false,
+      anchorEl: null,
+      content: null,
+    });
+  };
+
+  const loadText = (text) => {
+    text =
+      "Combine the flour, sugar (if using), and salt in a large bowl; refrigerate for 15 minutes.Add the shortening to the dry ingredients and toss it with your hands to coat, then break it up into smaller pieces. Using a pastry blender, cut the shortening into the dry ingredients until the pieces of fat are roughly the size of small peas and everything looks like it has been touched by the fat. There should be no dry, floury areas.Mound the ingredients in the center of the bowl. Drizzle about half of the water down the sides of the bowl, turning the bowl as you pour so the water doesn’t end up in one spot. Using a large fork, lightly mix the dough, tossing it from the perimeter toward the center of the bowl. Drizzle most of the remaining water here and there over the dough and toss again.Mix the dough vigorously now. The dough should start to gather in large clumps, but if it is dry in places, stir in the rest of the water.Turn the dough out onto a lightly floured work surface and pack it into a ball, then knead it several times to smooth it out. Put the dough on a sheet of plastic wrap and flatten it into a ¾-inch-thick disk. Wrap the disk and refrigerate for about 1 hour before rolling";
+
+    listComments.current.forEach((obj) => {
+      const posFound = text.indexOf(obj.cmtOnText);
+      const lenText = obj.cmtOnText.length;
+      text =
+        text.slice(0, posFound + lenText) +
+        "</span>" +
+        text.slice(posFound + lenText);
+      text =
+        text.slice(0, posFound) +
+        '<span class="extracted-simple-text" id="' +
+        obj.cmtId +
+        '">' +
+        text.slice(posFound);
+    });
+
+    setEventShowComments();
+
+    return (
+      <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(text) }} />
+    );
   };
 
   const resetContent = () => {
@@ -191,6 +291,21 @@ export default function DetailRecipe() {
 
   return (
     <>
+      <Popover
+        open={popupCmt.open || false}
+        anchorEl={popupCmt.anchorEl || null}
+        onClose={null}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "center",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "center",
+        }}
+      >
+        {popupCmt.content}
+      </Popover>
       <div className="detail-recipe">
         {loading ? (
           <Loading />
@@ -244,7 +359,10 @@ export default function DetailRecipe() {
                           1k công thức, 15k người theo dõi
                         </span>
                         <div className="recipe-owner-content">
-                          <span>{category.posts.content}</span>
+                          <span>
+                            {/* {category.posts.content} */}
+                            {loadText()}
+                          </span>
                         </div>
                       </div>
                       <div className="recipe-ingredient">
