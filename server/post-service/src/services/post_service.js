@@ -242,10 +242,8 @@ class PostService {
         }
       });
       await category.save();
-      await PostModel.findOneAndDelete(postDeleteConditions) 
-     
-      
-      
+      await PostModel.findOneAndDelete(postDeleteConditions);
+
       if (!post) {
         return new APIError(
           "User not authorized to update or post not found! ",
@@ -271,7 +269,7 @@ class PostService {
 
   async SubscribeEvents(payload) {
     try {
-      payload.JSON.parse(payload)
+      payload.JSON.parse(payload);
 
       const { event, data } = payload;
 

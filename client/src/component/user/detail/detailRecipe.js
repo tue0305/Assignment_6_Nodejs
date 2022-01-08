@@ -17,7 +17,6 @@ import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
 import Loading from "../../screen/loading/loading";
 import DOMPurify from "dompurify";
-import TextField from "@material-ui/core/TextField";
 //IMAGES
 import logo from "../../../images/logo/cooking.png";
 import { getDetailCategoryPostAPI } from "../../../redux/actions/user/category/category";

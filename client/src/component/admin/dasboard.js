@@ -29,7 +29,7 @@ import Home from "./pages/Home";
 import Tables from "./pages/Tables";
 import Billing from "./pages/Billing";
 import Post from "./pages/Post/post";
-import Profile from "./pages/Profile";
+import Categories from "./pages/categories";
 //STYLE COMPONENT
 import "antd/dist/antd.css";
 import "./assets/styles/main.css";
@@ -104,7 +104,7 @@ export default function DashboardAdmin() {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-    }, 5000);
+    }, 100);
   }, []);
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -194,17 +194,22 @@ export default function DashboardAdmin() {
                     <ListItemText primary="Manage Post" />
                   </ListItem>
                 </Link>
+                <Link to="/admin/manage-categories">
+                  <ListItem>
+                    <PeopleAltIcon />
+                    <ListItemText primary="Manage Categories" />
+                  </ListItem>
+                </Link>
               </List>
             </Drawer>
             {/* end sidebar  */}
-            {/* màn hình  */}
+            {/* SCREEN  */}
             <main
               className={clsx(classes.content, {
                 [classes.contentShift]: open,
               })}
             >
               <div className={classes.drawerHeader} />
-
               <Switch>
                 <Route exact path="/admin/manage-comment">
                   <Billing />
@@ -215,16 +220,16 @@ export default function DashboardAdmin() {
                 <Route exact path="/admin/manage-user">
                   <Tables />
                 </Route>
-                {/* <Route exact path="/admin/manage-post">
- 								<Profile/>
- 							</Route> */}
                 <Route exact path="/admin/manage-post">
                   <Post />
+                </Route>
+                <Route exact path="/admin/manage-categories">
+                  <Categories />
                 </Route>
                 <Redirect from="*" to="/manage-comment" />
               </Switch>
             </main>
-            {/* end màn hình */}
+            {/* END SCREEN */}
           </div>
         </Router>
       )}

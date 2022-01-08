@@ -12,7 +12,7 @@ import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
-import { manageGetPostAPI } from "../../../../redux/actions/admin/manage-post/managePost";
+import { manageGetCategoriesAPI } from "../../../redux/actions/admin/manage-categories/manageCategories";
 
 const useStyles = makeStyles({
   table: {
@@ -20,7 +20,7 @@ const useStyles = makeStyles({
   },
 });
 
-function Post() {
+function Categories() {
   const classes = useStyles();
 
   // ---------
@@ -28,11 +28,12 @@ function Post() {
   // --------
   const dispatch = useDispatch();
 
-  const { managePosts } = useSelector((state) => state.managePostReducer);
-  console.log(managePosts);
-
+  const { manageCategories } = useSelector(
+    (state) => state.manageCategoriesReducer
+  );
+  console.log(manageCategories, "manageCategories");
   useEffect(() => {
-    dispatch(manageGetPostAPI());
+    dispatch(manageGetCategoriesAPI());
   }, []);
 
   // -----
@@ -53,37 +54,19 @@ function Post() {
                   <Table className={classes.table} aria-label="simple table">
                     <TableHead>
                       <TableRow>
-                        <TableCell align="center">Image</TableCell>
-                        <TableCell>Category</TableCell>
+                        <TableCell align="left">Image</TableCell>
                         <TableCell align="center">Title</TableCell>
-                        <TableCell align="center">Content</TableCell>
-                        <TableCell align="center">Gradients</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {managePosts?.posts?.map((post) => (
+                      {manageCategories?.categories?.map((category) => (
                         <TableRow>
                           <TableCell component="th" scope="row" align="center">
                             <div className="table-image">
-                              <img src={post.image} />
+                              <img src={category.image} />
                             </div>
                           </TableCell>
-                          <TableCell align="center">
-                            {post.category.title}
-                          </TableCell>
-                          <TableCell align="center">{post.title}</TableCell>
-                          <TableCell align="center">
-                            <div className="table-content">
-                              <span> {post.content}</span>
-                            </div>
-                          </TableCell>
-                          <TableCell align="center">
-                            <div className="table-content">
-                              {post.gradients.map((gradient) => (
-                                <span>{gradient.name}</span>
-                              ))}
-                            </div>
-                          </TableCell>
+                          <TableCell align="center">{category.title}</TableCell>
                           <TableCell align="center">
                             <Button variant="contained" color="secondary">
                               <EditIcon />
@@ -107,4 +90,4 @@ function Post() {
   );
 }
 
-export default Post;
+export default Categories;
