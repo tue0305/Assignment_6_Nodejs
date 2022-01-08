@@ -7,6 +7,21 @@ const { publishMessage, subscribeMessage } = require("../../utils");
 module.exports = (app, channel) => {
   const service = new CommentService();
   subscribeMessage(channel, service);
+  // @route GET /get-all-post-comments
+  // @des Get all post comments
+  // @access Public
+  app.get("/get-all-post-comments", async (req, res, next) => {
+    try {
+      const { postId } = req.params;
+
+      const result = await service.getAllComments(postId);
+      
+
+      return res.json(result);
+    } catch (error) {
+      next(error);
+    }
+  });
 
   // @route GET /:postId/comment-pos
   // @des Get all comments by postId

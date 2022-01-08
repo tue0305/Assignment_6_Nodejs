@@ -311,7 +311,6 @@ class UserService {
       user.created_posts = createdPosts
      
       await user.save();
-      console.log(user)
 
       return {
         status: STATUS_CODES.OK,

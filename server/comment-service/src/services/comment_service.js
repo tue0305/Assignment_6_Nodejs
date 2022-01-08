@@ -7,6 +7,26 @@ const {
 } = require("../utils/app-errors");
 
 class CommentService {
+  async getAllComments() {
+    try {
+      // ***** GET ALL COMMENTS *****
+      const comments = await CommentPostModel.find();
+
+      return {
+        status: STATUS_CODES.OK,
+        success: true,
+        message: `Get posts successfully!`,
+        comments: comments,
+      };
+    } catch (error) {
+      return new APIError(
+        "Data Not found!",
+        STATUS_CODES.INTERNAL_ERROR,
+        error.message
+      );
+    }
+  }
+
   async getCommentByPostId(postId) {
     try {
       // ***** GET ALL COMMENTS BY CATEGORY*****
@@ -37,7 +57,6 @@ class CommentService {
   async createComment(comment) {
     try {
       const { text, userId, postId, parentId } = comment;
-      console.log(comment);
 
       // simple validation
       if (!text || !userId || !postId) {
@@ -50,7 +69,6 @@ class CommentService {
         success: true,
         status: STATUS_CODES.OK,
         message: `Create  comment ${newComment.text}  successfully!`,
-
         data: newComment,
       };
     } catch (error) {
