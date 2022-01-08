@@ -133,6 +133,21 @@ module.exports = async (app, channel) => {
     }
   });
 
+  // @route POST /signin-admin
+  // @desc Login user
+  // @access Public
+  app.post(`/signin-admin`, async (req, res, next) => {
+    try {
+      const { email, password } = req.body;
+
+      const data = await service.checkSignInAdmin({ email, password });
+
+      return res.json(data);
+    } catch (err) {
+      next(err);
+    }
+  });
+
   // @route POST api/user/forgot-password
   // @des send reset password's to user's email
   // @access Public

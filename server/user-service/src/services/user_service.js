@@ -5,9 +5,9 @@ const {
   generateSignature,
   sendEmail,
   checkEmail,
-  checkPassword
+  checkPassword,
 } = require("../utils");
-const gravatarUrl = require('gravatar');
+const gravatarUrl = require("gravatar");
 const {
   STATUS_CODES,
   APIError,
@@ -15,7 +15,6 @@ const {
 } = require("../utils/app-errors");
 
 class UserService {
-
   async checkSignIn(userInputs) {
     const { email, password } = userInputs;
 
@@ -43,7 +42,55 @@ class UserService {
 
       // **** True password and return the access token ****
       const accessToken = await generateSignature({ _id: user._id });
-      
+
+      return {
+        status: STATUS_CODES.OK,
+        success: true,
+        message: `Login successfully!`,
+        role: user.role,
+        userId: user._id,
+        accessToken,
+      };
+    } catch (error) {
+      return new APIError(
+        "Data Not found!",
+        STATUS_CODES.BAD_REQUEST,
+        error.message
+      );
+    }
+  }
+
+  async checkSignInAdmin(userInputs) {
+    const { email, password } = userInputs;
+
+    // simple validation
+    if (!email || !password) {
+      return new APIError(
+        "Missing email or password!",
+        STATUS_CODES.BAD_REQUEST
+      );
+    }
+
+    try {
+      // ### Check if the user exist
+      const user = await UserModel.findOne({ email: email, role: "ADMIN" });
+
+      if (!user) {
+        return new APIError(
+          "You don't have permission!",
+          STATUS_CODES.BAD_REQUEST
+        );
+      }
+
+      // ### Comparing input password and user password.
+      const passwordValid = await validatePassword(user.password, password);
+      if (!passwordValid) {
+        return new APIError("`Incorrect password!", STATUS_CODES.BAD_REQUEST);
+      }
+
+      // **** True password and return the access token ****
+      const accessToken = await generateSignature({ _id: user._id });
+
       return {
         status: STATUS_CODES.OK,
         success: true,
@@ -75,13 +122,19 @@ class UserService {
     // check email
     const emailValid = await checkEmail(email);
     if (!emailValid) {
-      return new APIError("The email must email address!", STATUS_CODES.BAD_REQUEST);
-    };
+      return new APIError(
+        "The email must email address!",
+        STATUS_CODES.BAD_REQUEST
+      );
+    }
 
     //check password
     const passwordValid = await checkPassword(password);
-    if(!passwordValid){
-      return new APIError("The password must contain at least 8  characters including at least 1 uppercase, 1 lowercase, one digit.", STATUS_CODES.BAD_REQUEST);
+    if (!passwordValid) {
+      return new APIError(
+        "The password must contain at least 8  characters including at least 1 uppercase, 1 lowercase, one digit.",
+        STATUS_CODES.BAD_REQUEST
+      );
     }
 
     try {
@@ -92,11 +145,11 @@ class UserService {
       }
 
       // ***** New userModel ****
-      
+
       const emailAvatar = gravatarUrl.url(email);
-      const urlImage = file ?`http://localhost:8001/${file.path}` : emailAvatar;
-
-
+      const urlImage = file
+        ? `http://localhost:8001/${file.path}`
+        : emailAvatar;
 
       let userPassword = await generatePassword(password);
 
@@ -104,7 +157,7 @@ class UserService {
         email: email,
         password: userPassword,
         role: role,
-        avatar: urlImage
+        avatar: urlImage,
       });
 
       await newUser.save();
@@ -129,7 +182,7 @@ class UserService {
   async getProfile(id) {
     try {
       const user = await UserModel.findById(id).select(`-password`);
-      
+
       if (!user) return new APIError("Data Not found!", STATUS_CODES.NOT_FOUND);
 
       return user;
@@ -142,36 +195,38 @@ class UserService {
     }
   }
 
-  async deleteUser(userId){
-    try{
-      const deleteUser = await UserModel.findOneAndDelete({userId});
-      if(deleteUser)
-      return{
-        status: 200,
-        success: true,
-        message: `Delete account ${userId} success!`,
-        userId: userId
-      }
-      return deleteUser
-    }
-    catch(err){
+  async deleteUser(userId) {
+    try {
+      const deleteUser = await UserModel.findOneAndDelete({ userId });
+      if (deleteUser)
+        return {
+          status: 200,
+          success: true,
+          message: `Delete account ${userId} success!`,
+          userId: userId,
+        };
+      return deleteUser;
+    } catch (err) {
       return new APIError(
         "Data Not Found!",
         STATUS_CODES.BAD_REQUEST,
         err.message
-      )
+      );
     }
   }
 
-  async updateUser(password, email, userId){
-    try{
+  async updateUser(password, email, userId) {
+    try {
       const hashPassword = await generatePassword(password);
-      const updaUser = await UserModel.findByIdAndUpdate({password: hashPassword, email, userId})
-      if(updaUser){
+      const updaUser = await UserModel.findByIdAndUpdate({
+        password: hashPassword,
+        email,
+        userId,
+      });
+      if (updaUser) {
         return user;
       }
-    }
-    catch(err){
+    } catch (err) {
       return new APIError(
         "Data Not found!",
         STATUS_CODES.UN_AUTHORIZED,
@@ -180,14 +235,12 @@ class UserService {
     }
   }
 
-  async getDetailUser(userId){
-    try{
-      // const 
-      const getDetail = await UserModel.findById(userId)
-      if(getDetail)
-        return getDetail;
-    }
-    catch(err){
+  async getDetailUser(userId) {
+    try {
+      // const
+      const getDetail = await UserModel.findById(userId);
+      if (getDetail) return getDetail;
+    } catch (err) {
       return new APIError(
         "Data Not found!",
         STATUS_CODES.UN_AUTHORIZED,
@@ -217,7 +270,7 @@ class UserService {
       }
 
       // ### Generate link reset password and send to user's email
-      const resetLink = `${process.env.URL_FRONT_END }/${user._id}/${token.token}`;
+      const resetLink = `${process.env.URL_FRONT_END}/${user._id}/${token.token}`;
       await sendEmail(user.email, "reset-password", resetLink);
 
       // **** Send forgot password request  succeed ****
@@ -287,26 +340,25 @@ class UserService {
 
   // ***** SUBSCRIBE EVENTS  *****
 
-  
   //=================== POST SERVICE PAYLOAD
 
   async addPostToUser(userId, post) {
     try {
-      console.log(userId, post)
-      const postId  = post._id
-      
-      const user = await UserModel.findById(userId).populate('created_posts');
+      console.log(userId, post);
+      const postId = post._id;
+
+      const user = await UserModel.findById(userId).populate("created_posts");
       if (!user) {
         return new APIError("Data Not found!", STATUS_CODES.NOT_FOUND);
       }
-     
-      let createdPosts = user.created_posts    
-      await createdPosts.push(postId)
+
+      let createdPosts = user.created_posts;
+      await createdPosts.push(postId);
       // await user.created_posts.push(post._id);
-      user.created_posts = createdPosts
-     
+      user.created_posts = createdPosts;
+
       await user.save();
-      console.log(user)
+      console.log(user);
 
       return {
         status: STATUS_CODES.OK,
@@ -424,22 +476,21 @@ class UserService {
     }
   }
 
-  async getAllUser(){
-    try{
+  async getAllUser() {
+    try {
       const getAll = await UserModel.find({});
-      if(getAll){
+      if (getAll) {
         return getAll;
-      }  
-    }
-    catch(err){
+      }
+    } catch (err) {
       return new APIError(
         "Data Not Found!",
         STATUS_CODES.BAD_REQUEST,
         err.message
-      )
+      );
     }
   }
-  
+
   //=================== COMMENT SERVICE PAYLOAD
   async getCommentServiceChange(userId, comment, event) {
     try {
@@ -511,22 +562,18 @@ class UserService {
       };
       return payload;
     } else {
-      return new APIError(
-        "No post available!",
-        STATUS_CODES.INTERNAL_ERROR,
-        
-      );
+      return new APIError("No post available!", STATUS_CODES.INTERNAL_ERROR);
     }
   }
-  
+
   async SubscribeEvents(payload) {
     try {
-      payload = JSON.parse(payload)
+      payload = JSON.parse(payload);
 
       const { event, data } = payload;
       const comment = "";
-      const {userId, post} = data
-      
+      const { userId, post } = data;
+
       switch (event) {
         // Subscribe post-service
         case "REMOVE_POST":
@@ -541,19 +588,19 @@ class UserService {
         case "GET_POSTS":
           this.getUserCreatedPosts(userId);
           break;
-  
+
         // Subscribe comment-service
         case "REMOVE_COMMENT":
           this.getCommentServiceChange(userId, comment, event);
           break;
-          
+
         case "ADD_COMMENT":
           this.getCommentServiceChange(userId, comment, event);
           break;
         case "UPDATE_COMMENT":
           this.getCommentServiceChange(userId, comment, event);
           break;
-  
+
         default:
           break;
       }
@@ -566,7 +613,5 @@ class UserService {
     }
   }
 }
-
-
 
 module.exports = UserService;
