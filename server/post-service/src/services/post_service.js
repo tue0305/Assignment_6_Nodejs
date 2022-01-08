@@ -219,7 +219,6 @@ class PostService {
     }
   }
 
-  
   async deletePost(userId, postId) {
     // **** Simple validation ****
     if (!postId || !userId) {
@@ -242,10 +241,8 @@ class PostService {
         }
       });
       await category.save();
-      await PostModel.findOneAndDelete(postDeleteConditions) 
-     
-      
-      
+      await PostModel.findOneAndDelete(postDeleteConditions);
+
       if (!post) {
         return new APIError(
           "User not authorized to update or post not found! ",
@@ -269,42 +266,45 @@ class PostService {
     }
   }
 
-
-// ========================== SubscribeEvents ====================
-async getPostPayload(userId, post, event) {
-  try {
-    if (post) {
-      const payload = {
-        event: event,
-        data: { userId, post },
-      };
-      return payload;
-    } else {
-      return new APIError("No post available!", STATUS_CODES.INTERNAL_ERROR);
-    }
-  } catch (error) {
-    return new APIError(
-      "Data Not found!",
-      STATUS_CODES.INTERNAL_ERROR,
-      error.message
-    );
-  }
-}
-// ***** Function subscribe *****
-  async addCommentToPost(comment) {
+  // ========================== SubscribeEvents ====================
+  async getPostPayload(userId, post, event) {
     try {
-     
-      
-      
-      const post = await PostModel.findById(comment.postId).populate("post_comments");
+      if (post) {
+        const payload = {
+          event: event,
+          data: { userId, post },
+        };
+        return payload;
+      } else {
+        return new APIError("No post available!", STATUS_CODES.INTERNAL_ERROR);
+      }
+    } catch (error) {
+      return new APIError(
+        "Data Not found!",
+        STATUS_CODES.INTERNAL_ERROR,
+        error.message
+      );
+    }
+  }
+  // ***** Function subscribe *****
+  async addCommentToPost(comment, event) {
+    try {
+      const post = await PostModel.findById(comment.postId);
       if (!post) {
         return new APIError("Data Not found!", STATUS_CODES.NOT_FOUND);
       }
-      let postComments = post.post_comments    
-      
-      await postComments.push(comment._id)
-      post.post_comments = postComments
-     
+      if (event == "ADD_COMMENT") {
+        let postComments = post.post_comments;
+
+        await postComments.push(comment._id);
+        post.post_comments = postComments;
+      } else {
+        let postComments = post.post_highlight_comments;
+
+        await postComments.push(comment._id);
+        post.post_highlight_comments = postComments;
+      }
+
       await post.save();
 
       return {
@@ -321,32 +321,61 @@ async getPostPayload(userId, post, event) {
       );
     }
   }
-  
-  async updateCommentToPost(comment) {
+
+  async updateCommentToPost(comment, event) {
     try {
-      const post = await PostModel.findById(comment.postId).populate("post_comments");
+      const post = await PostModel.findById(comment.postId);
       if (!post) {
         return new APIError("Data Not found!", STATUS_CODES.NOT_FOUND);
       }
-      if (post.post_comments.length > 0) {
-        post.post_comments.map((item) => {
-          if (item._id.toString() === comment._id.toString()) {
-            return {
-              status: STATUS_CODES.OK,
-              success: true,
-              message: `update post ${post} success!`,
-              post: post,
-              updated_comment: comment,
-            };
-          } else {
-            return new APIError("Comment doesn't exist!", STATUS_CODES.NOT_FOUND);
-          }
-        });
-      } else {
-        return new APIError(
-          "Post doesn't have any comments!",
-          STATUS_CODES.NOT_FOUND
-        );
+      if (event == "UPDATE_COMMENT") {
+        if (post.post_comments.length > 0) {
+          post.post_comments.map((item) => {
+            if (item._id.toString() === comment._id.toString()) {
+              return {
+                status: STATUS_CODES.OK,
+                success: true,
+                message: `update comment ${comment} success!`,
+                post: post,
+                updated_comment: comment,
+              };
+            } else {
+              return new APIError(
+                "Comment doesn't exist!",
+                STATUS_CODES.NOT_FOUND
+              );
+            }
+          });
+        } else {
+          return new APIError(
+            "Post doesn't have any comments!",
+            STATUS_CODES.NOT_FOUND
+          );
+        }
+      } else if (event == "UPDATE_HIGHLIGHT_COMMENT"){
+        if (post.post_highlight_comments.length > 0) {
+          post.post_highlight_comments.map((item) => {
+            if (item._id.toString() === comment._id.toString()) {
+              return {
+                status: STATUS_CODES.OK,
+                success: true,
+                message: `update comment ${comment} success!`,
+                post: post,
+                updated_comment: comment,
+              };
+            } else {
+              return new APIError(
+                "Highlight comment doesn't exist!",
+                STATUS_CODES.NOT_FOUND
+              );
+            }
+          });
+        } else {
+          return new APIError(
+            "Post doesn't have any highlight comments!",
+            STATUS_CODES.NOT_FOUND
+          );
+        }
       }
     } catch (error) {
       return new APIError(
@@ -357,34 +386,65 @@ async getPostPayload(userId, post, event) {
     }
   }
 
-  async removeCommentOfPost(comment) {
+  async removeCommentOfPost(comment, event) {
     try {
-      const post = await PostModel.findById(comment.postId).populate("post_comments");
+      const post = await PostModel.findById(comment.postId);
       if (!post) {
         return new APIError("Data Not found!", STATUS_CODES.NOT_FOUND);
       }
 
-      if (post.post_comments.length > 0) {
-        post.post_comments.map((item) => {
-          if (item._id.toString() === comment._id.toString()) {
-            const index = post.post_comments.indexOf(item);
-            post.post_comments.splice(index, 1);
-          } else {
-            return new APIError("Comment doesn't exist!", STATUS_CODES.NOT_FOUND);
-          }
-        });
-        await post.save();
-        return {
-          status: STATUS_CODES.OK,
-          success: true,
-          message: `Remove comment ${comment} success!`,
-          post: post
-        };
-      } else {
-        return new APIError(
-          "Post doesn't have any comment!",
-          STATUS_CODES.NOT_FOUND
-        );
+      if (event == "REMOVE_COMMENT") {
+        if (post.post_comments.length > 0) {
+          post.post_comments.map((item) => {
+            if (item._id.toString() === comment._id.toString()) {
+              const index = post.post_comments.indexOf(item);
+              post.post_comments.splice(index, 1);
+            } else {
+              return new APIError(
+                "Comment doesn't exist!",
+                STATUS_CODES.NOT_FOUND
+              );
+            }
+          });
+          await post.save();
+          return {
+            status: STATUS_CODES.OK,
+            success: true,
+            message: `Remove comment ${comment} success!`,
+            post: post,
+          };
+        } else {
+          return new APIError(
+            "Post doesn't have any comment!",
+            STATUS_CODES.NOT_FOUND
+          );
+        }
+      } else if (event == "REMOVE_HIGHLIGHT_COMMENT") {
+        if (post.post_highlight_comments.length > 0) {
+          post.post_highlight_comments.map((item) => {
+            if (item._id.toString() === comment._id.toString()) {
+              const index = post.post_highlight_comments.indexOf(item);
+              post.post_highlight_comments.splice(index, 1);
+            } else {
+              return new APIError(
+                "Highlight comment doesn't exist!",
+                STATUS_CODES.NOT_FOUND
+              );
+            }
+          });
+          await post.save();
+          return {
+            status: STATUS_CODES.OK,
+            success: true,
+            message: `Remove highlight comment ${comment} success!`,
+            post: post,
+          };
+        } else {
+          return new APIError(
+            "Post doesn't have any highlight comment!",
+            STATUS_CODES.NOT_FOUND
+          );
+        }
       }
     } catch (error) {
       return new APIError(
@@ -394,47 +454,39 @@ async getPostPayload(userId, post, event) {
       );
     }
   }
-// **************
-  
-  
+  // **************
+
   async SubscribeEvents(payload) {
     try {
-      payload = JSON.parse(payload)
+      payload = JSON.parse(payload);
 
       const { event, data } = payload;
-      
-      const {comment} = data
 
+      const { comment } = data;
 
       switch (event) {
-      // ====== Subscribe comment-service
-      // ***** comment post *****
+        // ====== Subscribe comment-service
+        // ***** comment post *****
         case "REMOVE_COMMENT":
-          this.removeCommentOfPost(comment);
+          this.removeCommentOfPost(comment, event);
           break;
         case "ADD_COMMENT":
-          this.addCommentToPost(comment);
+          this.addCommentToPost(comment, event);
           break;
         case "UPDATE_COMMENT":
-          this.updateCommentToPost(comment);
+          this.updateCommentToPost(comment, event);
           break;
-        // case "GET_COMMENTS":
-        //   this.getPostComment(userId);
-        //   break;
-        
+
         // ***** comment highlight_text post *****
-        // case "REMOVE_COMMENT":
-        //   this.removePostOfUser(userId, postId);
-        //   break;
-        // case "ADD_COMMENT":
-        //   this.addPostToUser(userId, postId);
-        //   break;
-        // case "UPDATE_COMMENT":
-        //   this.updatePostToUser(userId, postId);
-        //   break;
-        // case "GET_COMMENTS":
-        //   this.getUserCreatedPosts(userId);
-        //   break;
+        case "REMOVE_HIGHLIGHT_COMMENT":
+          this.removePostOfUser(comment, event);
+          break;
+        case "ADD_HIGHLIGHT_COMMENT":
+          this.addPostToUser(comment, event);
+          break;
+        case "UPDATE_HIGHLIGHT_COMMENT":
+          this.updatePostToUser(comment, event);
+          break;
 
         default:
           break;
@@ -447,8 +499,6 @@ async getPostPayload(userId, post, event) {
       );
     }
   }
-
-  
 }
 
 module.exports = PostService;

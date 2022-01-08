@@ -1,4 +1,4 @@
-const { CommentPostModel } = require("../database/models");
+const { CommentPostModel,CommentHighlightModel } = require("../database/models");
 
 const {
   STATUS_CODES,
@@ -7,6 +7,7 @@ const {
 } = require("../utils/app-errors");
 
 class CommentService {
+  // ================= START POST COMMENT =========================
   async getAllComments() {
     try {
       // ***** GET ALL COMMENTS *****
@@ -15,8 +16,8 @@ class CommentService {
       return {
         status: STATUS_CODES.OK,
         success: true,
-        message: `Get posts successfully!`,
-        comments: comments,
+        message: `Get comments successfully!`,
+        data: comments,
       };
     } catch (error) {
       return new APIError(
@@ -29,13 +30,15 @@ class CommentService {
 
   async getCommentByPostId(postId) {
     try {
-      // ***** GET ALL COMMENTS BY CATEGORY*****
+      // ***** GET ALL COMMENTS BY POST_ID*****
       const comments = await CommentPostModel.find({ postId: postId });
-      if (!comments) {
+
+
+      if (!comments ) {
         return {
           status: 400,
           success: false,
-          message: `This category don't have any post!`,
+          message: `This post don't have any comment!`,
         };
       }
 
@@ -159,6 +162,165 @@ class CommentService {
       );
     }
   }
+
+ // ================= END POST COMMENT =========================
+// ================= START HIGHLIGHT COMMENT =========================
+    async getAllHighlightComments() {
+      try {
+        // ***** GET ALL COMMENTS *****
+        const commentHighlights = await CommentHighlightModel.find();
+
+        return {
+          status: STATUS_CODES.OK,
+          success: true,
+          message: `Get all highlight comments successfully!`,
+          data: commentHighlights,
+        };
+      } catch (error) {
+        return new APIError(
+          "Data Not found!",
+          STATUS_CODES.INTERNAL_ERROR,
+          error.message
+        );
+      }
+    }
+  
+    async getHighlightCommentByPostId(postId) {
+      try {
+        // ***** GET HIGHLIGHT COMMENTS BY POST ID *****
+  
+        const commentHighlights = await CommentHighlightModel.find({ postId: postId });
+  
+        if ( !commentHighlights) {
+          return {
+            status: 400,
+            success: false,
+            message: `This post don't have any highlight comment!`,
+          };
+        }
+  
+        return {
+          status: STATUS_CODES.OK,
+          success: true,
+          message: `Get ${postId}'s comments successfully!`,
+          data: commentHighlights,
+        };
+      } catch (error) {
+        return new APIError(
+          "Data Not found!",
+          STATUS_CODES.INTERNAL_ERROR,
+          error.message
+        );
+      }
+    }
+  
+    async createHighlightComment(comment) {
+      try {
+        const { _id, highlight_text, text, userId, postId, parentId } = comment;
+  
+        // simple validation
+        if (!text || !userId || !postId) {
+          return new APIError("Missing Information!", STATUS_CODES.BAD_REQUEST);
+        }
+        const newComment = new CommentHighlightModel(comment);
+  
+        await newComment.save();
+        return {
+          success: true,
+          status: STATUS_CODES.OK,
+          message: `Create highlight comment ${newComment.text}  successfully!`,
+          data: newComment,
+        };
+      } catch (error) {
+        return new APIError(
+          "Data Not found!",
+          STATUS_CODES.BAD_REQUEST,
+          error.message
+        );
+      }
+    }
+  
+    async updateHighlightComment(comment) {
+      try {
+        const { commentId, text, userId, postId } = comment;
+  
+        // simple validation
+        if (!commentId || !text || !userId || !postId) {
+          return new APIError("Missing information!", STATUS_CODES.BAD_REQUEST);
+        }
+        const postUpdateConditions = {
+          _id: commentId,
+          postId: postId,
+          userId: userId,
+        };
+        const updateComment = await CommentHighlightModel.findOneAndUpdate(
+          postUpdateConditions,
+          { text: text },
+          { new: true }
+        );
+        if (!updateComment) {
+          return new APIError(
+            "User not authorized to update or comment not found! ",
+            STATUS_CODES.NOT_FOUND
+          );
+        }
+  
+        return {
+          success: true,
+          status: STATUS_CODES.OK,
+          message: `Update post ${updateComment._id} successfully!`,
+          data: updateComment,
+        };
+      } catch (error) {
+        return new APIError(
+          "Data Not found!",
+          STATUS_CODES.BAD_REQUEST,
+          error.message
+        );
+      }
+    }
+  
+    async deleteHighlightComment(comment) {
+      try {
+        const { commentId, userId, postId } = comment;
+  
+        // simple validation
+        if (!commentId  || !userId || !postId) {
+          return new APIError("Missing information!", STATUS_CODES.BAD_REQUEST);
+        }
+        const postDeleteConditions = {
+          _id: commentId,
+          postId: postId,
+          userId: userId,
+        };
+        const deleteComment = await CommentHighlightModel.findOne(
+          postDeleteConditions
+        );
+  
+        if (!deleteComment) {
+          return new APIError(
+            "User not authorized to update or comment not found! ",
+            STATUS_CODES.NOT_FOUND
+          );
+        }
+        await CommentHighlightModel.findOneAndDelete(postDeleteConditions);
+  
+        return {
+          success: true,
+          status: STATUS_CODES.OK,
+          message: `Delete comment ${deleteComment._id} successfully!`,
+          data: deleteComment,
+        };
+      } catch (error) {
+        return new APIError(
+          "Data Not found!",
+          STATUS_CODES.BAD_REQUEST,
+          error.message
+        );
+      }
+    }
+  
+   // ================= END POST COMMENT =========================
 
   // ===========================
   async getCommentPayload(comment, event) {
