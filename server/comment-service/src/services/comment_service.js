@@ -1,4 +1,7 @@
-const { CommentPostModel,CommentHighlightModel } = require("../database/models");
+const {
+  CommentPostModel,
+  CommentHighlightModel,
+} = require("../database/models");
 
 const {
   STATUS_CODES,
@@ -33,8 +36,7 @@ class CommentService {
       // ***** GET ALL COMMENTS BY POST_ID*****
       const comments = await CommentPostModel.find({ postId: postId });
 
-
-      if (!comments ) {
+      if (!comments) {
         return {
           status: 400,
           success: false,
@@ -128,7 +130,7 @@ class CommentService {
       const { commentId, userId, postId } = comment;
 
       // simple validation
-      if (!commentId  || !userId || !postId) {
+      if (!commentId || !userId || !postId) {
         return new APIError("Missing information!", STATUS_CODES.BAD_REQUEST);
       }
       const postDeleteConditions = {
@@ -163,164 +165,195 @@ class CommentService {
     }
   }
 
- // ================= END POST COMMENT =========================
-// ================= START HIGHLIGHT COMMENT =========================
-    async getAllHighlightComments() {
-      try {
-        // ***** GET ALL COMMENTS *****
-        const commentHighlights = await CommentHighlightModel.find();
+  // ================= END POST COMMENT =========================
+  // ================= START HIGHLIGHT COMMENT =========================
+  async getAllHighlightComments() {
+    try {
+      // ***** GET ALL COMMENTS *****
+      const commentHighlights = await CommentHighlightModel.find();
 
+      return {
+        status: STATUS_CODES.OK,
+        success: true,
+        message: `Get all highlight comments successfully!`,
+        data: commentHighlights,
+      };
+    } catch (error) {
+      return new APIError(
+        "Data Not found!",
+        STATUS_CODES.INTERNAL_ERROR,
+        error.message
+      );
+    }
+  }
+
+  async getHighlightCommentByPostId(postId) {
+    try {
+      // ***** GET HIGHLIGHT COMMENTS BY POST ID *****
+
+      const commentHighlights = await CommentHighlightModel.find({
+        postId: postId,
+      });
+
+      if (!commentHighlights) {
         return {
-          status: STATUS_CODES.OK,
-          success: true,
-          message: `Get all highlight comments successfully!`,
-          data: commentHighlights,
+          status: 400,
+          success: false,
+          message: `This post don't have any highlight comment!`,
         };
-      } catch (error) {
+      }
+
+      return {
+        status: STATUS_CODES.OK,
+        success: true,
+        message: `Get ${postId}'s comments successfully!`,
+        data: commentHighlights,
+      };
+    } catch (error) {
+      return new APIError(
+        "Data Not found!",
+        STATUS_CODES.INTERNAL_ERROR,
+        error.message
+      );
+    }
+  }
+
+  async createHighlightComment(comment) {
+    try {
+      const { _id, highlight_text, text, userId, postId, parentId } = comment;
+
+      // simple validation
+      if (!text || !userId || !postId) {
+        return new APIError("Missing Information!", STATUS_CODES.BAD_REQUEST);
+      }
+      const newComment = new CommentHighlightModel(comment);
+
+      await newComment.save();
+      return {
+        success: true,
+        status: STATUS_CODES.OK,
+        message: `Create highlight comment ${newComment.text}  successfully!`,
+        data: newComment,
+      };
+    } catch (error) {
+      return new APIError(
+        "Data Not found!",
+        STATUS_CODES.BAD_REQUEST,
+        error.message
+      );
+    }
+  }
+
+  async updateHighlightComment(comment) {
+    try {
+      const { commentId, text, userId, postId } = comment;
+
+      // simple validation
+      if (!commentId || !text || !userId || !postId) {
+        return new APIError("Missing information!", STATUS_CODES.BAD_REQUEST);
+      }
+      const postUpdateConditions = {
+        _id: commentId,
+        postId: postId,
+        userId: userId,
+      };
+      const updateComment = await CommentHighlightModel.findOneAndUpdate(
+        postUpdateConditions,
+        { text: text },
+        { new: true }
+      );
+      if (!updateComment) {
         return new APIError(
-          "Data Not found!",
-          STATUS_CODES.INTERNAL_ERROR,
-          error.message
+          "User not authorized to update or comment not found! ",
+          STATUS_CODES.NOT_FOUND
         );
       }
+
+      return {
+        success: true,
+        status: STATUS_CODES.OK,
+        message: `Update post ${updateComment._id} successfully!`,
+        data: updateComment,
+      };
+    } catch (error) {
+      return new APIError(
+        "Data Not found!",
+        STATUS_CODES.BAD_REQUEST,
+        error.message
+      );
     }
-  
-    async getHighlightCommentByPostId(postId) {
-      try {
-        // ***** GET HIGHLIGHT COMMENTS BY POST ID *****
-  
-        const commentHighlights = await CommentHighlightModel.find({ postId: postId });
-  
-        if ( !commentHighlights) {
-          return {
-            status: 400,
-            success: false,
-            message: `This post don't have any highlight comment!`,
-          };
-        }
-  
-        return {
-          status: STATUS_CODES.OK,
-          success: true,
-          message: `Get ${postId}'s comments successfully!`,
-          data: commentHighlights,
-        };
-      } catch (error) {
+  }
+
+  async deleteHighlightComment(comment) {
+    try {
+      const { commentId, userId, postId } = comment;
+
+      // simple validation
+      if (!commentId || !userId || !postId) {
+        return new APIError("Missing information!", STATUS_CODES.BAD_REQUEST);
+      }
+      const postDeleteConditions = {
+        _id: commentId,
+        postId: postId,
+        userId: userId,
+      };
+      const deleteComment = await CommentHighlightModel.findOne(
+        postDeleteConditions
+      );
+
+      if (!deleteComment) {
         return new APIError(
-          "Data Not found!",
-          STATUS_CODES.INTERNAL_ERROR,
-          error.message
+          "User not authorized to update or comment not found! ",
+          STATUS_CODES.NOT_FOUND
         );
       }
+      await CommentHighlightModel.findOneAndDelete(postDeleteConditions);
+
+      return {
+        success: true,
+        status: STATUS_CODES.OK,
+        message: `Delete comment ${deleteComment._id} successfully!`,
+        data: deleteComment,
+      };
+    } catch (error) {
+      return new APIError(
+        "Data Not found!",
+        STATUS_CODES.BAD_REQUEST,
+        error.message
+      );
     }
-  
-    async createHighlightComment(comment) {
-      try {
-        const { _id, highlight_text, text, userId, postId, parentId } = comment;
-  
-        // simple validation
-        if (!text || !userId || !postId) {
-          return new APIError("Missing Information!", STATUS_CODES.BAD_REQUEST);
-        }
-        const newComment = new CommentHighlightModel(comment);
-  
-        await newComment.save();
-        return {
-          success: true,
-          status: STATUS_CODES.OK,
-          message: `Create highlight comment ${newComment.text}  successfully!`,
-          data: newComment,
-        };
-      } catch (error) {
-        return new APIError(
-          "Data Not found!",
-          STATUS_CODES.BAD_REQUEST,
-          error.message
-        );
+  }
+
+  // ================= END POST COMMENT =========================
+  async removePostOfComments(post) {
+    try {
+      const comments = await CommentPostModel.find({ postId: post._id });
+      const highlight_comments = await CommentHighlightModel.find({
+        postId: post._id,
+      });
+      if (comments) {
+        await CommentPostModel.deleteMany({ postId: post._id });
       }
-    }
-  
-    async updateHighlightComment(comment) {
-      try {
-        const { commentId, text, userId, postId } = comment;
-  
-        // simple validation
-        if (!commentId || !text || !userId || !postId) {
-          return new APIError("Missing information!", STATUS_CODES.BAD_REQUEST);
-        }
-        const postUpdateConditions = {
-          _id: commentId,
-          postId: postId,
-          userId: userId,
-        };
-        const updateComment = await CommentHighlightModel.findOneAndUpdate(
-          postUpdateConditions,
-          { text: text },
-          { new: true }
-        );
-        if (!updateComment) {
-          return new APIError(
-            "User not authorized to update or comment not found! ",
-            STATUS_CODES.NOT_FOUND
-          );
-        }
-  
-        return {
-          success: true,
-          status: STATUS_CODES.OK,
-          message: `Update post ${updateComment._id} successfully!`,
-          data: updateComment,
-        };
-      } catch (error) {
-        return new APIError(
-          "Data Not found!",
-          STATUS_CODES.BAD_REQUEST,
-          error.message
-        );
+      if (highlight_comments) {
+        await CommentHighlightModel.deleteMany({ postId: post._id });
       }
+
+      return {
+        status: STATUS_CODES.OK,
+        success: true,
+        message: `Remove -comment: ${comments} \n\t -highlight comment: ${highlight_comments}   success!`,
+        user: user,
+
+        created_posts: user.created_posts,
+      };
+    } catch (error) {
+      return new APIError(
+        "Data Not found!",
+        STATUS_CODES.BAD_REQUEST,
+        error.message
+      );
     }
-  
-    async deleteHighlightComment(comment) {
-      try {
-        const { commentId, userId, postId } = comment;
-  
-        // simple validation
-        if (!commentId  || !userId || !postId) {
-          return new APIError("Missing information!", STATUS_CODES.BAD_REQUEST);
-        }
-        const postDeleteConditions = {
-          _id: commentId,
-          postId: postId,
-          userId: userId,
-        };
-        const deleteComment = await CommentHighlightModel.findOne(
-          postDeleteConditions
-        );
-  
-        if (!deleteComment) {
-          return new APIError(
-            "User not authorized to update or comment not found! ",
-            STATUS_CODES.NOT_FOUND
-          );
-        }
-        await CommentHighlightModel.findOneAndDelete(postDeleteConditions);
-  
-        return {
-          success: true,
-          status: STATUS_CODES.OK,
-          message: `Delete comment ${deleteComment._id} successfully!`,
-          data: deleteComment,
-        };
-      } catch (error) {
-        return new APIError(
-          "Data Not found!",
-          STATUS_CODES.BAD_REQUEST,
-          error.message
-        );
-      }
-    }
-  
-   // ================= END POST COMMENT =========================
+  }
 
   // ===========================
   async getCommentPayload(comment, event) {
@@ -348,38 +381,37 @@ class CommentService {
 
   async SubscribeEvents(payload) {
     try {
+      payload = JSON.parse(payload);
       const { event, data } = payload;
-    payload.JSON.parse(payload);
-    // const { userId, postId } = data;
 
-    switch (event) {
-      // Subscribe post-service
-      case "REMOVE_POST":
-        removePostOfUser(userId, postId);
-        break;
-      case "ADD_POST":
-        addPostToUser(userId, postId);
-        break;
-      case "UPDATE_POST":
-        updatePostToUser(userId, postId);
-        break;
-      case "GET_POSTS":
-        getUserCreatedPosts(userId);
-        break;
+      const { userId, post } = data;
 
-      // Subscribe user-service
-      case "GET_POSTS":
-        getUserCreatedPosts(userId);
-        break;
-      case "GET_POSTS":
-        getUserCreatedPosts(userId);
-        break;
-      case "GET_POSTS":
-        getUserCreatedPosts(userId);
-        break;
-      default:
-        break;
-    }
+      switch (event) {
+        // Subscribe post-service
+        case "REMOVE_POST":
+          this.removePostOfComments(post);
+          break;
+
+        case "UPDATE_POST":
+          this.updatePostToUser(userId, post);
+          break;
+        case "GET_POST":
+          this.getUserCreatedPosts(userId);
+          break;
+
+        // Subscribe user-service
+        // case "GET_POSTS":
+        //   getUserCreatedPosts(userId);
+        //   break;
+        // case "GET_POSTS":
+        //   getUserCreatedPosts(userId);
+        //   break;
+        // case "GET_POSTS":
+        //   getUserCreatedPosts(userId);
+        //   break;
+        default:
+          break;
+      }
     } catch (error) {
       return new APIError(
         "Data Not found!",

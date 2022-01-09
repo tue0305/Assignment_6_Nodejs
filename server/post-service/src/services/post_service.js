@@ -230,33 +230,32 @@ class PostService {
 
       const post = await PostModel.findOne(postDeleteConditions);
 
-      const category = await CategoryModel.findById(post.category._id);
+      if (post) {
+        const category = await CategoryModel.findById(post.category._id);
+        category.posts.map((item) => {
+          if (item._id.toString() === post._id.toString()) {
+            const index = category.posts.indexOf(item);
+            category.posts.splice(index, 1);
+          } else {
+            return new APIError("Post doesn't exist!", STATUS_CODES.NOT_FOUND);
+          }
+        });
+        await category.save();
+        await PostModel.findOneAndDelete(postDeleteConditions);
 
-      category.posts.map((item) => {
-        if (item._id.toString() === post._id.toString()) {
-          const index = category.posts.indexOf(item);
-          category.posts.splice(index, 1);
-        } else {
-          return new APIError("Post doesn't exist!", STATUS_CODES.NOT_FOUND);
-        }
-      });
-      await category.save();
-      await PostModel.findOneAndDelete(postDeleteConditions);
-
-      if (!post) {
+        return {
+          status: STATUS_CODES.OK,
+          success: true,
+          message: `Delete post ${post._id} successfully!`,
+          category: category,
+          data: post,
+        };
+      } else {
         return new APIError(
           "User not authorized to update or post not found! ",
           STATUS_CODES.NOT_FOUND
         );
       }
-
-      return {
-        status: STATUS_CODES.OK,
-        success: true,
-        message: `Delete post ${post._id} successfully!`,
-        category: category,
-        data: post,
-      };
     } catch (error) {
       return new APIError(
         "Data Not found!",
@@ -298,14 +297,14 @@ class PostService {
 
         await postComments.push(comment._id);
         post.post_comments = postComments;
-      } else {
+        await post.save();
+      } else if (event == "ADD_HIGHLIGHT_COMMENT") {
         let postComments = post.post_highlight_comments;
 
         await postComments.push(comment._id);
         post.post_highlight_comments = postComments;
+        await post.save();
       }
-
-      await post.save();
 
       return {
         status: STATUS_CODES.OK,
@@ -479,13 +478,13 @@ class PostService {
 
         // ***** comment highlight_text post *****
         case "REMOVE_HIGHLIGHT_COMMENT":
-          this.removePostOfUser(comment, event);
+          this.removeCommentOfPost(comment, event);
           break;
         case "ADD_HIGHLIGHT_COMMENT":
-          this.addPostToUser(comment, event);
+          this.addCommentToPost(comment, event);
           break;
         case "UPDATE_HIGHLIGHT_COMMENT":
-          this.updatePostToUser(comment, event);
+          this.updateCommentToPost(comment, event);
           break;
 
         default:

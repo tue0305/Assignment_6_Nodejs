@@ -2,64 +2,79 @@ import axios from "axios";
 import * as actType from "../../../constants/constans";
 import Swal from "sweetalert2";
 
-export const getCommmentPostAPI = (postId, userId) => {
-  return function (dispatch) {
-    axios({
-      method: "GET",
-      url: `http://localhost:8003/${postId}/comment-post`,
-    })
-      .then((res) => {
-        let comments = res.data.data;
-        // console.log(res);
+export const getCommmentPostAPI = (postId) => {
+  return async (dispatch) => {
+    const res = await axios.get(`http://localhost:8003/${postId}/comment-post`);
+    const comments = res.data.data;
+    const userComment = [];
+    comments.map(async (comment) => {
+      const user = await axios.get(
+        `http://localhost:8001/detail-user/${comment.userId}`
+      );
 
-        console.log(comments);
-        const userComments = [];
-        comments.map((comment) => {
-          axios({
-            method: "GET",
-            url: `http://localhost:8001/detail-user/${comment.userId}`,
-          })
-            .then((rs) => {
-              userComments.push(rs.data);
-              console.log(userComments, "list");
+      await userComment.push({ comment: comment, user: user.data });
+    });
+    await dispatch({
+            type: actType.GET_COMMENT_POST,
+            payload: userComment,
+          });
 
-              console.log(rs.data, "list");
-            })
-            .catch((err) => {
-              console.log(err, "err");
-            });
-        });
+    //   axios({
+    //   method: "GET",
+    //   url: `http://localhost:8003/${postId}/comment-post`,
+    // })
+    //   .then((res) => {
+    //     let comments = res.data.data;
+    //     // console.log(res);
 
-        console.log(userComments);
-        // =------
-        dispatch({
-          type: actType.GET_COMMENT_POST,
-          payload: res.data,
-        });
-      })
-      .catch((err) => {
-        console.log(err, "err");
-      });
+    //     console.log(comments);
+    //     const userComments = [];
+    //     comments.map((comment) => {
+    //       axios({
+    //         method: "GET",
+    //         url: `http://localhost:8001/detail-user/${comment.userId}`,
+    //       })
+    //         .then((rs) => {
+    //           userComments.push(rs.data);
+    //           console.log(userComments, "list");
+
+    //           console.log(rs.data, "list");
+    //         })
+    //         .catch((err) => {
+    //           console.log(err, "err");
+    //         });
+    //     });
+
+    //     console.log(userComments);
+    //     // =------
+    //     dispatch({
+    //       type: actType.GET_COMMENT_POST,
+    //       payload: res.data,
+    //     });
+    //   })
+    //   .catch((err) => {
+    //     console.log(err, "err");
+    //   });
   };
 };
 
-export const getUserCommentAPI = (userId) => {
-  return function (dispatch) {
-    axios({
-      method: "GET",
-      url: `http://localhost:8001/detail-user/${userId}`,
-    })
-      .then((res) => {
-        dispatch({
-          type: actType.GET_USER_COMMENT_POST,
-          payload: res.data,
-        });
-      })
-      .catch((err) => {
-        console.log(err, "err");
-      });
-  };
-};
+// export const getUserCommentAPI = (userId) => {
+//   return function (dispatch) {
+//     axios({
+//       method: "GET",
+//       url: `http://localhost:8001/detail-user/${userId}`,
+//     })
+//       .then((res) => {
+//         dispatch({
+//           type: actType.GET_USER_COMMENT_POST,
+//           payload: res.data,
+//         });
+//       })
+//       .catch((err) => {
+//         console.log(err, "err");
+//       });
+//   };
+// };
 
 export const userCreateCommentAPI = (postId, newComment) => {
   const token = localStorage.getItem("accessToken");

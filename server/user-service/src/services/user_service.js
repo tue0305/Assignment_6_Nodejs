@@ -198,7 +198,7 @@ class UserService {
   async deleteUser(userId) {
     try {
       const deleteUser = await UserModel.findById(userId);
-      await UserModel.findOneAndDelete({ userId });
+      await UserModel.findOneAndDelete({_id: userId });
 
       return {
         status: 200,

@@ -152,7 +152,6 @@ module.exports = async (app, channel) => {
       try {
         const { postId } = req.params;
         const userId = req.userId;
-
         const result = await service.deletePost(userId, postId);
         const payload = await service.getPostPayload(
           userId,
