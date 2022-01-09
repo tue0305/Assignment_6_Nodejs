@@ -1,16 +1,17 @@
-import Axios from "axios";
+import axios from "axios";
 import Swal from "sweetalert2";
 import * as actionType from "../../constants/constans";
 
-export const signInAdminAPI = (data, history) => {
+export const signinAdminAPI = (data, history) => {
     return function (dispatch) {
-        Axios({
+        axios({
             method: "POST",
-            url: "http://localhost:8001/api/user/signin",
+            url: "http://localhost:8001/signin-admin",
             data: data,
         })
             .then((res) => {
-                if (res.data.role === "ADMIN") {
+                console.log(res.data.success === true, "daa");
+                if (res.data.success === true) {
                     Swal.fire({
                         icon: "success",
                         title: "Đăng nhập thành công!",
@@ -21,7 +22,7 @@ export const signInAdminAPI = (data, history) => {
                             "accessToken",
                             res.data.accessToken
                         );
-                        history.push("/admin/Home");
+                        window.location.href = "/admin/Home";
                         return dispatch({
                             type: actionType.SIGN_IN_ADMIN,
                         });

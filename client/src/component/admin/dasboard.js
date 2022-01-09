@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import clsx from "clsx";
 import {
     BrowserRouter as Router,
@@ -22,6 +22,8 @@ import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import PeopleAltIcon from "@material-ui/icons/PeopleAlt";
+import { useHistory } from "react-router-dom";
+import Loading from "../screen/loading/loading";
 //COMPONENT
 import Home from "./pages/Home";
 import Tables from "./pages/Tables";

@@ -13,7 +13,6 @@ import greenTea from "../../../images/Carousel/greenTea.jpg";
 import lemonSalt from "../../../images/Carousel/lemonSalt.jpg";
 import hongCloud from "../../../images/Carousel/hongCloud.jpg";
 //Category
-import kDongGia1 from "../../../images/icons/1kDongGia.png";
 import {
   getCategoryAPI,
   getCategoryPostAPI,

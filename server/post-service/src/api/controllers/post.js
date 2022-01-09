@@ -9,6 +9,7 @@ const { publishMessage, subscribeMessage } = require("../../utils");
 
 module.exports = async (app, channel) => {
   const service = new PostService();
+  subscribeMessage(channel, service);
 
   // @route GET api/post
   // @des get posts
@@ -62,11 +63,12 @@ module.exports = async (app, channel) => {
 
       const result = await service.getUserPosts(userId, "GET_POSTS");
 
-      const payload = await service.getPostPayloadUser(
+      const payload = await service.getPostPayload(
         userId,
         result.data,
         "GET_POSTS"
       );
+      publishMessage(channel, USER_BINDING_KEY, JSON.stringify(payload));
 
       return res.json(result);
     } catch (error) {
@@ -91,13 +93,14 @@ module.exports = async (app, channel) => {
         userId
       );
 
-      const payload = await service.getPostPayloadUser(
+      const payload = await service.getPostPayload(
         userId,
         result.data,
         "ADD_POST"
       );
 
       publishMessage(channel, USER_BINDING_KEY, JSON.stringify(payload));
+      publishMessage(channel, COMMENT_BINDING_KEY, JSON.stringify(payload));
 
       return res.json(result);
     } catch (error) {
@@ -124,14 +127,14 @@ module.exports = async (app, channel) => {
         userId
       );
 
-      const payload = await service.getPostPayloadUser(
+      const payload = await service.getPostPayload(
         userId,
         result.data,
         "UPDATE_POST"
       );
 
       publishMessage(channel, USER_BINDING_KEY, JSON.stringify(payload));
-      // publishMessage(channel, COMMENT_BINDING_KEY, JSON.stringify(payload));
+      publishMessage(channel, COMMENT_BINDING_KEY, JSON.stringify(payload));
 
       return res.json(result);
     } catch (error) {
@@ -149,17 +152,15 @@ module.exports = async (app, channel) => {
       try {
         const { postId } = req.params;
         const userId = req.userId;
-
-        const result = await service.deletePost( userId, postId);
-        console.log(result);
-        const payload = await service.getPostPayloadUser(
+        const result = await service.deletePost(userId, postId);
+        const payload = await service.getPostPayload(
           userId,
           result.data,
           "REMOVE_POST"
         );
 
         publishMessage(channel, USER_BINDING_KEY, JSON.stringify(payload));
-        // publishMessage(channel, COMMENT_BINDING_KEY, JSON.stringify(payload));
+        publishMessage(channel, COMMENT_BINDING_KEY, JSON.stringify(payload));
         return res.json(result);
       } catch (error) {
         next(error);

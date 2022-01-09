@@ -84,6 +84,8 @@ try {
   channel.consume(appQueue.queue, data => {
     console.log('Receive data');
     console.log(data.content.toString());
+    
+    service.SubscribeEvents(data.content.toString());
     channel.ack(data)
   })
 

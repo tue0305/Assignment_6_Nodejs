@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
@@ -16,11 +16,12 @@ import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
 import Loading from "../../screen/loading/loading";
-import DOMPurify from "dompurify";
-import Popover from "@material-ui/core/Popover";
+import DOMPurify from "dompurify"; //libary change  jsx to html
+import Comment from "./comment/Comment";
 //IMAGES
 import logo from "../../../images/logo/cooking.png";
 import { getDetailCategoryPostAPI } from "../../../redux/actions/user/category/category";
+import { userCreateCommentHighlightAPI } from "../../../redux/actions/user/comment-posts/commentPosts";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -55,7 +56,8 @@ const divP = {
   whiteSpace: "nowrap",
   textOverflow: "ellipsis",
 };
-export default function DetailRecipe() {
+
+export default function DetailRecipe({ comments }) {
   const classes = useStyles();
 
   const { category } = useSelector((state) => state.categoryReducer);
@@ -108,6 +110,16 @@ export default function DetailRecipe() {
   }, []);
 
   useEffect(() => {
+    const position = document.getElementsByClassName("possition");
+    window.addEventListener("scroll", function (event) {
+      var scroll_y = this.scrollY;
+      var scroll_x = this.scrollX;
+      // console.log(scroll_x, scroll_y);
+      position.innerHTML = " X-axis : " + scroll_x + " và Y-axis : " + scroll_y;
+    });
+  }, []);
+
+  useEffect(() => {
     setEventShowComments();
   });
 
@@ -118,16 +130,17 @@ export default function DetailRecipe() {
         "extracted-simple-text"
       );
       for (let el of cmtSelection) {
-        el.removeEventListener("mouseenter", null);
+        el.removeEventListener("click", null);
         el.removeEventListener("mouseleave", null);
 
-        el.addEventListener("mouseenter", onMouseOver11);
+        el.addEventListener("click", onMouseOver11);
         el.addEventListener("mouseleave", onMouseLeave);
       }
     }, 500);
   };
 
   const [content, setContent] = React.useState(null);
+
   const handleSelectText = () => {
     console.log(`Selected text: ${window.getSelection().toString()}`);
     setContent(window.getSelection().toString());
@@ -142,7 +155,12 @@ export default function DetailRecipe() {
         setPopupCmt({
           open: true,
           anchorEl: el,
-          content: <span style={{ color: "red" }}>test</span>, // render content
+          content: (
+            <>
+              <AccountCircleIcon style={divIcon} />
+              <span style={{ color: "red" }}>asdasdasdasdasdasdasdasd</span>
+            </>
+          ), // render content
         });
       }, 300);
     }
@@ -218,9 +236,9 @@ export default function DetailRecipe() {
       setState({ ...state, [name]: value });
     };
 
-    console.log(state, "state");
     useEffect(() => {
       setState({ ...state, text: content });
+      dispatch(userCreateCommentHighlightAPI(postId, state));
     }, []);
 
     const handleSubmit = (e) => {
@@ -291,21 +309,6 @@ export default function DetailRecipe() {
 
   return (
     <>
-      <Popover
-        open={popupCmt.open || false}
-        anchorEl={popupCmt.anchorEl || null}
-        onClose={null}
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "center",
-        }}
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "center",
-        }}
-      >
-        {popupCmt.content}
-      </Popover>
       <div className="detail-recipe">
         {loading ? (
           <Loading />
@@ -375,25 +378,32 @@ export default function DetailRecipe() {
                           </>
                         ))}
                       </div>
+                      <div className="detail-recipe-right">
+                        <Comment comments={comments} key={postId} />
+                      </div>
                     </Grid>
                     {/* ----- */}
                     <Grid item xs={4}>
                       <div className="detail-recipe-right">
                         <Container>
-                          <h2>Bình Luận</h2>
                           <div className="recipe-right">
                             <div className="recipe-right-comment">
                               <form>
-                                <span>
+                                <span className="position">
                                   <AccountCircleIcon style={divIcon} />
-                                  <input placeholder="what's your on mind?" />
+                                  <input
+                                    placeholder="what's your on mind?"
+                                    open={popupCmt.open || false}
+                                    anchorEl={popupCmt.anchorEl || null}
+                                    onClose={null}
+                                  />
+                                  {popupCmt.content}
                                 </span>
-                                <div className="recipe-right-comment-button">
-                                  <Button variant="contained" color="primary">
-                                    {" "}
-                                    Bình luận
-                                  </Button>
-                                </div>
+
+                                <div
+                                  className="recipe-right-comment-button"
+                                  // style={divButtonComment}
+                                ></div>
                               </form>
                             </div>
                           </div>

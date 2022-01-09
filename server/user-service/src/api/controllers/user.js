@@ -59,15 +59,36 @@ module.exports = async (app, channel) => {
     // @route DELETE /delete-user/:userId
     // @desc delete user
     // @access Public
-    app.delete("/delete-user/:userId", async (req, res, next) => {
-        try {
-            const { userId } = req.params;
-            const deleteUser = await service.deleteUser(userId);
-            return res.json({ success: true, deleteUser });
-        } catch (err) {
-            next(err);
+    app.delete(
+        "/delete-user/:userId",
+        authorize(["ADMIN"]),
+        async (req, res, next) => {
+            try {
+                const { userId } = req.params;
+                const result = await service.deleteUser(userId);
+
+                const payload = await service.getUserPayload(
+                    userId,
+                    "REMOVE_USER"
+                );
+
+                publishMessage(
+                    channel,
+                    POST_BINDING_KEY,
+                    JSON.stringify(payload)
+                );
+                publishMessage(
+                    channel,
+                    COMMENT_BINDING_KEY,
+                    JSON.stringify(payload)
+                );
+
+                return res.json({ success: true, result });
+            } catch (err) {
+                next(err);
+            }
         }
-    });
+    );
 
     // @route UPDATE /update-user/:userId
     // @desc update user
@@ -76,12 +97,17 @@ module.exports = async (app, channel) => {
         try {
             const { userId } = req.params;
             const { password, email } = req.body;
-            const updateUser = await service.updateUser(
-                password,
-                email,
-                userId
+            const result = await service.updateUser(password, email, userId);
+            const payload = await service.getUserPayload(userId, "UPDATE_USER");
+
+            publishMessage(channel, POST_BINDING_KEY, JSON.stringify(payload));
+            publishMessage(
+                channel,
+                COMMENT_BINDING_KEY,
+                JSON.stringify(payload)
             );
-            return res.json(updateUser);
+
+            return res.json(result);
         } catch (err) {
             next(error);
         }
@@ -103,14 +129,19 @@ module.exports = async (app, channel) => {
     // @route GET /get-all-users
     // @desc Get all users
     // @access Public
-    app.get("/get-all-users", async (req, res, next) => {
-        try {
-            const getAll = await service.getAllUser();
-            res.json(getAll);
-        } catch (err) {
-            next(err);
+    app.get(
+        "/get-all-users",
+        // verifyToken,
+        // authorize(["ADMIN"]),
+        async (req, res, next) => {
+            try {
+                const getAll = await service.getAllUser();
+                res.json(getAll);
+            } catch (err) {
+                next(err);
+            }
         }
-    });
+    );
 
     // @route GET /detail-user/:userId
     // @desc Get detail user
@@ -119,6 +150,7 @@ module.exports = async (app, channel) => {
         try {
             const { userId } = req.params;
             const getDetail = await service.getDetailUser(userId);
+
             res.json(getDetail);
         } catch (err) {
             next(err);
@@ -133,6 +165,21 @@ module.exports = async (app, channel) => {
             const { email, password } = req.body;
 
             const data = await service.checkSignIn({ email, password });
+
+            return res.json(data);
+        } catch (err) {
+            next(err);
+        }
+    });
+
+    // @route POST /signin-admin
+    // @desc Login user
+    // @access Public
+    app.post(`/signin-admin`, async (req, res, next) => {
+        try {
+            const { email, password } = req.body;
+
+            const data = await service.checkSignInAdmin({ email, password });
 
             return res.json(data);
         } catch (err) {

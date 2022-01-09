@@ -8,24 +8,16 @@ export default function AdminTemplate({ Component, ...props }) {
     <Route
       {...props}
       render={(propsComponent) => {
-        return (
-          <AdminLayOut>
-            <Component {...propsComponent} />
-          </AdminLayOut>
-        );
+        if (localStorage.getItem("accessToken")) {
+          return (
+            <AdminLayOut>
+              <Component {...propsComponent} />
+            </AdminLayOut>
+          );
+        } else {
+          return <Redirect to="/sign-in-admin" />;
+        }
       }}
-      // --
-      // render={(propsComponent) => {
-      // 	if (localStorage.getItem("ADMIN" )) {
-      // 		return (
-      // 			<AdminLayOut>
-      // 				<Component {...propsComponent} />
-      // 			</AdminLayOut>
-      // 		);
-      // 	} else {
-      // 		return <Redirect to="/sign-in-admin" /> ;
-      // 	}
-      // }}
     />
   );
 }

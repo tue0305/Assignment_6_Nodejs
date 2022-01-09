@@ -3,6 +3,11 @@ const Schema = mongoose.Schema;
 
 const CommentHighlight = new Schema(
   {
+    _id: {
+      type: String,
+      required: true,
+      unique: true,
+    },
     text: {
       type: String,
       require: true,
@@ -29,7 +34,7 @@ const CommentHighlight = new Schema(
       default: Date.now,
     },
   },
-  { timestamp: true }
+  { timestamp: true, _id: false }
 );
 
 module.exports = mongoose.model("comment_highlight", CommentHighlight);
