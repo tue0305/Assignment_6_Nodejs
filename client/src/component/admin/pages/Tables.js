@@ -99,10 +99,11 @@ function Tables(props) {
     let history = useHistory();
 
     const dispatch = useDispatch();
+    const { users } = useSelector((state) => state.data);
     useEffect(() => {
         dispatch(loadUsers());
     }, []);
-    const users = useSelector((state) => state.userData.users);
+
     //----------------------Delete
     const handleDelete = (id) => {
         console.log(id);

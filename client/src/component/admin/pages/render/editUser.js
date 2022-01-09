@@ -4,7 +4,7 @@ import Button from "@material-ui/core/Button";
 
 import TextField from "@mui/material/TextField";
 import { makeStyles } from "@material-ui/core";
-import { margin, width } from "@mui/system";
+import { color, margin, width } from "@mui/system";
 import { useHistory, useParams } from "react-router-dom";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -17,10 +17,19 @@ const useStyles = makeStyles((theme) => ({
     root: {
         margin: 50,
         marginLeft: 600,
+        display: "inline",
         "& > *": {
             margin: theme.spacing(1),
             width: "45ch",
         },
+    },
+    avatar: {
+        backgroundColor: "blue",
+        width: "25ch",
+        margin: 10,
+        marginRight: 50,
+        height: 100,
+        display: "inline-block",
     },
 }));
 const EditUser = () => {
@@ -36,7 +45,7 @@ const EditUser = () => {
     let history = useHistory();
     let dispatch = useDispatch();
     let { _id } = useParams();
-    const { user } = useSelector((state) => state.userData);
+    const { user } = useSelector((state) => state.data);
     console.log(user);
     useEffect(() => {
         dispatch(getDetailUsers(_id));
@@ -68,66 +77,12 @@ const EditUser = () => {
     };
     return (
         <div>
-            <Button
-                style={{ width: "100px", marginTop: "20px" }}
-                color="secondary"
-                variant="contained"
-                size="small"
-                onClick={() => history.push("/admin/manage-user")}
-            >
-                Go Back
-            </Button>
-            <h2 style={{ marginLeft: "47%" }}>Add User</h2>
-            {error && (
-                <h3 style={{ color: "red", marginLeft: "47%" }}>{error}</h3>
-            )}
-            <form
-                action=""
-                className={classes.root}
-                noValidate
-                autoComplete="off"
-                style={{ marginLeft: "40%" }}
-                onSubmit={handleSubmit}
-            >
-                <TextField
-                    id="standard-basic"
-                    label="email"
-                    type="email"
-                    name="email"
-                    value={email}
-                    onChange={handleInputChange}
-                />
-                <br />
-                <br />
-                <TextField
-                    id="standard-basic"
-                    label="password"
-                    type="password"
-                    name="password"
-                    value={password}
-                    onChange={handleInputChange}
-                />
-                <br />
-                <br />
-                <TextField
-                    id="standard-basic"
-                    label="confirm password"
-                    type="password"
-                    value={confirmPassword}
-                    name="confirmPassword"
-                    onChange={handleInputChange}
-                />
-                <br />
-                <Button
-                    style={{ width: "100px", marginLeft: "12%" }}
-                    color="primary"
-                    variant="contained"
-                    size="small"
-                    type="submit"
-                >
-                    Submit
-                </Button>
-            </form>
+            <div>
+                <div className={classes.avatar}>Avatar</div>
+                <div style={{ display: "inline", backgroundColor: "green" }}>
+                    Thong tin Username + Role ...
+                </div>
+            </div>
         </div>
     );
 };

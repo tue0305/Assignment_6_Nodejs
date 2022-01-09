@@ -30,6 +30,7 @@ export const loadUsers = () => {
         axios
             .get("http://localhost:8001/get-all-users")
             .then((res) => {
+                console.log(res.data);
                 dispatch(getUsers(res.data));
             })
             .catch((err) => {
@@ -39,9 +40,13 @@ export const loadUsers = () => {
 };
 
 export const deleteUsers = (userId) => {
+    const token = localStorage.getItem("accessToken");
     return function (dispatch) {
-        axios
-            .delete(`http://localhost:8001/delete-user/${userId}`)
+        axios({
+            method: "delete",
+            url: `http://localhost:8001/delete-user/${userId}`,
+            headers: { Authorization: "Bearer " + token },
+        })
             .then((res) => {
                 dispatch(userDeleted());
                 dispatch(loadUsers());

@@ -61,6 +61,7 @@ module.exports = async (app, channel) => {
     // @access Public
     app.delete(
         "/delete-user/:userId",
+        verifyToken,
         authorize(["ADMIN"]),
         async (req, res, next) => {
             try {

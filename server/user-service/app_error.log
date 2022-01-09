@@ -34,3 +34,5 @@
 {"level":"error","message":"Wed Dec 29 2021 22:18:29 GMT+0700 (Indochina Time)-{}","private":true}
 {"level":"error","message":"Wed Dec 29 2021 22:19:25 GMT+0700 (Indochina Time)-{}","private":true}
 {"level":"error","message":"Sun Jan 09 2022 14:16:52 GMT+0700 (Indochina Time)-{\"expose\":true,\"statusCode\":400,\"status\":400,\"body\":\"{\\r\\n    \\\"email\\\": \\\"tudeeptry7@gmail.com\\\",\\r\\n    \\\"password\\\":\\\"Tu@12345\\\",\\r\\n}\",\"type\":\"entity.parse.failed\"}","private":true}
+{"level":"error","message":"Sun Jan 09 2022 16:27:38 GMT+0700 (Indochina Time)-{}","private":true}
+{"level":"error","message":"Sun Jan 09 2022 16:34:16 GMT+0700 (Indochina Time)-{}","private":true}
