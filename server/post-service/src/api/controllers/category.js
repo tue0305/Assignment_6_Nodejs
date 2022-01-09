@@ -12,8 +12,8 @@ module.exports = async (app, channel) => {
       const data = await service.getCategories();
 
       return res.json(data);
-    } catch (err) {
-      next(err);
+    } catch (error) {
+      next(error);
     }
   });
 
@@ -31,8 +31,8 @@ module.exports = async (app, channel) => {
         const data = await service.createCategory({ title, file });
 
         return res.json(data);
-      } catch (err) {
-        next(err);
+      } catch (error) {
+        next(error);
       }
     }
   );
@@ -49,8 +49,8 @@ module.exports = async (app, channel) => {
       const data = await service.updateCategory(categoryId, title);
 
       return res.json(data);
-    } catch (err) {
-      next(err);
+    } catch (error) {
+      next(error);
     }
   });
 
@@ -67,8 +67,8 @@ module.exports = async (app, channel) => {
         const data = await service.deleteCategory(categoryId);
 
         return res.json(data);
-      } catch (err) {
-        next(err);
+      } catch (error) {
+        next(error);
       }
     }
   );
@@ -83,8 +83,8 @@ module.exports = async (app, channel) => {
         const { categoryId } = req.params;
         const data = await service.getDetailCategory(categoryId);
         return res.json(data);
-      } catch (err) {
-        next(err);
+      } catch (error) {
+        next(error);
       }
     }
   );

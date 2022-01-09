@@ -219,7 +219,6 @@ class PostService {
     }
   }
 
-  //### NOT DONE
   async deletePost(userId, postId) {
     // **** Simple validation ****
     if (!postId || !userId) {
@@ -267,40 +266,8 @@ class PostService {
     }
   }
 
-  async SubscribeEvents(payload) {
-    try {
-      payload.JSON.parse(payload);
-
-      const { event, data } = payload;
-
-      switch (event) {
-        // Subscribe user-service
-        case "REMOVE_POST":
-          this.removePostOfUser(userId, postId);
-          break;
-        case "ADD_POST":
-          this.addPostToUser(userId, postId);
-          break;
-        case "UPDATE_POST":
-          this.updatePostToUser(userId, postId);
-          break;
-        case "GET_POSTS":
-          this.getUserCreatedPosts(userId);
-          break;
-
-        default:
-          break;
-      }
-    } catch (error) {
-      return new APIError(
-        "Data Not found!",
-        STATUS_CODES.INTERNAL_ERROR,
-        ~error.message
-      );
-    }
-  }
-
-  async getPostPayloadUser(userId, post, event) {
+  // ========================== SubscribeEvents ====================
+  async getPostPayload(userId, post, event) {
     try {
       if (post) {
         const payload = {
@@ -310,6 +277,170 @@ class PostService {
         return payload;
       } else {
         return new APIError("No post available!", STATUS_CODES.INTERNAL_ERROR);
+      }
+    } catch (error) {
+      return new APIError(
+        "Data Not found!",
+        STATUS_CODES.INTERNAL_ERROR,
+        error.message
+      );
+    }
+  }
+  // ***** Function subscribe *****
+  async addCommentToPost(comment) {
+    try {
+      const post = await PostModel.findById(comment.postId).populate(
+        "post_comments"
+      );
+      if (!post) {
+        return new APIError("Data Not found!", STATUS_CODES.NOT_FOUND);
+      }
+      let postComments = post.post_comments;
+
+      await postComments.push(comment._id);
+      post.post_comments = postComments;
+
+      await post.save();
+
+      return {
+        status: STATUS_CODES.OK,
+        success: true,
+        message: `Add comment ${comment.text} to post ${postId} success!`,
+        post: post,
+      };
+    } catch (error) {
+      return new APIError(
+        "Data Not found!",
+        STATUS_CODES.INTERNAL_ERROR,
+        error.message
+      );
+    }
+  }
+
+  async updateCommentToPost(comment) {
+    try {
+      const post = await PostModel.findById(comment.postId).populate(
+        "post_comments"
+      );
+      if (!post) {
+        return new APIError("Data Not found!", STATUS_CODES.NOT_FOUND);
+      }
+      if (post.post_comments.length > 0) {
+        post.post_comments.map((item) => {
+          if (item._id.toString() === comment._id.toString()) {
+            return {
+              status: STATUS_CODES.OK,
+              success: true,
+              message: `update post ${post} success!`,
+              post: post,
+              updated_comment: comment,
+            };
+          } else {
+            return new APIError(
+              "Comment doesn't exist!",
+              STATUS_CODES.NOT_FOUND
+            );
+          }
+        });
+      } else {
+        return new APIError(
+          "Post doesn't have any comments!",
+          STATUS_CODES.NOT_FOUND
+        );
+      }
+    } catch (error) {
+      return new APIError(
+        "Data Not found!",
+        STATUS_CODES.INTERNAL_ERROR,
+        error.message
+      );
+    }
+  }
+
+  async removeCommentOfPost(comment) {
+    try {
+      const post = await PostModel.findById(comment.postId).populate(
+        "post_comments"
+      );
+      if (!post) {
+        return new APIError("Data Not found!", STATUS_CODES.NOT_FOUND);
+      }
+
+      if (post.post_comments.length > 0) {
+        post.post_comments.map((item) => {
+          if (item._id.toString() === comment._id.toString()) {
+            const index = post.post_comments.indexOf(item);
+            post.post_comments.splice(index, 1);
+          } else {
+            return new APIError(
+              "Comment doesn't exist!",
+              STATUS_CODES.NOT_FOUND
+            );
+          }
+        });
+        await post.save();
+        return {
+          status: STATUS_CODES.OK,
+          success: true,
+          message: `Remove comment ${comment} success!`,
+          post: post,
+        };
+      } else {
+        return new APIError(
+          "Post doesn't have any comment!",
+          STATUS_CODES.NOT_FOUND
+        );
+      }
+    } catch (error) {
+      return new APIError(
+        "Data Not found!",
+        STATUS_CODES.INTERNAL_ERROR,
+        error.message
+      );
+    }
+  }
+  // **************
+
+  async SubscribeEvents(payload) {
+    try {
+      payload = JSON.parse(payload);
+
+      const { event, data } = payload;
+
+      const { comment } = data;
+
+      switch (event) {
+        // ====== Subscribe comment-service
+        // ***** comment post *****
+        case "REMOVE_COMMENT":
+          this.removeCommentOfPost(comment);
+          break;
+        case "ADD_COMMENT":
+          this.addCommentToPost(comment);
+          break;
+        case "UPDATE_COMMENT":
+          this.updateCommentToPost(comment);
+          break;
+        // case "GET_COMMENTS":
+        //   this.getPostComment(userId);
+        //   break;
+
+        // ***** comment highlight_text post *****
+        // case "REMOVE_COMMENT":
+        //   this.removePostOfUser(userId, postId);
+        //   break;
+        // case "ADD_COMMENT":
+        //   this.addPostToUser(userId, postId);
+        //   break;
+        // case "UPDATE_COMMENT":
+        //   this.updatePostToUser(userId, postId);
+        //   break;
+        // case "GET_COMMENTS":
+        //   this.getUserCreatedPosts(userId);
+        //   break;
+
+        default:
+          break;
       }
     } catch (error) {
       return new APIError(

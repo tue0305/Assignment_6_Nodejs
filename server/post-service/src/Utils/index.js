@@ -59,7 +59,6 @@ const createChannel = async () => {
       STATUS_CODES.INTERNAL_ERROR,
       error.message
     );
-    console.log(err);
   }
 };
 
@@ -100,7 +99,6 @@ const subscribeMessage = async (channel, service) => {
       STATUS_CODES.INTERNAL_ERROR,
       error.message
     );
-    console.log(err);
   }
 };
 

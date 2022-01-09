@@ -14,19 +14,19 @@ services:
       - .:/server
       - /server/post-service/node_modules
 
-  # shopping:
-  #   build:
-  #     dockerfile: Dockerfile
-  #     context: ./shopping
-  #   container_name: shopping
-  #   ports:
-  #     - "8003:8003"
-  #   restart: always
-  #   depends_on:
-  #     - "nosql-db"
-  #   volumes:
-  #     - .:/server
-  #     - /server/shopping/node_modules
+  comment-service:
+    build:
+      dockerfile: Dockerfile
+      context: ./comment-service
+    container_name: comment-service
+    ports:
+      - "8003:8003"
+    restart: always
+    depends_on:
+      - "nosql-db"
+    volumes:
+      - .:/server
+      - /server/comment-service/node_modules
 
   user-service:
     build:

@@ -197,15 +197,15 @@ class UserService {
 
   async deleteUser(userId) {
     try {
-      const deleteUser = await UserModel.findOneAndDelete({ userId });
-      if (deleteUser)
-        return {
-          status: 200,
-          success: true,
-          message: `Delete account ${userId} success!`,
-          userId: userId,
-        };
-      return deleteUser;
+      const deleteUser = await UserModel.findById(userId);
+      await UserModel.findOneAndDelete({ userId });
+
+      return {
+        status: 200,
+        success: true,
+        message: `Delete account ${userId} success!`,
+        deleteUser: deleteUser,
+      };
     } catch (err) {
       return new APIError(
         "Data Not Found!",
@@ -218,13 +218,18 @@ class UserService {
   async updateUser(password, email, userId) {
     try {
       const hashPassword = await generatePassword(password);
-      const updaUser = await UserModel.findByIdAndUpdate({
+      const updateUser = await UserModel.findByIdAndUpdate({
         password: hashPassword,
         email,
         userId,
       });
-      if (updaUser) {
-        return user;
+      if (updateUser) {
+        return {
+          status: 200,
+          success: true,
+          message: `Update account ${userId} success!`,
+          updateUser: updateUser,
+        };
       }
     } catch (err) {
       return new APIError(
@@ -358,7 +363,6 @@ class UserService {
       user.created_posts = createdPosts;
 
       await user.save();
-      console.log(user);
 
       return {
         status: STATUS_CODES.OK,
@@ -562,7 +566,7 @@ class UserService {
       };
       return payload;
     } else {
-      return new APIError("No post available!", STATUS_CODES.INTERNAL_ERROR);
+      return new APIError("No user available!", STATUS_CODES.INTERNAL_ERROR);
     }
   }
 

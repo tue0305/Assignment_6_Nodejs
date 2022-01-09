@@ -32,7 +32,7 @@ const divStyle = makeStyles((theme) => ({
     },
   },
 }));
-function SignIn(props) {
+function SignIn() {
   const classes = useStyles();
   const styleButton = divStyle();
   let dispatch = useDispatch();

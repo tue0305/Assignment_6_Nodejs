@@ -53,8 +53,14 @@ module.exports = async (app, channel) => {
     async (req, res, next) => {
       try {
         const { userId } = req.params;
-        const deleteUser = await service.deleteUser(userId);
-        return res.json({ success: true, deleteUser });
+        const result = await service.deleteUser(userId);
+
+        const payload = await service.getUserPayload(userId, "REMOVE_USER");
+
+        publishMessage(channel, POST_BINDING_KEY, JSON.stringify(payload));
+        publishMessage(channel, COMMENT_BINDING_KEY, JSON.stringify(payload));
+
+        return res.json({ success: true, result });
       } catch (err) {
         next(err);
       }
@@ -68,8 +74,15 @@ module.exports = async (app, channel) => {
     try {
       const { userId } = req.params;
       const { password, email } = req.body;
-      const updateUser = await service.updateUser(password, email, userId);
-      return res.json(updateUser);
+      const result = await service.updateUser(password, email, userId);
+      const payload = await service.getUserPayload(userId, "UPDATE_USER");
+      
+      publishMessage(channel, POST_BINDING_KEY, JSON.stringify(payload));
+      publishMessage(channel, COMMENT_BINDING_KEY, JSON.stringify(payload));
+
+
+
+      return res.json(result);
     } catch (err) {
       next(error);
     }
@@ -112,6 +125,7 @@ module.exports = async (app, channel) => {
     try {
       const { userId } = req.params;
       const getDetail = await service.getDetailUser(userId);
+      
       res.json(getDetail);
     } catch (err) {
       next(err);

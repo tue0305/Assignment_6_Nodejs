@@ -43,7 +43,7 @@ const PostSchema = new Schema(
       },
     ],
 
-    topic_comments: [
+    post_highlight_comments: [
       {
         _id: { type: String, require: true },
       },

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
@@ -16,7 +16,8 @@ import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
 import Loading from "../../screen/loading/loading";
-import DOMPurify from "dompurify";
+import DOMPurify from "dompurify"; //libary change  jsx to html
+import Comment from "./comment/Comment";
 //IMAGES
 import logo from "../../../images/logo/cooking.png";
 import { getDetailCategoryPostAPI } from "../../../redux/actions/user/category/category";
@@ -57,7 +58,7 @@ const divP = {
 const divButtonComment = {
   marginLeft: "324px",
 };
-export default function DetailRecipe() {
+export default function DetailRecipe({ comments }) {
   const classes = useStyles();
 
   const { category } = useSelector((state) => state.categoryReducer);
@@ -114,7 +115,7 @@ export default function DetailRecipe() {
     window.addEventListener("scroll", function (event) {
       var scroll_y = this.scrollY;
       var scroll_x = this.scrollX;
-      console.log(scroll_x, scroll_y);
+      // console.log(scroll_x, scroll_y);
       position.innerHTML = " X-axis : " + scroll_x + " và Y-axis : " + scroll_y;
     });
   }, []);
@@ -140,6 +141,7 @@ export default function DetailRecipe() {
   };
 
   const [content, setContent] = React.useState(null);
+
   const handleSelectText = () => {
     console.log(`Selected text: ${window.getSelection().toString()}`);
     setContent(window.getSelection().toString());
@@ -377,31 +379,12 @@ export default function DetailRecipe() {
                         ))}
                       </div>
                       <div className="detail-recipe-right">
-                        <Container>
-                          <h2>Bình Luận</h2>
-                          <div className="recipe-right">
-                            <div className="recipe-right-comment">
-                              <form>
-                                <span>
-                                  <AccountCircleIcon style={divIcon} />
-                                  <input placeholder="what's your on mind?" />
-                                </span>
-                                <div className="recipe-right-comment-button">
-                                  <Button variant="contained" color="primary">
-                                    {" "}
-                                    Bình luận
-                                  </Button>
-                                </div>
-                              </form>
-                            </div>
-                          </div>
-                        </Container>
+                        <Comment comments={comments} key={postId} />
                       </div>
                     </Grid>
                     {/* ----- */}
                     <Grid item xs={4}>
                       <div className="detail-recipe-right">
-                        <div></div>
                         <Container>
                           <div className="recipe-right">
                             <div className="recipe-right-comment">
