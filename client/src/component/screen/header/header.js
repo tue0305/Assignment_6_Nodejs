@@ -14,81 +14,81 @@ import lemonSalt from "../../../images/Carousel/lemonSalt.jpg";
 import hongCloud from "../../../images/Carousel/hongCloud.jpg";
 //Category
 import {
-  getCategoryAPI,
-  getCategoryPostAPI,
+    getCategoryAPI,
+    getCategoryPostAPI,
 } from "../../../redux/actions/user/category/category";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  paper: {
-    padding: theme.spacing(1),
-    textAlign: "center",
-    color: theme.palette.text.secondary,
-  },
+    root: {
+        flexGrow: 1,
+    },
+    paper: {
+        padding: theme.spacing(1),
+        textAlign: "center",
+        color: theme.palette.text.secondary,
+    },
 }));
 
 export default function Header() {
-  const classes = useStyles();
-  const dispatch = useDispatch();
-  const { categorys } = useSelector((state) => state.categoryReducer);
-  useEffect(() => {
-    dispatch(getCategoryAPI());
-    dispatch(getCategoryPostAPI());
-  }, []);
-  function FormRow() {
+    const classes = useStyles();
+    const dispatch = useDispatch();
+    const { categorys } = useSelector((state) => state.categoryReducer);
+    useEffect(() => {
+        //  dispatch(getCategoryAPI());
+        dispatch(getCategoryPostAPI());
+    }, []);
+    function FormRow() {
+        return (
+            <React.Fragment>
+                {categorys?.categories?.reverse().map((category) => (
+                    <Grid item xs={2} key={category._id}>
+                        <Paper className={classes.paper}>
+                            <Link to={`/detail-category/${category._id}`}>
+                                <div className="category-icon">
+                                    <img src={category.image} />
+                                </div>
+                                <div className="category-title">
+                                    <span>{category.title}</span>
+                                </div>
+                            </Link>
+                        </Paper>
+                    </Grid>
+                ))}
+            </React.Fragment>
+        );
+    }
     return (
-      <React.Fragment>
-        {categorys?.categories?.reverse().map((category) => (
-          <Grid item xs={2} key={category._id}>
-            <Paper className={classes.paper}>
-              <Link to={`/detail-category/${category._id}`}>
-                <div className="category-icon">
-                  <img src={category.image} />
-                </div>
-                <div className="category-title">
-                  <span>{category.title}</span>
-                </div>
-              </Link>
-            </Paper>
-          </Grid>
-        ))}
-      </React.Fragment>
+        <div id="Header">
+            <div className="header-banner">
+                <Carousel>
+                    <div>
+                        <img src={strawberry} alt={"strawberry"} />
+                    </div>
+                    <div>
+                        <img src={cabbageSoup} alt={"cabbageSoup"} />
+                    </div>
+                    <div>
+                        <img src={greenTea} alt={"greenTea"} />
+                    </div>
+                    <div>
+                        <img src={lemonSalt} alt={"lemonSalt"} />
+                    </div>
+                    <div>
+                        <img src={hongCloud} alt={"hongCloud"} />
+                    </div>
+                </Carousel>
+            </div>
+            <div className="header-category container">
+                <Carousel>
+                    <div className={classes.root}>
+                        <Grid container spacing={1}>
+                            <Grid container item xs={12} spacing={3}>
+                                <FormRow />
+                            </Grid>
+                        </Grid>
+                    </div>
+                </Carousel>
+            </div>
+        </div>
     );
-  }
-  return (
-    <div id="Header">
-      <div className="header-banner">
-        <Carousel>
-          <div>
-            <img src={strawberry} alt={"strawberry"} />
-          </div>
-          <div>
-            <img src={cabbageSoup} alt={"cabbageSoup"} />
-          </div>
-          <div>
-            <img src={greenTea} alt={"greenTea"} />
-          </div>
-          <div>
-            <img src={lemonSalt} alt={"lemonSalt"} />
-          </div>
-          <div>
-            <img src={hongCloud} alt={"hongCloud"} />
-          </div>
-        </Carousel>
-      </div>
-      <div className="header-category container">
-        <Carousel>
-          <div className={classes.root}>
-            <Grid container spacing={1}>
-              <Grid container item xs={12} spacing={3}>
-                <FormRow />
-              </Grid>
-            </Grid>
-          </div>
-        </Carousel>
-      </div>
-    </div>
-  );
 }
