@@ -7,6 +7,8 @@ const { publishMessage, subscribeMessage } = require("../../utils");
 module.exports = (app, channel) => {
   const service = new CommentService();
   subscribeMessage(channel, service);
+  
+// ================= START POST COMMENT =================
   // @route GET /get-all-post-comments
   // @des Get all post comments
   // @access Public
@@ -14,7 +16,7 @@ module.exports = (app, channel) => {
     try {
       const { postId } = req.params;
 
-      const result = await service.getAllComments(postId);
+      const result = await service.getAllComments();
       
 
       return res.json(result);
@@ -73,10 +75,10 @@ module.exports = (app, channel) => {
     }
   });
 
-  // @route PUT /:postId/:commentId
+  // @route PUT /:postId/comment/:commentId
   // @desc edit post comment
   // @access Public
-  app.put(`/:postId/:commentId`, verifyToken, async (req, res, next) => {
+  app.put(`/:postId/comment/:commentId`, verifyToken, async (req, res, next) => {
     try {
       const userId = req.userId;
 
@@ -102,10 +104,10 @@ module.exports = (app, channel) => {
     }
   });
 
-  // @route DELETE /:postId/:commentId
+  // @route DELETE /:postId/comment/:commentId
   // @des remove post comment
   // @access Public
-  app.delete("/:postId/:commentId", verifyToken, async (req, res, next) => {
+  app.delete("/:postId/comment/:commentId", verifyToken, async (req, res, next) => {
     try {
       const userId = req.userId;
       const { postId, commentId } = req.params;
@@ -127,10 +129,132 @@ module.exports = (app, channel) => {
       next(error);
     }
   });
-
-  // @route POST /comment/reset-password
-  // @des Reset password with userId and forgot password's token generate in comment's email
+// =======================END POST COMMENT =================
+  
+// ================= START HIGHLIGHT COMMENT =================
+  // @route GET /get-all-highlight-comments
+  // @des Get all post highlight comments
   // @access Public
-  // app.post("/reset-password/:userId/:token", "");
-  //   const { newPassword} = req.body;
+  app.get("/get-all-highlight-comments", async (req, res, next) => {
+    try {
+      const { postId } = req.params;
+
+      const result = await service.getAllHighlightComments();
+      
+
+      return res.json(result);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  // @route GET /:postId/highlight-comment
+  // @des Get all highlight comments by postId
+  // @access Public
+  app.get("/:postId/highlight-comment", async (req, res, next) => {
+    try {
+      const { postId } = req.params;
+
+      const result = await service.getHighlightCommentByPostId(postId);
+      const payload = await service.getCommentPayload(
+        result.data,
+        "GET_HIGHLIGH_COMMENTS"
+      );
+
+      publishMessage(channel, POST_BINDING_KEY, JSON.stringify(payload));
+      publishMessage(channel, USER_BINDING_KEY, JSON.stringify(payload));
+      return res.json(result);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  // @route POST /:postId/create-highlight-comment
+  // @desc create post highlight comment
+  // @access Public
+  app.post("/:postId/create-highlight-comment", verifyToken, async (req, res, next) => {
+    try {
+      const userId = req.userId;
+
+      const { text, parentId, _id, highlight_text } = req.body;
+      const { postId } = req.params;
+
+      const result = await service.createHighlightComment({
+        _id,
+        highlight_text,
+        text,
+        userId,
+        postId,
+        parentId,
+      });
+      const payload = await service.getCommentPayload(
+        result.data,
+        "ADD_HIGHLIGHT_COMMENT"
+      );
+      publishMessage(channel, USER_BINDING_KEY, JSON.stringify(payload));
+
+      publishMessage(channel, POST_BINDING_KEY, JSON.stringify(payload));
+      return res.json(result);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  // @route PUT /:postId/highlight/:commentId
+  // @desc edit post highlight comment
+  // @access Public
+  app.put(`/:postId/highlight/:commentId`, verifyToken, async (req, res, next) => {
+    try {
+      const userId = req.userId;
+
+      const { text, parentId } = req.body;
+      const { postId, commentId } = req.params;
+
+      const result = await service.updateHighlightComment({
+        commentId,
+        text,
+        userId,
+        postId,
+      });
+      const payload = await service.getCommentPayload(
+        result.data,
+        "UPDATE_HIGHLIGHT_COMMENT"
+      );
+
+      publishMessage(channel, POST_BINDING_KEY, JSON.stringify(payload));
+      publishMessage(channel, USER_BINDING_KEY, JSON.stringify(payload));
+      return res.json(result);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  // @route DELETE /:postId/highlight/:commentId
+  // @des remove post comment
+  // @access Public
+  app.delete("/:postId/highlight/:commentId", verifyToken, async (req, res, next) => {
+    try {
+      const userId = req.userId;
+      const { postId, commentId } = req.params;
+
+      const result = await service.deleteHighlightComment({
+        commentId,
+        userId,
+        postId,
+      });
+      const payload = await service.getCommentPayload(
+        result.data,
+        "REMOVE_HIGHLIGHT_COMMENT"
+      );
+
+      publishMessage(channel, POST_BINDING_KEY, JSON.stringify(payload));
+      publishMessage(channel, USER_BINDING_KEY, JSON.stringify(payload));
+      return res.json(result);
+    } catch (error) {
+      next(error);
+    }
+  });
+// =======================END HIGHLIGHT COMMENT =================
+
+  
 };

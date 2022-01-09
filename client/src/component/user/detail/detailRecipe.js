@@ -21,6 +21,7 @@ import Comment from "./comment/Comment";
 //IMAGES
 import logo from "../../../images/logo/cooking.png";
 import { getDetailCategoryPostAPI } from "../../../redux/actions/user/category/category";
+import { userCreateCommentHighlightAPI } from "../../../redux/actions/user/comment-posts/commentPosts";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -55,9 +56,7 @@ const divP = {
   whiteSpace: "nowrap",
   textOverflow: "ellipsis",
 };
-const divButtonComment = {
-  marginLeft: "324px",
-};
+
 export default function DetailRecipe({ comments }) {
   const classes = useStyles();
 
@@ -239,6 +238,7 @@ export default function DetailRecipe({ comments }) {
 
     useEffect(() => {
       setState({ ...state, text: content });
+      dispatch(userCreateCommentHighlightAPI(postId, state));
     }, []);
 
     const handleSubmit = (e) => {

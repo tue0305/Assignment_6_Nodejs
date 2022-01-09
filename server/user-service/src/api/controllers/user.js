@@ -76,11 +76,9 @@ module.exports = async (app, channel) => {
       const { password, email } = req.body;
       const result = await service.updateUser(password, email, userId);
       const payload = await service.getUserPayload(userId, "UPDATE_USER");
-      
+
       publishMessage(channel, POST_BINDING_KEY, JSON.stringify(payload));
       publishMessage(channel, COMMENT_BINDING_KEY, JSON.stringify(payload));
-
-
 
       return res.json(result);
     } catch (err) {
@@ -106,8 +104,8 @@ module.exports = async (app, channel) => {
   // @access Public
   app.get(
     "/get-all-users",
-    verifyToken,
-    authorize(["ADMIN"]),
+    // verifyToken,
+    // authorize(["ADMIN"]),
     async (req, res, next) => {
       try {
         const getAll = await service.getAllUser();
@@ -125,7 +123,7 @@ module.exports = async (app, channel) => {
     try {
       const { userId } = req.params;
       const getDetail = await service.getDetailUser(userId);
-      
+
       res.json(getDetail);
     } catch (err) {
       next(err);

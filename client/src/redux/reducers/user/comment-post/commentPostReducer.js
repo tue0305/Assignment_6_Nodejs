@@ -21,7 +21,18 @@ const commentPostReducer = (state = initialState, action) => {
         detailUser: action.payload,
         loading: false,
       };
+    case actType.USER_PROFILE_COMMENT:
+      return {
+        ...state,
+        detailUser: action.payload,
+        loading: false,
+      };
     case actType.USER_CREATE_COMMENT_POST:
+      return {
+        ...state,
+        loading: false,
+      };
+    case actType.USER_CREATE_COMMENT_HIGHTLIGHT:
       return {
         ...state,
         loading: false,

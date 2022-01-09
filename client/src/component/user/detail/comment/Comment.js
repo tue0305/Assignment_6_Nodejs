@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import TextField from "@material-ui/core/TextField";
 import {
   getCommmentPostAPI,
+  getDetailUserCommentAPI,
   getUserCommentAPI,
   userCreateCommentAPI,
 } from "../../../../redux/actions/user/comment-posts/commentPosts";
@@ -30,9 +31,7 @@ export default function Comment() {
 
   const { text } = state;
 
-  const { comments, detailUser } = useSelector(
-    (state) => state.commentPostReducer
-  );
+  const { comments } = useSelector((state) => state.commentPostReducer);
 
   useEffect(() => {
     dispatch(getCommmentPostAPI(postId));
