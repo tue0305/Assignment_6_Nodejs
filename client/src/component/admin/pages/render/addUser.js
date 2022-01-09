@@ -1,17 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import Button from "@material-ui/core/Button";
 
 import TextField from "@mui/material/TextField";
 import { makeStyles } from "@material-ui/core";
 import { margin, width } from "@mui/system";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
-import { useDispatch, useSelector } from "react-redux";
-import {
-    getDetailUsers,
-    addUsers,
-} from "../../../../redux/actions/admin/handleUser";
+import { useDispatch } from "react-redux";
+import { addUsers } from "../../../../redux/actions/admin/handleUser";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -23,11 +20,12 @@ const useStyles = makeStyles((theme) => ({
         },
     },
 }));
-const EditUser = () => {
+const AddUser = () => {
     const classes = useStyles();
     const [state, setState] = useState({
         email: "",
         password: "",
+        confirmPassword: "",
     });
     const { email, password, confirmPassword } = state;
 
@@ -35,19 +33,6 @@ const EditUser = () => {
 
     let history = useHistory();
     let dispatch = useDispatch();
-    let { _id } = useParams();
-    const { user } = useSelector((state) => state.userData);
-    console.log(user);
-    useEffect(() => {
-        dispatch(getDetailUsers(_id));
-    }, []);
-
-    useEffect(() => {
-        if (user) {
-            setState({ ...user });
-            //  console.log(state);
-        }
-    }, []);
 
     const handleInputChange = (e) => {
         let { name, value } = e.target;
@@ -131,4 +116,4 @@ const EditUser = () => {
         </div>
     );
 };
-export default EditUser;
+export default AddUser;
