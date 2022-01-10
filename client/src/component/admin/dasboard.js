@@ -33,7 +33,9 @@ import Profile from "./pages/Profile";
 import AddUser from "./pages/render/addUser";
 import EditUser from "./pages/render/editUser";
 
-import DetailPost from "./pages/render/detailPost";
+import DetailPost from "./pages/Post/DetailPost";
+import Categories from "./pages/categories";
+//import DetailPost from "./pages/Post/DetailPost";
 //STYLE COMPONENT
 import "antd/dist/antd.css";
 import "./assets/styles/main.css";
@@ -103,138 +105,154 @@ export default function DashboardAdmin() {
     const classes = useStyles();
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
+    const [loading, setLoading] = useState(false);
+    useEffect(() => {
+        setLoading(true);
+        setTimeout(() => {
+            setLoading(false);
+        }, 100);
+    }, []);
     const handleDrawerOpen = () => {
         setOpen(true);
     };
+    const history = useHistory();
     const handleDrawerClose = () => {
         setOpen(false);
     };
+    const logout = () => {
+        localStorage.clear("accessToken");
+        history.push("/sign-in-admin");
+    };
     return (
         <div className="dash-board">
-            <Router>
-                <div className={classes.root}>
-                    <CssBaseline />
-                    <AppBar
-                        position="fixed"
-                        className={clsx(classes.appBar, {
-                            [classes.appBarShift]: open,
-                        })}
-                    >
-                        <Toolbar>
-                            <IconButton
-                                color="inherit"
-                                aria-label="open drawer"
-                                onClick={handleDrawerOpen}
-                                edge="start"
-                                className={clsx(
-                                    classes.menuButton,
-                                    open && classes.hide
-                                )}
-                            >
-                                <MenuIcon />
-                            </IconButton>
-                            <Typography variant="h6" noWrap>
-                                <Link to="/admin/Home">
-                                    <span className="dash-board-logo">
-                                        <img src={logo} alt="logo" />
-                                        <span className="navbar-title-name">
-                                            WELLCOME BACK
+            {loading ? (
+                <Loading />
+            ) : (
+                <Router>
+                    <div className={classes.root}>
+                        <CssBaseline />
+                        <AppBar
+                            position="fixed"
+                            className={clsx(classes.appBar, {
+                                [classes.appBarShift]: open,
+                            })}
+                        >
+                            <Toolbar>
+                                <IconButton
+                                    color="inherit"
+                                    aria-label="open drawer"
+                                    onClick={handleDrawerOpen}
+                                    edge="start"
+                                    className={clsx(
+                                        classes.menuButton,
+                                        open && classes.hide
+                                    )}
+                                >
+                                    <MenuIcon />
+                                </IconButton>
+                                <Typography variant="h6" noWrap>
+                                    <Link to="/admin/Home">
+                                        <span className="dash-board-logo">
+                                            <img src={logo} alt="logo" />
+                                            <span className="navbar-title-name">
+                                                WELLCOME BACK
+                                            </span>
                                         </span>
-                                    </span>
+                                    </Link>
+                                </Typography>
+                            </Toolbar>
+                        </AppBar>
+                        <Drawer
+                            className={classes.drawer}
+                            variant="persistent"
+                            anchor="left"
+                            open={open}
+                            classes={{
+                                paper: classes.drawerPaper,
+                            }}
+                        >
+                            <div className={classes.drawerHeader}>
+                                <IconButton onClick={handleDrawerClose}>
+                                    {theme.direction === "ltr" ? (
+                                        <ChevronLeftIcon />
+                                    ) : (
+                                        <ChevronRightIcon />
+                                    )}
+                                </IconButton>
+                            </div>
+                            {/* Sidebar  */}
+                            <Divider />
+                            <List>
+                                <ListItem onClick={logout}>
+                                    <PeopleAltIcon />
+                                    <ListItemText primary="Logout" />
+                                </ListItem>
+                                <Link to="/admin/manage-comment">
+                                    <ListItem>
+                                        <PeopleAltIcon />
+                                        <ListItemText primary="Manage Comment" />
+                                    </ListItem>
                                 </Link>
-                            </Typography>
-                        </Toolbar>
-                    </AppBar>
-                    <Drawer
-                        className={classes.drawer}
-                        variant="persistent"
-                        anchor="left"
-                        open={open}
-                        classes={{
-                            paper: classes.drawerPaper,
-                        }}
-                    >
-                        <div className={classes.drawerHeader}>
-                            <IconButton onClick={handleDrawerClose}>
-                                {theme.direction === "ltr" ? (
-                                    <ChevronLeftIcon />
-                                ) : (
-                                    <ChevronRightIcon />
-                                )}
-                            </IconButton>
-                        </div>
-                        {/* Sidebar  */}
-                        <Divider />
-                        <List>
-                            <Link to="/admin/manage-comment">
-                                <ListItem>
-                                    <PeopleAltIcon />
-                                    <ListItemText primary="Manage Comment" />
-                                </ListItem>
-                            </Link>
-                            <Link to="/admin/manage-user">
-                                <ListItem>
-                                    <PeopleAltIcon />
-                                    <ListItemText primary="Manage User" />
-                                </ListItem>
-                            </Link>
-                            <Link to="/admin/manage-post">
-                                <ListItem>
-                                    <PeopleAltIcon />
-                                    <ListItemText primary="Manage Post" />
-                                </ListItem>
-                            </Link>
-                        </List>
-                    </Drawer>
-                    {/* end sidebar  */}
-                    {/* màn hình  */}
-                    <main
-                        className={clsx(classes.content, {
-                            [classes.contentShift]: open,
-                        })}
-                    >
-                        <div className={classes.drawerHeader} />
+                                <Link to="/admin/manage-user">
+                                    <ListItem>
+                                        <PeopleAltIcon />
+                                        <ListItemText primary="Manage User" />
+                                    </ListItem>
+                                </Link>
+                                <Link to="/admin/manage-post">
+                                    <ListItem>
+                                        <PeopleAltIcon />
+                                        <ListItemText primary="Manage Post" />
+                                    </ListItem>
+                                </Link>
+                                <Link to="/admin/manage-categories">
+                                    <ListItem>
+                                        <PeopleAltIcon />
+                                        <ListItemText primary="Manage Categories" />
+                                    </ListItem>
+                                </Link>
+                            </List>
+                        </Drawer>
+                        {/* end sidebar  */}
+                        {/* SCREEN  */}
+                        <main
+                            className={clsx(classes.content, {
+                                [classes.contentShift]: open,
+                            })}
+                        >
+                            <div className={classes.drawerHeader} />
+                            <Switch>
+                                <Route exact path="/admin/manage-comment">
+                                    <Billing />
+                                </Route>
+                                <Route exact path="/admin/Home">
+                                    <Home />
+                                </Route>
+                                <Route exact path="/admin/manage-user">
+                                    <Tables />
+                                </Route>
+                                <Route exact path="/admin/manage-post">
+                                    <Post />
+                                </Route>
+                                <Route exact path="/admin/manage-categories">
+                                    <Categories />
+                                </Route>
 
-                        <Switch>
-                            <Route exact path="/admin/manage-comment">
-                                <Billing />
-                            </Route>
-                            <Route exact path="/admin/Home">
-                                <Home />
-                            </Route>
-                            <Route exact path="/admin/manage-user">
-                                <Tables />
-                            </Route>
-                            {/* <Route exact path="/admin/manage-post">
- 								<Profile/>
- 							</Route> */}
-                            <Route exact path="/admin/manage-post">
-                                <Post />
-                            </Route>
-
-                            <Route
-                                exact
-                                path="/admin/manage-post/detail-post/:_id"
-                            >
-                                <DetailPost />
-                            </Route>
-
-                            <Route exact path="/admin/manage-user/addUser">
-                                <AddUser />
-                            </Route>
-                            <Route
-                                exact
-                                path="/admin/manage-user/editUser/:_id"
-                            >
-                                <EditUser />
-                            </Route>
-
-                            <Redirect from="*" to="/admin/home" />
-                        </Switch>
-                    </main>
-                    {/* end màn hình */}
-                </div>
-            </Router>
+                                {/* --- */}
+                                <Route
+                                    exact
+                                    path="/admin/manage-post/detail-post/:postId"
+                                >
+                                    <DetailPost />
+                                </Route>
+                                {/* -- */}
+                                <Redirect from="*" to="/manage-comment" />
+                            </Switch>
+                        </main>
+                        {/* END SCREEN */}
+                    </div>
+                </Router>
+            )}
         </div>
     );
 }

@@ -14,6 +14,7 @@ import EditIcon from "@material-ui/icons/Edit";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import { manageGetPostAPI } from "../../../../redux/actions/admin/manage-post/managePost";
 import { useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles({
     table: {
