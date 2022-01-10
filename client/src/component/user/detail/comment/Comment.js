@@ -32,7 +32,7 @@ export default function Comment() {
   const { text } = state;
 
   const { comments } = useSelector((state) => state.commentPostReducer);
-
+  // console.log(comments, "comments");
   useEffect(() => {
     dispatch(getCommmentPostAPI(postId));
   }, []);
@@ -93,9 +93,12 @@ export default function Comment() {
             </form>
           </div>
           <div className="commented">
-            {comments?.data?.map((comment) => (
+            {comments?.map((item) => (
               <span>
-                <div>{comment.text}</div>
+                <div>
+                  {/* {item.comment.text} */}
+                  {/* {console.log(item.comment)} */}
+                </div>
               </span>
             ))}
           </div>
