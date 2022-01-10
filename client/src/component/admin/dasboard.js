@@ -32,6 +32,8 @@ import Post from "./pages/Post/post";
 import Profile from "./pages/Profile";
 import AddUser from "./pages/render/addUser";
 import EditUser from "./pages/render/editUser";
+
+import DetailPost from "./pages/render/detailPost";
 //STYLE COMPONENT
 import "antd/dist/antd.css";
 import "./assets/styles/main.css";
@@ -209,6 +211,14 @@ export default function DashboardAdmin() {
                             <Route exact path="/admin/manage-post">
                                 <Post />
                             </Route>
+
+                            <Route
+                                exact
+                                path="/admin/manage-post/detail-post/:_id"
+                            >
+                                <DetailPost />
+                            </Route>
+
                             <Route exact path="/admin/manage-user/addUser">
                                 <AddUser />
                             </Route>

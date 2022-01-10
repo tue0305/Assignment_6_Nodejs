@@ -13,98 +13,145 @@ import Button from "@material-ui/core/Button";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import { manageGetPostAPI } from "../../../../redux/actions/admin/manage-post/managePost";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles({
-  table: {
-    minWidth: 650,
-  },
+    table: {
+        minWidth: 650,
+    },
 });
 
 function Post() {
-  const classes = useStyles();
+    const classes = useStyles();
 
-  // ---------
+    // ---------
 
-  // --------
-  const dispatch = useDispatch();
+    // --------
+    const dispatch = useDispatch();
 
-  const { managePosts } = useSelector((state) => state.managePostReducer);
-  console.log(managePosts);
+    const { managePosts } = useSelector((state) => state.managePostReducer);
+    console.log(managePosts);
 
-  useEffect(() => {
-    dispatch(manageGetPostAPI());
-  }, []);
+    useEffect(() => {
+        dispatch(manageGetPostAPI());
+    }, []);
+    let history = useHistory();
+    // const handleDelete = (id) => {
+    //     console.log(id);
+    //     if (window.confirm("Do you want to delete the post ?")) {
+    //         dispatch(deleteUsers(id));
+    //         dispatch(loadUsers());
+    //     }
+    // };
+    // -----
 
-  // -----
-
-  // -------
-  return (
-    <>
-      <div className="tabled">
-        <Row gutter={[24, 0]}>
-          <Col xs="24" xl={24}>
-            <Card
-              bordered={false}
-              className="criclebox tablespace mb-24"
-              title="Manage Category"
-            >
-              <div className="table-responsive">
-                <TableContainer component={Paper}>
-                  <Table className={classes.table} aria-label="simple table">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell align="center">Image</TableCell>
-                        <TableCell>Category</TableCell>
-                        <TableCell align="center">Title</TableCell>
-                        <TableCell align="center">Content</TableCell>
-                        <TableCell align="center">Gradients</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {managePosts?.posts?.map((post) => (
-                        <TableRow>
-                          <TableCell component="th" scope="row" align="center">
-                            <div className="table-image">
-                              <img src={post.image} />
+    // -------
+    return (
+        <>
+            <div className="tabled">
+                <Row gutter={[24, 0]}>
+                    <Col xs="24" xl={24}>
+                        <Card
+                            bordered={false}
+                            className="criclebox tablespace mb-24"
+                            title="Manage Category"
+                        >
+                            <div className="table-responsive">
+                                <TableContainer component={Paper}>
+                                    <Table
+                                        className={classes.table}
+                                        aria-label="simple table"
+                                    >
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell align="center">
+                                                    Image
+                                                </TableCell>
+                                                <TableCell>Category</TableCell>
+                                                <TableCell align="center">
+                                                    Title
+                                                </TableCell>
+                                                <TableCell align="center">
+                                                    Content
+                                                </TableCell>
+                                                <TableCell align="center">
+                                                    Gradients
+                                                </TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {managePosts?.posts?.map((post) => (
+                                                <TableRow>
+                                                    <TableCell
+                                                        component="th"
+                                                        scope="row"
+                                                        align="center"
+                                                    >
+                                                        <div className="table-image">
+                                                            <img
+                                                                src={post.image}
+                                                            />
+                                                        </div>
+                                                    </TableCell>
+                                                    <TableCell align="center">
+                                                        {post.category.title}
+                                                    </TableCell>
+                                                    <TableCell align="center">
+                                                        {post.title}
+                                                    </TableCell>
+                                                    <TableCell align="center">
+                                                        <div className="table-content">
+                                                            <span>
+                                                                {" "}
+                                                                {post.content}
+                                                            </span>
+                                                        </div>
+                                                    </TableCell>
+                                                    <TableCell align="center">
+                                                        <div className="table-content">
+                                                            {post.gradients.map(
+                                                                (gradient) => (
+                                                                    <span>
+                                                                        {
+                                                                            gradient.name
+                                                                        }
+                                                                    </span>
+                                                                )
+                                                            )}
+                                                        </div>
+                                                    </TableCell>
+                                                    <TableCell align="center">
+                                                        <Button
+                                                            variant="contained"
+                                                            color="secondary"
+                                                            onClick={() =>
+                                                                history.push(
+                                                                    `/admin/manage-post/detail-post/${post._id}`
+                                                                )
+                                                            }
+                                                        >
+                                                            <EditIcon />
+                                                        </Button>
+                                                        <Button
+                                                            variant="contained"
+                                                            color="secondary"
+                                                        >
+                                                            <DeleteForeverIcon />
+                                                        </Button>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
                             </div>
-                          </TableCell>
-                          <TableCell align="center">
-                            {post.category.title}
-                          </TableCell>
-                          <TableCell align="center">{post.title}</TableCell>
-                          <TableCell align="center">
-                            <div className="table-content">
-                              <span> {post.content}</span>
-                            </div>
-                          </TableCell>
-                          <TableCell align="center">
-                            <div className="table-content">
-                              {post.gradients.map((gradient) => (
-                                <span>{gradient.name}</span>
-                              ))}
-                            </div>
-                          </TableCell>
-                          <TableCell align="center">
-                            <Button variant="contained" color="secondary">
-                              <EditIcon />
-                            </Button>
-                            <Button variant="contained" color="secondary">
-                              <DeleteForeverIcon />
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </div>
-            </Card>
-          </Col>
-        </Row>
-      </div>
-      {/* ---- */}
-    </>
-  );
+                        </Card>
+                    </Col>
+                </Row>
+            </div>
+            {/* ---- */}
+        </>
+    );
 }
 
 export default Post;
