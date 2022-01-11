@@ -49,7 +49,7 @@ export const signUpAPI = (data) => {
       .then((res) => {
         Swal.fire({
           icon: "success",
-          title: "Đăng nhập thành công!",
+          title: "Đăng kí thành công!",
           width: "400px",
           padding: "0 0 20px 0",
         });

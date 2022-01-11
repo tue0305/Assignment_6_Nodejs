@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
@@ -8,7 +8,7 @@ import {
   createPostUserAPI,
   getCategoryAPI,
 } from "../../../../redux/actions/user/category/category";
-
+import { useHistory } from "react-router-dom";
 const style = {
   position: "absolute",
   top: "50%",
@@ -37,7 +37,7 @@ const divSelect = {
   borderRadius: "6px",
 };
 
-export default function AddPost() {
+export default function AddPost(props) {
   const [open, setOpen] = React.useState(false);
 
   const handleClose = () => {
@@ -51,23 +51,32 @@ export default function AddPost() {
   const dispatch = useDispatch();
 
   const { categorys } = useSelector((state) => state.categoryReducer);
-
-  useEffect(() => {
-    dispatch(getCategoryAPI());
-  }, []);
-
+  // console.log(categorys, "categorys");
+  let history = useHistory();
   const [state, setState] = useState({
     title: "",
     content: "",
-    categoryTitle: "",
-    name: "",
+    categoryId: "",
   });
+
+  const [gradients, setGradients] = useState([]);
+
+  const [name, setName] = useState("");
 
   const [error, setError] = useState("");
 
-  const { title, content, categoryTitle, name } = state;
+  const { title, content, categoryId } = state;
 
-  // console.log(state,'state');
+  useEffect(() => {
+    dispatch(
+      getCategoryAPI((error, data) => {
+        if (data?.categories && data?.categories.length > 0) {
+          setState({ ...state, categoryId: data?.categories[0]._id });
+        }
+      })
+    );
+  }, []);
+
   const handleInputOnchange = (e) => {
     let { name, value } = e.target;
     setState({ ...state, [name]: value });
@@ -75,13 +84,40 @@ export default function AddPost() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!title || !content || !categoryTitle || !name) {
+    if (!title || !content) {
       setError("Có thể bạn đã thiếu");
     } else {
-      dispatch(createPostUserAPI(state));
+      const { onClose } = props;
+      const params = {
+        title: state?.title || "",
+        image: null,
+        content: state?.content || "",
+        gradients,
+        categoryId: state?.categoryId || "",
+      };
+      dispatch(
+        createPostUserAPI(params, (err, data) => {
+          if (onClose) onClose();
+        })
+      );
       setError("");
     }
   };
+
+  const handleAddGradients = () => {
+    setGradients([
+      ...gradients,
+      {
+        name: name,
+      },
+    ]);
+    setName("");
+  };
+
+  const listCategory = useMemo(
+    () => categorys?.categories?.reverse() || [],
+    [categorys]
+  );
 
   return (
     <div className="add-post-user">
@@ -111,25 +147,24 @@ export default function AddPost() {
                 />
               </div>
               <div className="add-form-input" style={divInput}>
-                <select style={divSelect}>
-                  {categorys?.categories?.reverse().map((category) => (
-                    <>
-                      <option
-                        value={categoryTitle}
-                        onChange={handleInputOnchange}
-                        name="categoryTitle"
-                      >
-                        {category.title}
-                      </option>
-                    </>
-                  ))}
+                <select
+                  style={divSelect}
+                  onChange={handleInputOnchange}
+                  value={categoryId}
+                  name="categoryId"
+                >
+                  {listCategory?.map((category) => {
+                    // console.log("111category", category);
+                    return (
+                      <option value={category._id}>{category.title}</option>
+                    );
+                  })}
                 </select>
               </div>
               <div className="add-form-input" style={divInput}>
                 <textarea
                   style={divTextArea}
                   id="w3review"
-                  name="w3review"
                   rows="5"
                   cols="50"
                   placeholder="Công thức"
@@ -138,19 +173,17 @@ export default function AddPost() {
                   onChange={handleInputOnchange}
                 ></textarea>
               </div>
-              <div className="add-form-input" style={divInput}>
-                <textarea
-                  style={divTextArea}
-                  id="w3review"
-                  name="w3review"
-                  rows="5"
-                  cols="50"
-                  placeholder="Nguyên liệu"
-                  value={name}
-                  name="name"
-                  onChange={handleInputOnchange}
-                ></textarea>
-              </div>
+              <span onClick={handleAddGradients}>Thêm Nguyên liệu</span>
+              <input
+                value={name}
+                placeholder="Nguyên liệu"
+                onChange={(e) => setName(e.target.value)}
+              />
+              <ul>
+                {gradients.map((item) => (
+                  <li>{item.name}</li>
+                ))}
+              </ul>
               <div className="add-form-button" style={divInput}>
                 <Button color="secondary" variant="contained" type="submit">
                   Tạo bài viết

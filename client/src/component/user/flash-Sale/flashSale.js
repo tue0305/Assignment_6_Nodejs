@@ -23,7 +23,7 @@ export default function FlashSale() {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { categorys } = useSelector((state) => state.categoryReducer);
-  console.log(categorys, "categorys");
+
   useEffect(() => {
     dispatch(getCategoryPostAPI());
   }, []);

@@ -110,14 +110,13 @@ class PostService {
     }
   }
 
-  async createPost(title, image, content, gradients, categoryTitle, userId) {
-    var category = await CategoryModel.findOne({ title: categoryTitle });
-    // **** Simple validation ****
-    if (!title || !content || !gradients || !category || !userId) {
-      return new APIError("Missing information!!", STATUS_CODES.BAD_REQUEST);
-    }
-
+  async createPost(title, image, content, gradients, categoryId, userId) {
     try {
+      var category = await CategoryModel.findById(categoryId);
+      // **** Simple validation ****
+      if (!title || !content || !gradients || !category || !userId) {
+        return new APIError("Missing information!!", STATUS_CODES.BAD_REQUEST);
+      }
       // ***** CREATE NEW POST *****
       const categoryPost = {
         _id: category._id,
@@ -156,30 +155,21 @@ class PostService {
     }
   }
 
-  async editPost(
-    postId,
-    title,
-    image,
-    content,
-    gradients,
-    categoryTitle,
-    userId
-  ) {
-    // **** Simple validation ****
-    if (
-      !postId ||
-      !title ||
-      !content ||
-      !gradients ||
-      !categoryTitle ||
-      !userId
-    ) {
-      return new APIError("Missing information!!", STATUS_CODES.BAD_REQUEST);
-    }
-
-    const category = await CategoryModel.findOne({ title: categoryTitle });
-
+  async editPost(postId, title, image, content, gradients, categoryId, userId) {
     try {
+      // **** Simple validation ****
+      if (
+        !postId ||
+        !title ||
+        !content ||
+        !gradients ||
+        !categoryId ||
+        !userId
+      ) {
+        return new APIError("Missing information!!", STATUS_CODES.BAD_REQUEST);
+      }
+
+      const category = await CategoryModel.findById(categoryId);
       // ***** UPDATE NEW POST *****
       var updatePost = {
         title,

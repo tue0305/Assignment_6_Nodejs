@@ -8,6 +8,7 @@ import ProfileUser from "../../component/user/profile/profileUser";
 import Detailcategory from "../../component/user/detail-category/detailCategory";
 import ManagePost from "../../component/user/user-post/userPost";
 import UpdateProfile from "../../component/user/profile/update-profile/updateProfile";
+import AddPost from "../../component/user/user-post/add-post/addPost";
 const userRouter = [
   {
     path: "/",
@@ -18,6 +19,11 @@ const userRouter = [
     path: "/sign-in",
     exact: true,
     component: SignIn,
+  },
+  {
+    path: "/add-post",
+    exact: true,
+    component: AddPost,
   },
   {
     path: "/update-user/:userId",
