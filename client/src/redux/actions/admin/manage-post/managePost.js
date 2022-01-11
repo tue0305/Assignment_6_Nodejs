@@ -18,3 +18,23 @@ export const manageGetPostAPI = () => {
       });
   };
 };
+
+export const manageGetPostDetailAPI = (postId) => {
+  return function (dispatch) {
+    axios
+
+      .get(`http://localhost:8002/post/${postId}`)
+
+      .then((res) => {
+        console.log(res.data, "d");
+        dispatch({
+          type: actType.MANAGE_GET_DETAIL_POST,
+          payload: res.data,
+        });
+      })
+
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+};
