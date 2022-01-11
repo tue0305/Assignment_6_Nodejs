@@ -30,6 +30,7 @@ import Tables from "./pages/Tables";
 import Billing from "./pages/Billing";
 import Post from "./pages/Post/post";
 import Categories from "./pages/categories";
+import DetailPost from "./pages/Post/DetailPost";
 //STYLE COMPONENT
 import "antd/dist/antd.css";
 import "./assets/styles/main.css";
@@ -226,6 +227,14 @@ export default function DashboardAdmin() {
                 <Route exact path="/admin/manage-categories">
                   <Categories />
                 </Route>
+                <Route exact path="/admin/manage-categories">
+                  <Categories />
+                </Route>
+                {/* --- */}
+                <Route exact path="/admin/manage-post/detail-post/:postId">
+                  <DetailPost />
+                </Route>
+                {/* -- */}
                 <Redirect from="*" to="/manage-comment" />
               </Switch>
             </main>

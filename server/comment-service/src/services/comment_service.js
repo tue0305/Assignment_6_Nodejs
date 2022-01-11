@@ -166,6 +166,7 @@ class CommentService {
   }
 
   // ================= END POST COMMENT =========================
+
   // ================= START HIGHLIGHT COMMENT =========================
   async getAllHighlightComments() {
     try {
@@ -355,6 +356,8 @@ class CommentService {
     }
   }
 
+  // ================= END POST COMMENT =========================
+
   // ===========================
   async getCommentPayload(comment, event) {
     try {
@@ -392,12 +395,12 @@ class CommentService {
           this.removePostOfComments(post);
           break;
 
-        case "UPDATE_POST":
-          this.updatePostToUser(userId, post);
-          break;
-        case "GET_POST":
-          this.getUserCreatedPosts(userId);
-          break;
+        // case "UPDATE_POST":
+        //   this.updatePostToUser(userId, post);
+        //   break;
+        // case "GET_POST":
+        //   this.getUserCreatedPosts(userId);
+        //   break;
 
         // Subscribe user-service
         // case "GET_POSTS":

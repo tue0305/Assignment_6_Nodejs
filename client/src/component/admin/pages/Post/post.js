@@ -13,6 +13,7 @@ import Button from "@material-ui/core/Button";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import { manageGetPostAPI } from "../../../../redux/actions/admin/manage-post/managePost";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles({
   table: {
@@ -85,9 +86,13 @@ function Post() {
                             </div>
                           </TableCell>
                           <TableCell align="center">
-                            <Button variant="contained" color="secondary">
-                              <EditIcon />
-                            </Button>
+                            <Link
+                              to={`/admin/manage-post/detail-post/${post._id}`}
+                            >
+                              <Button variant="contained" color="secondary">
+                                <EditIcon />
+                              </Button>
+                            </Link>
                             <Button variant="contained" color="secondary">
                               <DeleteForeverIcon />
                             </Button>

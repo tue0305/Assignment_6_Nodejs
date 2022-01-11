@@ -14,6 +14,12 @@ const managePostReducer = (state = initialState, action) => {
         managePosts: action.payload,
         loading: false,
       };
+    case actType.MANAGE_GET_DETAIL_POST:
+      return {
+        ...state,
+        post: action.payload,
+        loading: false,
+      };
     default:
       break;
   }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
@@ -21,7 +21,10 @@ import Comment from "./comment/Comment";
 //IMAGES
 import logo from "../../../images/logo/cooking.png";
 import { getDetailCategoryPostAPI } from "../../../redux/actions/user/category/category";
-import { userCreateCommentHighlightAPI } from "../../../redux/actions/user/comment-posts/commentPosts";
+import {
+  userCreateCommentHighlightAPI,
+  userGetCommentHighlightAPI,
+} from "../../../redux/actions/user/comment-posts/commentPosts";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -61,7 +64,10 @@ export default function DetailRecipe({ comments }) {
   const classes = useStyles();
 
   const { category } = useSelector((state) => state.categoryReducer);
+  const { commentHighlight } = useSelector((state) => state.commentPostReducer); //reducer nè ông
 
+  // const { commentHighlight } = useSelector((state) => state.commentPostReducer);
+  console.log(commentHighlight, "commentHighlight");
   const dispatch = useDispatch();
 
   const { postId } = useParams();
@@ -75,15 +81,11 @@ export default function DetailRecipe({ comments }) {
     anchorEl: null,
     content: null,
   });
-
-  const listComments = useRef([
-    {
-      cmtId: 1,
-      postId: 2,
-      cmtOnText: "refrigerate for 15 minutes",
-      comment: "aaaa",
-    },
-  ]); /// load list comment from api
+  const listComments = useRef([]);
+  useEffect(() => {
+    listComments.current = commentHighlight;
+  }, [commentHighlight]);
+  console.log(listComments, "listComments");
   //  -----
 
   // -----
@@ -94,8 +96,19 @@ export default function DetailRecipe({ comments }) {
     }, 1000);
   }, []);
 
-  useEffect(() => {
+  console.log("listComments.current", listComments.current);
+
+  const loadDetailCategoryPost = () => {
     dispatch(getDetailCategoryPostAPI(postId));
+  };
+
+  const loadGetCommentHighlight = () => {
+    dispatch(userGetCommentHighlightAPI(postId)); /// ap ôngi nè
+  };
+
+  useEffect(() => {
+    loadDetailCategoryPost();
+    loadGetCommentHighlight();
     // setEventShowComments();
     return () => {
       const cmtSelection = document.getElementsByClassName(
@@ -147,8 +160,10 @@ export default function DetailRecipe({ comments }) {
   };
 
   const onMouseOver11 = (e) => {
-    console.log("mouseover", e.target, e.target.getAttribute("id"));
-    //xu ly hover
+    // console.log("mouseover", e.target, e.target.getAttribute("id"));
+    const commentHighlightId = commentHighlight.filter(
+      (state) => state._id === e.target.id
+    );
     if (e.target) {
       const el = e.target;
       setTimeout(() => {
@@ -157,8 +172,14 @@ export default function DetailRecipe({ comments }) {
           anchorEl: el,
           content: (
             <>
-              <AccountCircleIcon style={divIcon} />
-              <span style={{ color: "red" }}>asdasdasdasdasdasdasdasd</span>
+              {/* {commentHighlight.map((item) => ( */}
+              <>
+                <AccountCircleIcon style={divIcon} />
+                <span style={{ color: "red" }}>
+                  {commentHighlightId[0].text}
+                </span>
+              </>
+              {/* ))} */}
             </>
           ), // render content
         });
@@ -167,7 +188,7 @@ export default function DetailRecipe({ comments }) {
   };
 
   const onMouseLeave = (e) => {
-    console.log("mouseleave", e.target, e.target.getAttribute("id"));
+    // console.log("mouseleave", e.target, e.target.getAttribute("id"));
     setPopupCmt({
       open: false,
       anchorEl: null,
@@ -175,31 +196,34 @@ export default function DetailRecipe({ comments }) {
     });
   };
 
-  const loadText = (text) => {
-    text =
-      "Combine the flour, sugar (if using), and salt in a large bowl; refrigerate for 15 minutes.Add the shortening to the dry ingredients and toss it with your hands to coat, then break it up into smaller pieces. Using a pastry blender, cut the shortening into the dry ingredients until the pieces of fat are roughly the size of small peas and everything looks like it has been touched by the fat. There should be no dry, floury areas.Mound the ingredients in the center of the bowl. Drizzle about half of the water down the sides of the bowl, turning the bowl as you pour so the water doesn’t end up in one spot. Using a large fork, lightly mix the dough, tossing it from the perimeter toward the center of the bowl. Drizzle most of the remaining water here and there over the dough and toss again.Mix the dough vigorously now. The dough should start to gather in large clumps, but if it is dry in places, stir in the rest of the water.Turn the dough out onto a lightly floured work surface and pack it into a ball, then knead it several times to smooth it out. Put the dough on a sheet of plastic wrap and flatten it into a ¾-inch-thick disk. Wrap the disk and refrigerate for about 1 hour before rolling";
+  const loadText = useMemo(
+    (text) => {
+      text = category.posts && category.posts.content;
 
-    listComments.current.forEach((obj) => {
-      const posFound = text.indexOf(obj.cmtOnText);
-      const lenText = obj.cmtOnText.length;
-      text =
-        text.slice(0, posFound + lenText) +
-        "</span>" +
-        text.slice(posFound + lenText);
-      text =
-        text.slice(0, posFound) +
-        '<span class="extracted-simple-text" id="' +
-        obj.cmtId +
-        '">' +
-        text.slice(posFound);
-    });
+      commentHighlight.forEach((item) => {
+        console.log(item._id, "id");
+        const posFound = text.indexOf(item.highlight_text);
+        const lenText = item.highlight_text.length;
+        text =
+          text.slice(0, posFound + lenText) +
+          "</span>" +
+          text.slice(posFound + lenText);
+        text =
+          text.slice(0, posFound) +
+          '<span class="extracted-simple-text" id="' +
+          item._id +
+          '">' +
+          text.slice(posFound);
+      });
 
-    setEventShowComments();
+      setEventShowComments();
 
-    return (
-      <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(text) }} />
-    );
-  };
+      return (
+        <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(text) }} />
+      );
+    },
+    [commentHighlight, category]
+  );
 
   const resetContent = () => {
     setContent(null);
@@ -223,31 +247,32 @@ export default function DetailRecipe({ comments }) {
     const classes = useStyles();
 
     const [error, setError] = useState("");
-
+    const randomOtp = (max = 99999, min = 10000) => {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    };
     const [state, setState] = useState({
-      comment: "",
+      highlight_text: "",
       text: "",
+      _id: randomOtp(),
     });
 
-    const { comment, text } = state;
-
+    const { highlight_text, text } = state;
     const handeleInputChange = (e) => {
       let { name, value } = e.target;
       setState({ ...state, [name]: value });
     };
 
     useEffect(() => {
-      setState({ ...state, text: content });
-      dispatch(userCreateCommentHighlightAPI(postId, state));
+      setState({ ...state, highlight_text: content });
     }, []);
 
     const handleSubmit = (e) => {
       e.preventDefault();
-      if (!comment || !text) {
+      if (!highlight_text || !text) {
         setError("Hãy nhập bình luận của bạn!");
       } else {
-        dispatch(console.log("aa"));
-        console.log("a");
+        setContent(null);
+        dispatch(userCreateCommentHighlightAPI(postId, state));
         setError("");
       }
     };
@@ -274,12 +299,22 @@ export default function DetailRecipe({ comments }) {
                   <input
                     placeholder="Nhập bình luận"
                     style={divInput}
-                    name="comment"
-                    value={state.comment}
+                    name="text"
+                    value={state.text}
                     onChange={handeleInputChange}
                   />
-                  {error && <h3>{error}</h3>}
+                  {error && <h3 style={{ color: "red" }}>{error}</h3>}
                 </div>
+                <p
+                  id="transition-modal-description"
+                  style={divP}
+                  name="highlight_text"
+                  value={state.highlight_text}
+                  onChange={handeleInputChange}
+                >
+                  {content}
+                </p>
+
                 <div className="modal-button">
                   <Button
                     variant="contained"
@@ -290,15 +325,6 @@ export default function DetailRecipe({ comments }) {
                     Bình luận
                   </Button>
                 </div>
-                <p
-                  id="transition-modal-description"
-                  style={divP}
-                  name="text"
-                  value={state.text}
-                  onChange={handeleInputChange}
-                >
-                  {content}
-                </p>
               </div>
             </form>
           </Fade>
@@ -364,18 +390,18 @@ export default function DetailRecipe({ comments }) {
                         <div className="recipe-owner-content">
                           <span>
                             {/* {category.posts.content} */}
-                            {loadText()}
+                            {loadText}
                           </span>
                         </div>
                       </div>
                       <div className="recipe-ingredient">
                         <h3>Thành Phần</h3>
-                        {category.posts.gradients.map((gradient) => (
-                          <>
+                        {category.posts.gradients.map((gradient, index) => (
+                          <div key={index}>
                             <div className="recipe-ingredient-item">
                               {gradient.name}
                             </div>
-                          </>
+                          </div>
                         ))}
                       </div>
                       <div className="detail-recipe-right">

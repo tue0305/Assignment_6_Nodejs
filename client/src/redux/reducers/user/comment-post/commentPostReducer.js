@@ -3,6 +3,7 @@ import * as actType from "../../../constants/constans";
 let initialState = {
   comments: [],
   comment: {},
+  commentHighlight: [],
   detailUser: {},
   loading: true,
 };
@@ -35,6 +36,12 @@ const commentPostReducer = (state = initialState, action) => {
     case actType.USER_CREATE_COMMENT_HIGHTLIGHT:
       return {
         ...state,
+        loading: false,
+      };
+    case actType.USER_GET_COMMENT_HIGHTLIGHT:
+      return {
+        ...state,
+        commentHighlight: action.payload,
         loading: false,
       };
     default:

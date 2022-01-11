@@ -32,7 +32,7 @@ export default function Comment() {
   const { text } = state;
 
   const { comments } = useSelector((state) => state.commentPostReducer);
-  
+  // console.log(comments, "comments");
   useEffect(() => {
     
        dispatch( getCommmentPostAPI(postId));
