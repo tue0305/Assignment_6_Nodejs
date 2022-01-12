@@ -75,7 +75,7 @@ export default function Comment() {
                     <Avatar>
                       <img src={user.avatar} />
                     </Avatar>
-                    {/* <div className="comment-input">
+                    <div className="comment-input">
                       <TextField
                         id="standard-basic"
                         label="what's your on mind?"
@@ -84,7 +84,7 @@ export default function Comment() {
                         type="text"
                         onChange={handleInputChange}
                       />
-                    </div> */}
+                    </div>
                   </>
                 )}
 

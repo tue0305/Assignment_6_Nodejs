@@ -21,7 +21,8 @@ const validatePassword = async (savedPassword, enteredPassword ) => {
 
 // ***** Access token utilities  *****
 const verifySignature = async (req, next) => {
-  const authHeader = req.header('Authorization')
+  try {
+    const authHeader = req.header('Authorization')
   const token = authHeader && authHeader.split(' ')[1]
   
 
@@ -33,6 +34,13 @@ const verifySignature = async (req, next) => {
   }
 
   return false;
+  } catch (error) {
+    return  new APIError(
+      "JWT error!",
+      STATUS_CODES.INTERNAL_ERROR, 
+      error.message
+    );
+  }
 };
 
 const generateSignature = async (userId) => {
