@@ -14,7 +14,12 @@ import EditIcon from "@material-ui/icons/Edit";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import { manageGetPostAPI } from "../../../../redux/actions/admin/manage-post/managePost";
 import { Link } from "react-router-dom";
-
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import IconButton from "@mui/material/IconButton";
+import Collapse from "@mui/material/Collapse";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
 const useStyles = makeStyles({
   table: {
     minWidth: 650,
@@ -23,7 +28,7 @@ const useStyles = makeStyles({
 
 function Post() {
   const classes = useStyles();
-
+  const [open, setOpen] = React.useState(false);
   // ---------
 
   // --------
@@ -51,54 +56,104 @@ function Post() {
             >
               <div className="table-responsive">
                 <TableContainer component={Paper}>
-                  <Table className={classes.table} aria-label="simple table">
+                  <Table aria-label="collapsible table">
                     <TableHead>
                       <TableRow>
-                        <TableCell align="center">Image</TableCell>
-                        <TableCell>Category</TableCell>
-                        <TableCell align="center">Title</TableCell>
-                        <TableCell align="center">Content</TableCell>
-                        <TableCell align="center">Gradients</TableCell>
+                        <TableCell />
+                        <TableCell>HÌNH ẢNH</TableCell>
+                        <TableCell align="center">TIÊU ĐỀ</TableCell>
+                        <TableCell align="center">Danh mục</TableCell>
+                        <TableCell align="center">Bước thực hiện</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {managePosts?.posts?.map((post) => (
-                        <TableRow>
-                          <TableCell component="th" scope="row" align="center">
-                            <div className="table-image">
-                              <img src={post.image} />
-                            </div>
-                          </TableCell>
-                          <TableCell align="center">
-                            {post.category.title}
-                          </TableCell>
-                          <TableCell align="center">{post.title}</TableCell>
-                          <TableCell align="center">
-                            <div className="table-content">
-                              <span> {post.content}</span>
-                            </div>
-                          </TableCell>
-                          <TableCell align="center">
-                            <div className="table-content">
-                              {post.gradients.map((gradient) => (
-                                <span>{gradient.name}</span>
-                              ))}
-                            </div>
-                          </TableCell>
-                          <TableCell align="center">
-                            <Link
-                              to={`/admin/manage-post/detail-post/${post._id}`}
-                            >
+                      {/* START --- */}
+                      {managePosts?.posts?.map((item) => (
+                        <>
+                          <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
+                            <TableCell>
+                              <IconButton
+                                aria-label="expand row"
+                                size="small"
+                                onClick={() => setOpen(!open)}
+                              >
+                                {open ? (
+                                  <KeyboardArrowUpIcon />
+                                ) : (
+                                  <KeyboardArrowDownIcon />
+                                )}
+                              </IconButton>
+                            </TableCell>
+                            <TableCell component="th" scope="row">
+                              <img src={item.image} />
+                            </TableCell>
+                            <TableCell align="center">{item.title}</TableCell>
+                            <TableCell align="center">
+                              {item.category.title}
+                            </TableCell>
+                            <TableCell align="center">{item.content}</TableCell>
+                            <TableCell align="center">
                               <Button variant="contained" color="secondary">
-                                <EditIcon />
+                                Sửa
                               </Button>
-                            </Link>
-                            <Button variant="contained" color="secondary">
-                              <DeleteForeverIcon />
-                            </Button>
-                          </TableCell>
-                        </TableRow>
+                              <Button variant="contained" color="secondary">
+                                Xóa
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+
+                          <TableRow>
+                            <TableCell
+                              style={{ paddingBottom: 0, paddingTop: 0 }}
+                              colSpan={6}
+                            >
+                              <Collapse in={open} timeout="auto" unmountOnExit>
+                                <Box sx={{ margin: 1 }}>
+                                  <Typography
+                                    variant="h6"
+                                    gutterBottom
+                                    component="div"
+                                  >
+                                    History
+                                  </Typography>
+                                  <Table size="small" aria-label="purchases">
+                                    <TableHead>
+                                      <TableRow>
+                                        <TableCell>Nguyên liệu</TableCell>
+                                        <TableCell>Customer</TableCell>
+                                        <TableCell align="center">
+                                          Amount
+                                        </TableCell>
+                                        <TableCell align="center">
+                                          Total price ($)
+                                        </TableCell>
+                                      </TableRow>
+                                    </TableHead>
+                                    {item?.gradients?.map((gradient) => (
+                                      <>
+                                        <TableBody>
+                                          <TableRow>
+                                            <TableCell
+                                              component="th"
+                                              scope="row"
+                                            >
+                                              {gradient.name}
+                                            </TableCell>
+                                            <TableCell></TableCell>
+                                            <TableCell align="center"></TableCell>
+                                            <TableCell align="center"></TableCell>
+                                          </TableRow>
+                                        </TableBody>
+                                      </>
+                                    ))}
+                                  </Table>
+                                </Box>
+                              </Collapse>
+                            </TableCell>
+                          </TableRow>
+                        </>
                       ))}
+                      {/* END ----- */}
                     </TableBody>
                   </Table>
                 </TableContainer>

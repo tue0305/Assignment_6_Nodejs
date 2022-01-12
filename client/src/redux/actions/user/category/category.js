@@ -7,13 +7,13 @@ const getCategory = (categorys) => ({
   payload: categorys,
 });
 
-export const getCategoryAPI = () => {
+export const getCategoryAPI = (cb) => {
   return function (dispatch) {
     axios({
       method: "GET",
       url: "http://localhost:8002/category/",
     }).then((res) => {
-      console.log(res.data, "data");
+      cb && cb(null, res.data);
       dispatch(getCategory(res.data));
     });
   };
@@ -78,9 +78,9 @@ export const getDetailCategoryPostAPI = (postId) => {
 };
 
 // -----
-const getPostUser = (categorys) => ({
+const getPostUser = (getUserPost) => ({
   type: actionType.GET_USER_POST,
-  payload: categorys,
+  payload: getUserPost,
 });
 
 export const getPostUserAPI = (userId) => {
@@ -100,22 +100,24 @@ export const getPostUserAPI = (userId) => {
   };
 };
 
-export const createPostUserAPI = (category) => {
+const createPostUser = (category) => ({
+  type: actionType.ADD_USER_POST,
+  payload: category,
+});
+
+export const createPostUserAPI = (category, cb) => {
   const token = localStorage.getItem("accessToken");
   return function (dispatch) {
     axios({
       method: "POST",
       url: `http://localhost:8002/post/user/create`,
-      category,
+      data: category,
       headers: { Authorization: "Bearer " + token },
     })
       .then((res) => {
         console.log(res.data, "ca");
-        dispatch({
-          type: actionType.ADD_USER_POST,
-          payload: res.data,
-        });
-        dispatch(getPostUser(res.data));
+        dispatch(createPostUser(res.data));
+        cb && cb(null, res.data);
       })
       .catch((err) => {
         console.log(err, "err");

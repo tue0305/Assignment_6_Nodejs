@@ -82,14 +82,14 @@ module.exports = async (app, channel) => {
   app.post("/post/user/create", verifyToken, async (req, res, next) => {
     try {
       const userId = req.userId;
-      const { title, image, content, gradients, categoryTitle } = req.body;
+      const { title, image, content, gradients, categoryId } = req.body;
 
       const result = await service.createPost(
         title,
         image,
         content,
         gradients,
-        categoryTitle,
+        categoryId,
         userId
       );
 
@@ -115,7 +115,7 @@ module.exports = async (app, channel) => {
     try {
       const { postId } = req.params;
       const userId = req.userId;
-      const { title, image, content, gradients, categoryTitle } = req.body;
+      const { title, image, content, gradients, categoryId } = req.body;
 
       const result = await service.editPost(
         postId,
@@ -123,7 +123,7 @@ module.exports = async (app, channel) => {
         image,
         content,
         gradients,
-        categoryTitle,
+        categoryId,
         userId
       );
 

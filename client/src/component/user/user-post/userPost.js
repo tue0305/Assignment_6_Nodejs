@@ -12,7 +12,7 @@ import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-
+import { useHistory } from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { getPostUserAPI } from "../../../redux/actions/user/category/category";
@@ -21,23 +21,24 @@ import { useParams } from "react-router-dom";
 export default function ManagePost() {
   const [open, setOpen] = React.useState(false);
   const dispatch = useDispatch();
-  const { categorys } = useSelector((state) => state.categoryReducer);
+  const { userPosts } = useSelector((state) => state.categoryReducer);
   const { userId } = useParams();
   useEffect(() => {
     dispatch(getPostUserAPI(userId));
   }, []);
-  const handleDeletePost = (postId) => {
-    console.log(postId, "postId");
-    // dispatch(deletePostUserAPI(postId));
-    // dispatch(getPostUserAPI(userId));
+
+  const onClose = () => {
+    dispatch(getPostUserAPI(userId));
   };
+
   return (
     <div className="user-posts">
       <div>
         <Button variant="contained" color="secondary">
-          <AddPost />
+          <AddPost onClose={onClose} />
         </Button>
       </div>
+
       <TableContainer component={Paper}>
         <Table aria-label="collapsible table">
           <TableHead>
@@ -51,7 +52,7 @@ export default function ManagePost() {
           </TableHead>
           <TableBody>
             {/* START --- */}
-            {categorys?.data?.reverse().map((post) => (
+            {userPosts?.data?.reverse().map((post) => (
               <>
                 <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
                   <TableCell>
@@ -77,11 +78,7 @@ export default function ManagePost() {
                     <Button variant="contained" color="secondary">
                       Sửa
                     </Button>
-                    <Button
-                      variant="contained"
-                      color="secondary"
-                      onClick={() => handleDeletePost(post._id)}
-                    >
+                    <Button variant="contained" color="secondary">
                       Xóa
                     </Button>
                   </TableCell>
