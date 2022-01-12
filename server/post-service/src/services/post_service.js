@@ -123,6 +123,92 @@ class PostService {
         title: category.title,
       };
 
+      return {
+        status: STATUS_CODES.OK,
+        success: true,
+        message: `Get post ${post._id} successfully!`,
+        posts: post,
+      };
+    } catch (error) {
+      return new APIError(
+        "Data Not found!",
+        STATUS_CODES.INTERNAL_ERROR,
+        error.message
+      );
+    }
+  }
+
+  async getPostsByCategory(categoryId) {
+    try {
+      console.log(categoryId);
+      // ***** GET CATEGORY_ID BY NAME*****
+      const category = await CategoryModel.findOne({ _id: categoryId });
+
+      // ***** GET ALL POSTS BY CATEGORY*****
+      const posts = await PostModel.find({ category: category });
+      if (!posts) {
+        return {
+          status: 400,
+          success: false,
+          message: `This category don't have any post!`,
+        };
+      }
+
+      return {
+        status: STATUS_CODES.OK,
+        success: true,
+        message: `Get ${category.title}'s posts successfully!`,
+        posts: posts,
+      };
+    } catch (error) {
+      return new APIError(
+        "Data Not found!",
+        STATUS_CODES.INTERNAL_ERROR,
+        error.message
+      );
+    }
+  }
+
+  async getUserPosts(userId) {
+    try {
+      // ***** GET ALL USER's POSTS *****
+      const posts = await PostModel.find({ userId: userId });
+      if (!posts) {
+        return {
+          status: STATUS_CODES.NOT_FOUND,
+          success: false,
+          message: `No post available!`,
+        };
+      }
+      return {
+        status: STATUS_CODES.OK,
+        success: true,
+        message: `Get posts successfully!`,
+        data: posts,
+      };
+    } catch (error) {
+      return new APIError(
+        "Data Not found!",
+        STATUS_CODES.INTERNAL_ERROR,
+        error.message
+      );
+    }
+  }
+
+  async createPost(title, image, content, gradients, categoryTitle, userId) {
+    var category = await CategoryModel.findOne({ title: categoryTitle });
+    // **** Simple validation ****
+    if (!title || !content || !gradients || !category || !userId) {
+      return new APIError("Missing information!!", STATUS_CODES.BAD_REQUEST);
+    }
+
+    try {
+      // ***** CREATE NEW POST *****
+      const categoryPost = {
+        _id: category._id,
+        title: category.title,
+      };
+
       const newPost = new PostModel({
         title,
         content,
@@ -155,7 +241,15 @@ class PostService {
     }
   }
 
-  async editPost(postId, title, image, content, gradients, categoryId, userId) {
+  async editPost(
+    postId,
+    title,
+    image,
+    content,
+    gradients,
+    categoryTitle,
+    userId
+  ) {
     try {
       // **** Simple validation ****
       if (
@@ -163,13 +257,13 @@ class PostService {
         !title ||
         !content ||
         !gradients ||
-        !categoryId ||
+        !categoryTitle ||
         !userId
       ) {
         return new APIError("Missing information!!", STATUS_CODES.BAD_REQUEST);
       }
 
-      const category = await CategoryModel.findById(categoryId);
+      const category = await CategoryModel.findOne({ title: categoryTitle });
       // ***** UPDATE NEW POST *****
       var updatePost = {
         title,
@@ -210,12 +304,11 @@ class PostService {
   }
 
   async deletePost(userId, postId) {
-    // **** Simple validation ****
-    if (!postId || !userId) {
-      return new APIError("Missing information!!", STATUS_CODES.BAD_REQUEST);
-    }
-
     try {
+      // **** Simple validation ****
+      if (!postId || !userId) {
+        return new APIError("Missing information!!", STATUS_CODES.BAD_REQUEST);
+      }
       const postDeleteConditions = { _id: postId, userId: userId };
 
       const post = await PostModel.findOne(postDeleteConditions);

@@ -67,7 +67,7 @@ export default function DetailRecipe({ comments }) {
   const { commentHighlight } = useSelector((state) => state.commentPostReducer); //reducer nè ông
 
   // const { commentHighlight } = useSelector((state) => state.commentPostReducer);
-  console.log(commentHighlight, "commentHighlight");
+
   const dispatch = useDispatch();
 
   const { postId } = useParams();
@@ -85,7 +85,7 @@ export default function DetailRecipe({ comments }) {
   useEffect(() => {
     listComments.current = commentHighlight;
   }, [commentHighlight]);
-  console.log(listComments, "listComments");
+
   //  -----
 
   // -----
@@ -95,8 +95,6 @@ export default function DetailRecipe({ comments }) {
       setLoading(false);
     }, 1000);
   }, []);
-
-  console.log("listComments.current", listComments.current);
 
   const loadDetailCategoryPost = () => {
     dispatch(getDetailCategoryPostAPI(postId));
@@ -272,7 +270,11 @@ export default function DetailRecipe({ comments }) {
         setError("Hãy nhập bình luận của bạn!");
       } else {
         setContent(null);
-        dispatch(userCreateCommentHighlightAPI(postId, state));
+        dispatch(
+          userCreateCommentHighlightAPI(postId, state, (error, data) => {
+            loadGetCommentHighlight();
+          })
+        );
         setError("");
       }
     };
@@ -416,13 +418,6 @@ export default function DetailRecipe({ comments }) {
                             <div className="recipe-right-comment">
                               <form>
                                 <span className="position">
-                                  <AccountCircleIcon style={divIcon} />
-                                  <input
-                                    placeholder="what's your on mind?"
-                                    open={popupCmt.open || false}
-                                    anchorEl={popupCmt.anchorEl || null}
-                                    onClose={null}
-                                  />
                                   {popupCmt.content}
                                 </span>
 

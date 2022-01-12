@@ -2,12 +2,14 @@ const express = require("express");
 const cors = require("cors");
 const HandleErrors = require("./utils/error-handler");
 const path = require("path");
+const bodyParser = require("body-parser");
 // ***** ROUTES *****
 const { CategoryController, PostController } = require("./api");
 
 module.exports = async (app, channel) => {
   const publicPathDirectory = path.join(__dirname, "./public");
-
+  // app.use(bodyParser.json());
+  // app.use(bodyParser.urlencoded());
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   app.use(cors());

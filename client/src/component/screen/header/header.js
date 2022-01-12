@@ -32,15 +32,16 @@ const useStyles = makeStyles((theme) => ({
 export default function Header() {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const { categorys } = useSelector((state) => state.categoryReducer);
+  const { categoryPosts } = useSelector((state) => state.categoryReducer);
+  console.log(categoryPosts, "categorys");
   useEffect(() => {
-    dispatch(getCategoryAPI());
+    //  dispatch(getCategoryAPI());
     dispatch(getCategoryPostAPI());
   }, []);
   function FormRow() {
     return (
       <React.Fragment>
-        {categorys?.categories?.reverse().map((category) => (
+        {categoryPosts?.categories?.reverse().map((category) => (
           <Grid item xs={2} key={category._id}>
             <Paper className={classes.paper}>
               <Link to={`/detail-category/${category._id}`}>

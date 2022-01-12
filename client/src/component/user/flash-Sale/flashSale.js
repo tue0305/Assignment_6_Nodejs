@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
 export default function FlashSale() {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const { categorys } = useSelector((state) => state.categoryReducer);
+  const { categoryPosts } = useSelector((state) => state.categoryReducer);
 
   useEffect(() => {
     dispatch(getCategoryPostAPI());
@@ -30,7 +30,7 @@ export default function FlashSale() {
   return (
     <div className="category-post">
       <Container maxWidth="lg">
-        {categorys?.categories?.map((category) => (
+        {categoryPosts?.categories?.map((category) => (
           <>
             <div className="category-post-item">
               <h2>{category.title}</h2>

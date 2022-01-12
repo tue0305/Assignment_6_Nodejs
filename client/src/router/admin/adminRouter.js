@@ -1,16 +1,12 @@
-import Login from '../../component/admin/login/login';
-import DashboardAdmin from '../../component/admin/dasboard';
+import Login from "../../component/admin/login/login";
+import DashboardAdmin from "../../component/admin/dasboard";
+
 const adminRouter = [
     {
-        path: '/admin/Home',
+        path: "/admin/home",
         exact: true,
-        component: DashboardAdmin
+        component: DashboardAdmin,
     },
-    // {
-    //     path: '/sign-in-admin',
-    //     exact: true,
-    //     component: Login
-    // },
 ];
 
-export {adminRouter}
+export { adminRouter };

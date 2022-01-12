@@ -12,7 +12,11 @@ import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
-import { manageGetPostAPI } from "../../../../redux/actions/admin/manage-post/managePost";
+import {
+  manageGetPostAPI,
+  manageDeletePost,
+} from "../../../../redux/actions/admin/manage-post/managePost";
+import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
@@ -40,6 +44,15 @@ function Post() {
   useEffect(() => {
     dispatch(manageGetPostAPI());
   }, []);
+  let history = useHistory();
+  const handleDelete = (id) => {
+    console.log(id, "id ne ne ne ");
+    if (window.confirm("Do you want to delete the post ?")) {
+      dispatch(manageDeletePost(id));
+      dispatch(manageGetPostAPI());
+    }
+  };
+  // -----
 
   // -----
 

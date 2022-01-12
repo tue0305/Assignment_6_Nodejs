@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import clsx from "clsx";
 import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link,
-  Redirect,
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    Link,
+    Redirect,
 } from "react-router-dom";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
@@ -29,8 +29,13 @@ import Home from "./pages/Home";
 import Tables from "./pages/Tables";
 import Billing from "./pages/Billing";
 import Post from "./pages/Post/post";
-import Categories from "./pages/categories";
+import Profile from "./pages/Profile";
+import AddUser from "./pages/render/addUser";
+import EditUser from "./pages/render/editUser";
+
 import DetailPost from "./pages/Post/DetailPost";
+import Categories from "./pages/categories";
+//import DetailPost from "./pages/Post/DetailPost";
 //STYLE COMPONENT
 import "antd/dist/antd.css";
 import "./assets/styles/main.css";
@@ -40,208 +45,225 @@ import logo from "../../images/logo/cooking.png";
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-  },
-  appBar: {
-    transition: theme.transitions.create(["margin", "width"], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-  },
-  appBarShift: {
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: drawerWidth,
-    transition: theme.transitions.create(["margin", "width"], {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
-  hide: {
-    display: "none",
-  },
-  drawer: {
-    width: drawerWidth,
-    flexShrink: 0,
-  },
-  drawerPaper: {
-    width: drawerWidth,
-  },
-  drawerHeader: {
-    display: "flex",
-    alignItems: "center",
-    padding: theme.spacing(0, 1),
-    // necessary for content to be below app bar
-    ...theme.mixins.toolbar,
-    justifyContent: "flex-end",
-  },
-  content: {
-    flexGrow: 1,
-    padding: theme.spacing(3),
-    transition: theme.transitions.create("margin", {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-    marginLeft: -drawerWidth,
-  },
-  contentShift: {
-    transition: theme.transitions.create("margin", {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-    marginLeft: 0,
-  },
+    root: {
+        display: "flex",
+    },
+    appBar: {
+        transition: theme.transitions.create(["margin", "width"], {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.leavingScreen,
+        }),
+    },
+    appBarShift: {
+        width: `calc(100% - ${drawerWidth}px)`,
+        marginLeft: drawerWidth,
+        transition: theme.transitions.create(["margin", "width"], {
+            easing: theme.transitions.easing.easeOut,
+            duration: theme.transitions.duration.enteringScreen,
+        }),
+    },
+    menuButton: {
+        marginRight: theme.spacing(2),
+    },
+    hide: {
+        display: "none",
+    },
+    drawer: {
+        width: drawerWidth,
+        flexShrink: 0,
+    },
+    drawerPaper: {
+        width: drawerWidth,
+    },
+    drawerHeader: {
+        display: "flex",
+        alignItems: "center",
+        padding: theme.spacing(0, 1),
+        // necessary for content to be below app bar
+        ...theme.mixins.toolbar,
+        justifyContent: "flex-end",
+    },
+    content: {
+        flexGrow: 1,
+        padding: theme.spacing(3),
+        transition: theme.transitions.create("margin", {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.leavingScreen,
+        }),
+        marginLeft: -drawerWidth,
+    },
+    contentShift: {
+        transition: theme.transitions.create("margin", {
+            easing: theme.transitions.easing.easeOut,
+            duration: theme.transitions.duration.enteringScreen,
+        }),
+        marginLeft: 0,
+    },
 }));
 
 export default function DashboardAdmin() {
-  const classes = useStyles();
-  const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
-  const [loading, setLoading] = useState(false);
-  useEffect(() => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-    }, 100);
-  }, []);
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-  const history = useHistory();
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
-  const logout = () => {
-    localStorage.clear("accessToken");
-    history.push("/sign-in-admin");
-  };
-  return (
-    <div className="dash-board">
-      {loading ? (
-        <Loading />
-      ) : (
-        <Router>
-          <div className={classes.root}>
-            <CssBaseline />
-            <AppBar
-              position="fixed"
-              className={clsx(classes.appBar, {
-                [classes.appBarShift]: open,
-              })}
-            >
-              <Toolbar>
-                <IconButton
-                  color="inherit"
-                  aria-label="open drawer"
-                  onClick={handleDrawerOpen}
-                  edge="start"
-                  className={clsx(classes.menuButton, open && classes.hide)}
-                >
-                  <MenuIcon />
-                </IconButton>
-                <Typography variant="h6" noWrap>
-                  <Link to="/admin/Home">
-                    <span className="dash-board-logo">
-                      <img src={logo} alt="logo" />
-                      <span className="navbar-title-name">WELLCOME BACK</span>
-                    </span>
-                  </Link>
-                </Typography>
-              </Toolbar>
-            </AppBar>
-            <Drawer
-              className={classes.drawer}
-              variant="persistent"
-              anchor="left"
-              open={open}
-              classes={{
-                paper: classes.drawerPaper,
-              }}
-            >
-              <div className={classes.drawerHeader}>
-                <IconButton onClick={handleDrawerClose}>
-                  {theme.direction === "ltr" ? (
-                    <ChevronLeftIcon />
-                  ) : (
-                    <ChevronRightIcon />
-                  )}
-                </IconButton>
-              </div>
-              {/* Sidebar  */}
-              <Divider />
-              <List>
-                <ListItem onClick={logout}>
-                  <PeopleAltIcon />
-                  <ListItemText primary="Logout" />
-                </ListItem>
-                <Link to="/admin/manage-comment">
-                  <ListItem>
-                    <PeopleAltIcon />
-                    <ListItemText primary="Manage Comment" />
-                  </ListItem>
-                </Link>
-                <Link to="/admin/manage-user">
-                  <ListItem>
-                    <PeopleAltIcon />
-                    <ListItemText primary="Manage User" />
-                  </ListItem>
-                </Link>
-                <Link to="/admin/manage-post">
-                  <ListItem>
-                    <PeopleAltIcon />
-                    <ListItemText primary="Manage Post" />
-                  </ListItem>
-                </Link>
-                <Link to="/admin/manage-categories">
-                  <ListItem>
-                    <PeopleAltIcon />
-                    <ListItemText primary="Manage Categories" />
-                  </ListItem>
-                </Link>
-              </List>
-            </Drawer>
-            {/* end sidebar  */}
-            {/* SCREEN  */}
-            <main
-              className={clsx(classes.content, {
-                [classes.contentShift]: open,
-              })}
-            >
-              <div className={classes.drawerHeader} />
-              <Switch>
-                <Route exact path="/admin/manage-comment">
-                  <Billing />
-                </Route>
-                <Route exact path="/admin/Home">
-                  <Home />
-                </Route>
-                <Route exact path="/admin/manage-user">
-                  <Tables />
-                </Route>
-                <Route exact path="/admin/manage-post">
-                  <Post />
-                </Route>
-                <Route exact path="/admin/manage-categories">
-                  <Categories />
-                </Route>
-                <Route exact path="/admin/manage-categories">
-                  <Categories />
-                </Route>
-                {/* --- */}
-                <Route exact path="/admin/manage-post/detail-post/:postId">
-                  <DetailPost />
-                </Route>
-                {/* -- */}
-                <Redirect from="*" to="/manage-comment" />
-              </Switch>
-            </main>
-            {/* END SCREEN */}
-          </div>
-        </Router>
-      )}
-    </div>
-  );
+    const classes = useStyles();
+    const theme = useTheme();
+    const [open, setOpen] = React.useState(false);
+    const [loading, setLoading] = useState(false);
+    useEffect(() => {
+        setLoading(true);
+        setTimeout(() => {
+            setLoading(false);
+        }, 100);
+    }, []);
+    const handleDrawerOpen = () => {
+        setOpen(true);
+    };
+    const history = useHistory();
+    const handleDrawerClose = () => {
+        setOpen(false);
+    };
+    const logout = () => {
+        localStorage.clear("accessToken");
+        history.push("/sign-in-admin");
+    };
+    return (
+        <div className="dash-board">
+            {loading ? (
+                <Loading />
+            ) : (
+                <Router>
+                    <div className={classes.root}>
+                        <CssBaseline />
+                        <AppBar
+                            position="fixed"
+                            className={clsx(classes.appBar, {
+                                [classes.appBarShift]: open,
+                            })}
+                        >
+                            <Toolbar>
+                                <IconButton
+                                    color="inherit"
+                                    aria-label="open drawer"
+                                    onClick={handleDrawerOpen}
+                                    edge="start"
+                                    className={clsx(
+                                        classes.menuButton,
+                                        open && classes.hide
+                                    )}
+                                >
+                                    <MenuIcon />
+                                </IconButton>
+                                <Typography variant="h6" noWrap>
+                                    <Link to="/admin/Home">
+                                        <span className="dash-board-logo">
+                                            <img src={logo} alt="logo" />
+                                            <span className="navbar-title-name">
+                                                WELLCOME BACK
+                                            </span>
+                                        </span>
+                                    </Link>
+                                </Typography>
+                            </Toolbar>
+                        </AppBar>
+                        <Drawer
+                            className={classes.drawer}
+                            variant="persistent"
+                            anchor="left"
+                            open={open}
+                            classes={{
+                                paper: classes.drawerPaper,
+                            }}
+                        >
+                            <div className={classes.drawerHeader}>
+                                <IconButton onClick={handleDrawerClose}>
+                                    {theme.direction === "ltr" ? (
+                                        <ChevronLeftIcon />
+                                    ) : (
+                                        <ChevronRightIcon />
+                                    )}
+                                </IconButton>
+                            </div>
+                            {/* Sidebar  */}
+                            <Divider />
+                            <List>
+                                <ListItem onClick={logout}>
+                                    <PeopleAltIcon />
+                                    <ListItemText primary="Logout" />
+                                </ListItem>
+                                <Link to="/admin/manage-comment">
+                                    <ListItem>
+                                        <PeopleAltIcon />
+                                        <ListItemText primary="Manage Comment" />
+                                    </ListItem>
+                                </Link>
+                                <Link to="/admin/manage-user">
+                                    <ListItem>
+                                        <PeopleAltIcon />
+                                        <ListItemText primary="Manage User" />
+                                    </ListItem>
+                                </Link>
+                                <Link to="/admin/manage-post">
+                                    <ListItem>
+                                        <PeopleAltIcon />
+                                        <ListItemText primary="Manage Post" />
+                                    </ListItem>
+                                </Link>
+                                <Link to="/admin/manage-categories">
+                                    <ListItem>
+                                        <PeopleAltIcon />
+                                        <ListItemText primary="Manage Categories" />
+                                    </ListItem>
+                                </Link>
+                            </List>
+                        </Drawer>
+                        {/* end sidebar  */}
+                        {/* SCREEN  */}
+                        <main
+                            className={clsx(classes.content, {
+                                [classes.contentShift]: open,
+                            })}
+                        >
+                            <div className={classes.drawerHeader} />
+                            <Switch>
+                                <Route exact path="/admin/manage-comment">
+                                    <Billing />
+                                </Route>
+                                <Route exact path="/admin/Home">
+                                    <Home />
+                                </Route>
+                                <Route exact path="/admin/manage-user">
+                                    <Tables />
+                                </Route>
+                                <Route
+                                    exact
+                                    path="/admin/manage-user/editUser/:_id"
+                                >
+                                    <EditUser />
+                                </Route>
+
+                                <Route exact path="/admin/manage-user/addUser">
+                                    <AddUser />
+                                </Route>
+                                <Route exact path="/admin/manage-post">
+                                    <Post />
+                                </Route>
+                                <Route exact path="/admin/manage-categories">
+                                    <Categories />
+                                </Route>
+
+                                {/* --- */}
+                                <Route
+                                    exact
+                                    path="/admin/manage-post/detail-post/:postId"
+                                >
+                                    <DetailPost />
+                                </Route>
+
+                                {/* -- */}
+                                <Redirect from="*" to="/manage-comment" />
+                            </Switch>
+                        </main>
+                        {/* END SCREEN */}
+                    </div>
+                </Router>
+            )}
+        </div>
+    );
 }

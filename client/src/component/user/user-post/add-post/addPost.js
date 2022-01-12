@@ -7,8 +7,9 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   createPostUserAPI,
   getCategoryAPI,
+  getCategoryPostAPI,
 } from "../../../../redux/actions/user/category/category";
-import { useHistory } from "react-router-dom";
+
 const style = {
   position: "absolute",
   top: "50%",
@@ -52,7 +53,7 @@ export default function AddPost(props) {
 
   const { categorys } = useSelector((state) => state.categoryReducer);
   // console.log(categorys, "categorys");
-  let history = useHistory();
+
   const [state, setState] = useState({
     title: "",
     content: "",
@@ -92,7 +93,7 @@ export default function AddPost(props) {
         title: state?.title || "",
         image: null,
         content: state?.content || "",
-        gradients,
+        gradients: JSON.stringify(gradients),
         categoryId: state?.categoryId || "",
       };
       dispatch(

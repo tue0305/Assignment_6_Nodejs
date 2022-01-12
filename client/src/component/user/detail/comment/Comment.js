@@ -32,16 +32,10 @@ export default function Comment() {
   const { text } = state;
 
   const { comments } = useSelector((state) => state.commentPostReducer);
-  // console.log(comments, "comments");
   useEffect(() => {
-    
-       dispatch( getCommmentPostAPI(postId));
-   
+    dispatch(getCommmentPostAPI(postId));
   }, []);
-  console.log(comments)
-
-
-
+  console.log(comments);
 
   useEffect(() => {
     localStorage.getItem("accessToken") && dispatch(getInformationUserAPI());

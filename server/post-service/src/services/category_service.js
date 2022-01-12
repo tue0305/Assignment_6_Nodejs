@@ -60,9 +60,15 @@ class CategoryService {
     if (!title) {
       return new APIError("Missing information!!", STATUS_CODES.BAD_REQUEST);
     }
-    const urlImage = file
-      ? `http://localhost:8002/${file.path}`
-      : `http://localhost:8002/public/images/categoryImage/meal.png`;
+    var urlImage = "";
+    if (!file.path) {
+      urlImage = file;
+    } else {
+      urlImage = file
+        ? `http://localhost:8002/${file.path}`
+        : `http://localhost:8002/public/images/categoryImage/meal.png`;
+    }
+
     try {
       // ***** CREATE NEW CATEGORY *****
       var newCategory = new CategoryModel({

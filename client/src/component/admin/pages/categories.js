@@ -12,8 +12,12 @@ import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
-import { manageGetCategoriesAPI } from "../../../redux/actions/admin/manage-categories/manageCategories";
-
+import {
+  manageDeleteCategoriesAPI,
+  manageGetCategoriesAPI,
+} from "../../../redux/actions/admin/manage-categories/manageCategories";
+import AddCategory from "./manage-categories/AddCategory";
+import { useParams } from "react-router-dom";
 const useStyles = makeStyles({
   table: {
     minWidth: 650,
@@ -27,7 +31,7 @@ function Categories() {
 
   // --------
   const dispatch = useDispatch();
-
+  const { categoryId } = useParams();
   const { manageCategories } = useSelector(
     (state) => state.manageCategoriesReducer
   );
@@ -35,9 +39,13 @@ function Categories() {
   useEffect(() => {
     dispatch(manageGetCategoriesAPI());
   }, []);
-
+  const onClose = () => {
+    // dispatch(getPostUserAPI(userId));
+  };
   // -----
-
+  const handleDelete = (categoryId) => {
+    dispatch(manageDeleteCategoriesAPI(categoryId));
+  };
   // -------
   return (
     <>
@@ -50,6 +58,9 @@ function Categories() {
               title="Manage Category"
             >
               <div className="table-responsive">
+                <Button variant="contained" color="secondary">
+                  <AddCategory onClose={onClose} />
+                </Button>
                 <TableContainer component={Paper}>
                   <Table className={classes.table} aria-label="simple table">
                     <TableHead>
@@ -71,7 +82,11 @@ function Categories() {
                             <Button variant="contained" color="secondary">
                               <EditIcon />
                             </Button>
-                            <Button variant="contained" color="secondary">
+                            <Button
+                              variant="contained"
+                              color="secondary"
+                              onClick={() => handleDelete(category._id)}
+                            >
                               <DeleteForeverIcon />
                             </Button>
                           </TableCell>
