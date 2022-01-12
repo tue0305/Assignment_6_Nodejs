@@ -8,7 +8,10 @@ import { margin, width } from "@mui/system";
 import { useHistory } from "react-router-dom";
 
 import { useDispatch } from "react-redux";
-import { addUsers } from "../../../../redux/actions/admin/handleUser";
+import {
+    addUsers,
+    loadUsers,
+} from "../../../../redux/actions/admin/handleUser";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -47,6 +50,7 @@ const AddUser = () => {
         } else {
             const user = { email, password };
             dispatch(addUsers(user));
+            dispatch(loadUsers());
             history.push("/admin/manage-user");
             setError("");
         }

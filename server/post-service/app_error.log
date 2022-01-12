@@ -70,3 +70,5 @@
 {"level":"error","message":"Mon Jan 03 2022 22:38:42 GMT-0800 (Pacific Standard Time)-{}","private":true}
 {"level":"error","message":"Tue Jan 04 2022 10:54:13 GMT-0800 (Pacific Standard Time)-{}","private":true}
 {"level":"error","message":"Tue Jan 04 2022 11:06:05 GMT-0800 (Pacific Standard Time)-{}","private":true}
+{"level":"error","message":"Tue Jan 11 2022 15:07:38 GMT+0700 (Indochina Time)-{\"name\":\"MulterError\",\"message\":\"Unexpected field\",\"code\":\"LIMIT_UNEXPECTED_FILE\",\"field\":\"image\",\"storageErrors\":[]}","private":true}
+{"level":"error","message":"Tue Jan 11 2022 15:07:49 GMT+0700 (Indochina Time)-{\"name\":\"MulterError\",\"message\":\"Unexpected field\",\"code\":\"LIMIT_UNEXPECTED_FILE\",\"field\":\"image\",\"storageErrors\":[]}","private":true}

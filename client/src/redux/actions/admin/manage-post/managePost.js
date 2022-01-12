@@ -5,6 +5,13 @@ const detailPost = (post) => ({
     type: actType.GET_DETAIL_POST,
     payload: post,
 });
+const postDeleted = () => ({
+    type: actType.DELETE_POST,
+});
+const manageGetPost = (managePosts) => ({
+    type: actType.MANAGE_GET_POST,
+    payload: managePosts,
+});
 
 export const manageGetPostAPI = () => {
     return function (dispatch) {
@@ -13,10 +20,7 @@ export const manageGetPostAPI = () => {
             url: "http://localhost:8002/post",
         })
             .then((res) => {
-                dispatch({
-                    type: actType.MANAGE_GET_POST,
-                    payload: res.data,
-                });
+                dispatch(manageGetPost(res.data));
             })
             .catch((err) => {
                 console.log(err, "err");
@@ -52,6 +56,24 @@ export const manageGetPostDetailAPI = (postId) => {
                 });
             })
 
+            .catch((err) => {
+                console.log(err);
+            });
+    };
+};
+export const manageDeletePost = (postId) => {
+    return function (dispatch) {
+        const token = localStorage.getItem("accessToken");
+
+        axios({
+            method: "delete",
+            url: `http://localhost:8002/post/user/delete/${postId}`,
+            headers: { Authorization: "Bearer " + token },
+        })
+            .then((res) => {
+                dispatch(postDeleted());
+                dispatch(manageGetPostAPI());
+            })
             .catch((err) => {
                 console.log(err);
             });

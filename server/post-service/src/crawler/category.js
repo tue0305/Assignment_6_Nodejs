@@ -1,9 +1,10 @@
 const { CategoryModel } = require("../database/models");
-const createCategory = require("../services/category_service");
+const CategoryService = require("../services/category_service");
 const fs = require("fs");
+const service = new CategoryService();
 
 const crawlCate = async () => {
-    const data = await fs.readFileSync(
+    const data = fs.readFileSync(
         "./src/crawler/category.json",
         "utf-8",
         (error, data) => {
@@ -14,16 +15,15 @@ const crawlCate = async () => {
         }
     );
     const database = JSON.parse(data);
-    database.map(async (db) => {
-        const newCate = new CategoryModel({
+    await database.map(async (db) => {
+        const newCate = await service.createCategory({
             title: db.title,
-            image,
+            file: db.image,
         });
-        await newCate.save();
+        console.log(newCate);
     });
-    const categories = CategoryModel.find();
+
     console.log("Crawl category success!");
-    return categories;
 };
 
 // var crawlCate = function func() {

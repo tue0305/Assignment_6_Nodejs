@@ -231,6 +231,16 @@ export default function DashboardAdmin() {
                                 <Route exact path="/admin/manage-user">
                                     <Tables />
                                 </Route>
+                                <Route
+                                    exact
+                                    path="/admin/manage-user/editUser/:_id"
+                                >
+                                    <EditUser />
+                                </Route>
+
+                                <Route exact path="/admin/manage-user/addUser">
+                                    <AddUser />
+                                </Route>
                                 <Route exact path="/admin/manage-post">
                                     <Post />
                                 </Route>
@@ -245,6 +255,7 @@ export default function DashboardAdmin() {
                                 >
                                     <DetailPost />
                                 </Route>
+
                                 {/* -- */}
                                 <Redirect from="*" to="/manage-comment" />
                             </Switch>
