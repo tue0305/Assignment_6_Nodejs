@@ -32,10 +32,11 @@ export default function Comment() {
   const { text } = state;
 
   const { comments } = useSelector((state) => state.commentPostReducer);
-  // console.log(comments, "comments");
+
   useEffect(() => {
     dispatch(getCommmentPostAPI(postId));
   }, []);
+  console.log(comments);
 
   useEffect(() => {
     localStorage.getItem("accessToken") && dispatch(getInformationUserAPI());
@@ -69,7 +70,7 @@ export default function Comment() {
                     <Avatar>
                       <img src={user.avatar} />
                     </Avatar>
-                    <div className="comment-input">
+                    {/* <div className="comment-input">
                       <TextField
                         id="standard-basic"
                         label="what's your on mind?"
@@ -78,7 +79,7 @@ export default function Comment() {
                         type="text"
                         onChange={handleInputChange}
                       />
-                    </div>
+                    </div> */}
                   </>
                 )}
 
@@ -95,10 +96,8 @@ export default function Comment() {
           <div className="commented">
             {comments?.map((item) => (
               <span>
-                <div>
-                  {/* {item.comment.text} */}
-                  {/* {console.log(item.comment)} */}
-                </div>
+                <div>{item.user.email}</div>
+                <div>{item.comment.text}</div>
               </span>
             ))}
           </div>

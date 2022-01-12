@@ -5,7 +5,7 @@ import { adminRouter } from "./router/admin/adminRouter";
 import UserTemplate from "./component/template/user/userTemplate";
 import AdminTemplate from "./component/template/admin/adminTemplate";
 import Login from "./component/admin/login/login";
-import io from "socket.io-client";
+import EditUser from "./component/admin/pages/render/editUser";
 
 function App() {
   //USER

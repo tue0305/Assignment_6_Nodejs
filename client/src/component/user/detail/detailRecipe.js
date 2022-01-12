@@ -418,13 +418,6 @@ export default function DetailRecipe({ comments }) {
                             <div className="recipe-right-comment">
                               <form>
                                 <span className="position">
-                                  <AccountCircleIcon style={divIcon} />
-                                  <input
-                                    placeholder="what's your on mind?"
-                                    open={popupCmt.open || false}
-                                    anchorEl={popupCmt.anchorEl || null}
-                                    onClose={null}
-                                  />
                                   {popupCmt.content}
                                 </span>
 

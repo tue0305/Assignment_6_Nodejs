@@ -65,23 +65,43 @@ export const getCommmentPostAPI = (postId, userId) => {
   };
 };
 
-export const getUserCommentAPI = (userId) => {
-  return function (dispatch) {
-    axios({
-      method: "GET",
-      url: `http://localhost:8001/detail-user/${userId}`,
-    })
-      .then((res) => {
-        dispatch({
-          type: actType.GET_USER_COMMENT_POST,
-          payload: res.data,
-        });
-      })
-      .catch((err) => {
-        console.log(err, "err");
-      });
-  };
-};
+//           console.log(rs.data, "list");
+//         })
+//         .catch((err) => {
+//           console.log(err, "err");
+//         });
+//     });
+
+//     console.log(userComments);
+//     // =------
+//     dispatch({
+//       type: actType.GET_COMMENT_POST,
+//       payload: res.data,
+//     });
+//   })
+//   .catch((err) => {
+//     console.log(err, "err");
+//   });
+//};
+//};
+
+// export const getUserCommentAPI = (userId) => {
+//   return function (dispatch) {
+//     axios({
+//       method: "GET",
+//       url: `http://localhost:8001/detail-user/${userId}`,
+//     })
+//       .then((res) => {
+//         dispatch({
+//           type: actType.GET_USER_COMMENT_POST,
+//           payload: res.data,
+//         });
+//       })
+//       .catch((err) => {
+//         console.log(err, "err");
+//       });
+//   };
+// };
 
 export const userCreateCommentAPI = (postId, newComment) => {
   const token = localStorage.getItem("accessToken");

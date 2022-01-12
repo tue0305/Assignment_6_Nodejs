@@ -19,9 +19,9 @@ export const getCategoryAPI = (cb) => {
   };
 };
 // -----
-const getCategoryPost = (categorys) => ({
+const getCategoryPost = (categories) => ({
   type: actionType.GET_CATEGORY_POST,
-  payload: categorys,
+  payload: categories,
 });
 
 export const getCategoryPostAPI = () => {
@@ -31,6 +31,7 @@ export const getCategoryPostAPI = () => {
       url: "http://localhost:8002/category",
     })
       .then((res) => {
+        console.log(res.data, "d");
         dispatch(getCategoryPost(res.data));
       })
       .catch((err) => {

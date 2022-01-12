@@ -10,12 +10,12 @@ import managePostReducer from "./admin/manage-post/managePostReducer";
 import manageCategoriesReducer from "./admin/manage-categories/manageCategoriesReducer";
 
 const rootReducers = combineReducers({
-  SignUser,
-  categoryReducer,
-  manageCategoriesReducer,
-  commentPostReducer,
-  managePostReducer,
-  data: userReducer,
+    SignUser,
+    categoryReducer,
+    manageCategoriesReducer,
+    commentPostReducer,
+    managePostReducer,
+    data: userReducer,
 });
 
 export default rootReducers;

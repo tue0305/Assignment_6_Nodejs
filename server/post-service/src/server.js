@@ -6,23 +6,21 @@ const { createChannel } = require("./utils");
 const crawlData = require("./crawler/index");
 
 const StartServer = async () => {
-  const app = express();
+    const app = express();
 
-  await DB_Connection();
+    await DB_Connection();
 
-  // await crawlData();
+    await crawlData();
 
-  const channel = await createChannel();
+    const channel = await createChannel();
 
-  await expressApp(app, channel);
+    await expressApp(app, channel);
 
-  app
-    .listen(PORT, () => {
-      console.log(`listening to port ${PORT}`);
-    })
-    .on("error", (err) => {
-      console.log(err);
-      process.exit();
+    app.listen(PORT, () => {
+        console.log(`listening to port ${PORT}`);
+    }).on("error", (err) => {
+        console.log(err);
+        process.exit();
     });
 };
 

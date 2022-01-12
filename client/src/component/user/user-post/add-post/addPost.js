@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   createPostUserAPI,
   getCategoryAPI,
+  getCategoryPostAPI,
 } from "../../../../redux/actions/user/category/category";
 
 const style = {
