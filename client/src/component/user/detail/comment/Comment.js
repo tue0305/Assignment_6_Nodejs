@@ -51,9 +51,10 @@ export default function Comment() {
     if (!text) {
       setError("Hãy nhập bình luận của bạn");
     } else {
-      dispatch(userCreateCommentAPI(postId, state));
+      dispatch(userCreateCommentAPI(postId, state));  
       setError("");
-    }
+       
+    } 
   };
 
   return (
