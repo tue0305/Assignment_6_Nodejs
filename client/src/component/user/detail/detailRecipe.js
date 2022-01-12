@@ -67,7 +67,7 @@ export default function DetailRecipe({ comments }) {
   const { commentHighlight } = useSelector((state) => state.commentPostReducer); //reducer nè ông
 
   // const { commentHighlight } = useSelector((state) => state.commentPostReducer);
-  console.log(commentHighlight, "commentHighlight");
+
   const dispatch = useDispatch();
 
   const { postId } = useParams();
@@ -85,7 +85,7 @@ export default function DetailRecipe({ comments }) {
   useEffect(() => {
     listComments.current = commentHighlight;
   }, [commentHighlight]);
-  console.log(listComments, "listComments");
+
   //  -----
 
   // -----
@@ -95,8 +95,6 @@ export default function DetailRecipe({ comments }) {
       setLoading(false);
     }, 1000);
   }, []);
-
-  console.log("listComments.current", listComments.current);
 
   const loadDetailCategoryPost = () => {
     dispatch(getDetailCategoryPostAPI(postId));
