@@ -112,10 +112,18 @@ export const createPostUserAPI = (category, cb) => {
       method: "POST",
       url: `http://localhost:8002/post/user/create`,
       data: category,
-      headers: { Authorization: "Bearer " + token },
+      headers: {
+        Authorization: "Bearer " + token,
+      },
     })
       .then((res) => {
         console.log(res.data, "ca");
+        Swal.fire({
+          icon: "success",
+          title: "Thành công!",
+          width: "400px",
+          padding: "0 0 20px 0",
+        });
         dispatch(createPostUser(res.data));
         cb && cb(null, res.data);
       })
@@ -125,7 +133,7 @@ export const createPostUserAPI = (category, cb) => {
   };
 };
 
-export const deletePostUserAPI = (postId) => {
+export const deletePostUserAPI = (postId, cb) => {
   const token = localStorage.getItem("accessToken");
   return function (dispatch) {
     axios({
@@ -144,7 +152,7 @@ export const deletePostUserAPI = (postId) => {
           type: actionType.DELETE_USER_POST,
           payload: res.data,
         });
-        dispatch(getPostUser(res.data));
+        cb && cb(null, res.data);
       })
       .catch((err) => {
         console.log(err, "err");

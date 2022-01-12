@@ -56,14 +56,14 @@ class CategoryService {
   async createCategory(newCategory) {
     const { title, file } = newCategory;
 
-    // **** Simple validation ****
-    if (!title) {
-      return new APIError("Missing information!!", STATUS_CODES.BAD_REQUEST);
-    }
-    const urlImage = file
-      ? `http://localhost:8002/${file.path}`
-      : `http://localhost:8002/public/images/categoryImage/meal.png`;
     try {
+      // **** Simple validation ****
+      if (!title) {
+        return new APIError("Missing information!!", STATUS_CODES.BAD_REQUEST);
+      }
+      const urlImage = file
+        ? `http://localhost:8002/${file.path}`
+        : `http://localhost:8002/public/images/categoryImage/meal.png`;
       // ***** CREATE NEW CATEGORY *****
       var newCategory = new CategoryModel({
         title,

@@ -88,7 +88,7 @@ module.exports = async (app, channel) => {
         title,
         image,
         content,
-        gradients,
+        JSON.parse(gradients),
         categoryId,
         userId
       );

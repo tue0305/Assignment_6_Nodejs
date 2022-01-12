@@ -12,10 +12,12 @@ import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import { useHistory } from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import { useDispatch, useSelector } from "react-redux";
-import { getPostUserAPI } from "../../../redux/actions/user/category/category";
+import {
+  deletePostUserAPI,
+  getPostUserAPI,
+} from "../../../redux/actions/user/category/category";
 import AddPost from "./add-post/addPost";
 import { useParams } from "react-router-dom";
 export default function ManagePost() {
@@ -29,6 +31,10 @@ export default function ManagePost() {
 
   const onClose = () => {
     dispatch(getPostUserAPI(userId));
+  };
+
+  const handleDelete = (userPosts) => {
+    dispatch(deletePostUserAPI(userPosts));
   };
 
   return (
@@ -78,7 +84,11 @@ export default function ManagePost() {
                     <Button variant="contained" color="secondary">
                       Sửa
                     </Button>
-                    <Button variant="contained" color="secondary">
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      onClick={() => handleDelete(post._id)}
+                    >
                       Xóa
                     </Button>
                   </TableCell>

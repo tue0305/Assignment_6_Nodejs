@@ -272,7 +272,11 @@ export default function DetailRecipe({ comments }) {
         setError("Hãy nhập bình luận của bạn!");
       } else {
         setContent(null);
-        dispatch(userCreateCommentHighlightAPI(postId, state));
+        dispatch(
+          userCreateCommentHighlightAPI(postId, state, (error, data) => {
+            loadGetCommentHighlight();
+          })
+        );
         setError("");
       }
     };
